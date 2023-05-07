@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,8 +35,11 @@ public class Home {
   @Column()
   Integer area;
 
-  @OneToMany(mappedBy = "home")
-  List<HomeInformationItem> informationItems;
+  @OneToMany(mappedBy = "home", cascade = CascadeType.ALL)
+  List<HomeInformationItem> homeInformationItems;
+
+  @OneToMany(mappedBy = "home", cascade = CascadeType.ALL)
+  List<HomeImage> images;
 
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
@@ -47,10 +51,6 @@ public class Home {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public List<HomeInformationItem> getInformationItems() {
-    return informationItems;
   }
 
   public void setId(UUID id) {
@@ -69,14 +69,6 @@ public class Home {
     this.area = area;
   }
 
-  public void setInformationItems(List<HomeInformationItem> informationItems) {
-    this.informationItems = informationItems;
-  }
-
-  public void setCreatedDate(LocalDateTime createdDate) {
-    this.createdDate = createdDate;
-  }
-
   public UUID getId() {
     return id;
   }
@@ -92,9 +84,4 @@ public class Home {
   public Integer getArea() {
     return area;
   }
-
-  public LocalDateTime getCreatedDate() {
-    return createdDate;
-  }
-
 }

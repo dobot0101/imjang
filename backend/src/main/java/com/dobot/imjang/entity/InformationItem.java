@@ -16,8 +16,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-@Entity(name = "home_information_category")
-public class HomeInformationCategory {
+@Entity
+public class InformationItem {
   @Id
   @Type(type = "uuid-char")
   @GeneratedValue(generator = "uuid2")
@@ -28,15 +28,45 @@ public class HomeInformationCategory {
   String name;
 
   @ManyToOne
-  HomeInformationCategory parentCategory;
+  InformationCategory category;
 
-  @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
-  List<HomeInformationCategory> subCategories;
-
-  @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-  List<HomeInformationItem> items;
+  @OneToMany(mappedBy = "informationItem", cascade = CascadeType.ALL)
+  List<HomeInformationItem> homeInformationItems;
 
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdDate;
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public InformationCategory getCategory() {
+    return category;
+  }
+
+  public void setCategory(InformationCategory category) {
+    this.category = category;
+  }
+
+  public LocalDateTime getCreatedDate() {
+    return createdDate;
+  }
+
+  public void setCreatedDate(LocalDateTime createdDate) {
+    this.createdDate = createdDate;
+  }
+
 }
