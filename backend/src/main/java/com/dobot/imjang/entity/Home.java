@@ -84,4 +84,29 @@ public class Home {
   public Integer getArea() {
     return area;
   }
+
+  public List<HomeInformationItem> getHomeInformationItems() {
+    return homeInformationItems;
+  }
+
+  public void setHomeInformationItems(List<HomeInformationItem> homeInformationItems) {
+    this.homeInformationItems = homeInformationItems;
+  }
+
+  public List<HomeImage> getImages() {
+    return images;
+  }
+
+  public void setImages(List<HomeImage> images) {
+    this.images = images;
+  }
+
+  public LocalDateTime getCreatedDate() {
+    return createdDate;
+  }
+
+  public void setCreatedDate(LocalDateTime createdDate) {
+    this.createdDate = createdDate;
+  }
+
 }

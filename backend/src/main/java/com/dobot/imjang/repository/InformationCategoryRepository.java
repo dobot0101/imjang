@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.dobot.imjang.entity.InformationCategory;
 
-public interface HomeInformationCategoryRepository extends JpaRepository<InformationCategory, UUID> {
+public interface InformationCategoryRepository extends JpaRepository<InformationCategory, UUID> {
 
 }

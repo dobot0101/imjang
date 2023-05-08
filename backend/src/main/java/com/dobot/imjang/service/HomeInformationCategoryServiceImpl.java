@@ -9,12 +9,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.dobot.imjang.entity.InformationCategory;
 import com.dobot.imjang.interfaces.HomeInformationCategoryService;
-import com.dobot.imjang.repository.HomeInformationCategoryRepository;
+import com.dobot.imjang.repository.InformationCategoryRepository;
 
 public class HomeInformationCategoryServiceImpl implements HomeInformationCategoryService {
-  private final HomeInformationCategoryRepository homeInformationCategoryRepository;
+  private final InformationCategoryRepository homeInformationCategoryRepository;
 
-  public HomeInformationCategoryServiceImpl(HomeInformationCategoryRepository homeInformationCategoryRepository) {
+  public HomeInformationCategoryServiceImpl(InformationCategoryRepository homeInformationCategoryRepository) {
     this.homeInformationCategoryRepository = homeInformationCategoryRepository;
   }
 

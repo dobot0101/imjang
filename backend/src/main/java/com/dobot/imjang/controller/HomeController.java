@@ -42,8 +42,8 @@ public class HomeController {
   }
 
   @PutMapping("/{id}")
-  public Home updateHome(@PathVariable("id") UUID id, @RequestBody Home home) {
-    return homeService.updateHome(id, home);
+  public Home updateHome(@PathVariable("id") UUID id, @RequestBody HomeUpdateDTO updateDto) {
+    return homeService.updateHome(id, updateDto);
   }
 
   @DeleteMapping("/{id}")

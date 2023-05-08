@@ -3,6 +3,7 @@ package com.dobot.imjang.interfaces;
 import java.util.List;
 import java.util.UUID;
 
+import com.dobot.imjang.controller.HomeUpdateDTO;
 import com.dobot.imjang.entity.Home;
 
 public interface HomeService {
@@ -12,7 +13,7 @@ public interface HomeService {
 
   Home createHome(Home home);
 
-  Home updateHome(UUID id, Home home);
+  Home updateHome(UUID id, HomeUpdateDTO updateDto);
 
   void deleteHome(UUID id);
 }

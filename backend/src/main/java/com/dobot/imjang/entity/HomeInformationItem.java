@@ -32,4 +32,37 @@ public class HomeInformationItem {
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdDate;
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  public Home getHome() {
+    return home;
+  }
+
+  public void setHome(Home home) {
+    this.home = home;
+  }
+
+  public InformationItem getInformationItem() {
+    return informationItem;
+  }
+
+  public void setInformationItem(InformationItem informationItem) {
+    this.informationItem = informationItem;
+  }
+
+  public LocalDateTime getCreatedDate() {
+    return createdDate;
+  }
+
+  public void setCreatedDate(LocalDateTime createdDate) {
+    this.createdDate = createdDate;
+  }
+
 }
