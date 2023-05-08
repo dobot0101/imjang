@@ -1,13 +1,13 @@
-package com.dobot.imjang.controller;
+package com.dobot.imjang.dto;
 
 import java.util.List;
 import java.util.UUID;
 
-public class HomeUpdateDTO {
+public class HomeUpdateRequest {
   private String name;
   private String address;
   private String memo;
-  private String area;
+  private Integer area;
   private List<UUID> imageIds;
   private List<UUID> informationItemIds;
 
@@ -35,11 +35,11 @@ public class HomeUpdateDTO {
     this.memo = memo;
   }
 
-  public String getArea() {
+  public Integer getArea() {
     return area;
   }
 
-  public void setArea(String area) {
+  public void setArea(Integer area) {
     this.area = area;
   }
 

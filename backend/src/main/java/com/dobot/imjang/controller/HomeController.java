@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dobot.imjang.dto.HomeCreateRequest;
+import com.dobot.imjang.dto.HomeUpdateRequest;
 import com.dobot.imjang.entity.Home;
 import com.dobot.imjang.interfaces.HomeService;
 
@@ -37,13 +39,13 @@ public class HomeController {
   }
 
   @PostMapping("")
-  public Home createHome(@RequestBody Home home) {
-    return homeService.createHome(home);
+  public Home createHome(@RequestBody HomeCreateRequest homeCreateRequest) {
+    return homeService.createHome(homeCreateRequest);
   }
 
   @PutMapping("/{id}")
-  public Home updateHome(@PathVariable("id") UUID id, @RequestBody HomeUpdateDTO updateDto) {
-    return homeService.updateHome(id, updateDto);
+  public Home updateHome(@PathVariable("id") UUID id, @RequestBody HomeUpdateRequest homeUpdateRequest) {
+    return homeService.updateHome(id, homeUpdateRequest);
   }
 
   @DeleteMapping("/{id}")
