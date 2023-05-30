@@ -1,5 +1,6 @@
 package com.dobot.imjang.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +12,12 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class KakaoLoginService {
+  private final RestTemplate restTemplate;
+
+  @Autowired
+  public KakaoLoginService(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+  }
 
   @Value("${kakao.clientId}")
   private String kakaoClientId;
@@ -33,8 +40,6 @@ public class KakaoLoginService {
 
   private String getAccessToken(String code) {
     String accessTokenUrl = "https://kauth.kakao.com/oauth/token";
-
-    RestTemplate restTemplate = new RestTemplate();
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -59,8 +64,6 @@ public class KakaoLoginService {
 
   private String getUserInfo(String accessToken) {
     String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
-
-    RestTemplate restTemplate = new RestTemplate();
 
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Bearer " + accessToken);

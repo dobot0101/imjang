@@ -11,7 +11,7 @@ public class KakaoLoginController {
   private final KakaoLoginService kakaoLoginService;
 
   @Autowired
-  KakaoLoginController(KakaoLoginService kakaoLoginService) {
+  public KakaoLoginController(KakaoLoginService kakaoLoginService) {
     this.kakaoLoginService = kakaoLoginService;
   }
 
