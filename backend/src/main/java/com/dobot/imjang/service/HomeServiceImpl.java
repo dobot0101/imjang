@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dobot.imjang.dto.HomeCreateRequest;
@@ -13,6 +14,7 @@ import com.dobot.imjang.entity.Home;
 import com.dobot.imjang.entity.HomeImage;
 import com.dobot.imjang.entity.HomeInformationItem;
 import com.dobot.imjang.entity.InformationItem;
+import com.dobot.imjang.exception.NotFoundException;
 import com.dobot.imjang.interfaces.HomeService;
 import com.dobot.imjang.repository.HomeImageRepository;
 import com.dobot.imjang.repository.HomeRepository;
@@ -24,6 +26,7 @@ public class HomeServiceImpl implements HomeService {
     private final InformationItemRepository informationItemRepository;
     private final HomeImageRepository homeImageRepository;
 
+    @Autowired
     public HomeServiceImpl(HomeRepository homeRepository, InformationItemRepository informationItemRepository,
             HomeImageRepository homeImageRepository) {
         this.homeRepository = homeRepository;
@@ -116,11 +119,5 @@ public class HomeServiceImpl implements HomeService {
     @Override
     public void deleteHome(UUID id) {
         homeRepository.deleteById(id);
-    }
-}
-
-class NotFoundException extends RuntimeException {
-    public NotFoundException(String message) {
-        super(message);
     }
 }

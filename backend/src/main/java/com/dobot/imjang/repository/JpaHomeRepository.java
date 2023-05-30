@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.dobot.imjang.entity.InformationItem;
+import com.dobot.imjang.entity.Home;
 
 @Repository
-public interface InformationItemRepository extends JpaRepository<InformationItem, UUID> {
+public interface JpaHomeRepository extends JpaRepository<Home, UUID>, HomeRepository {
 
 }
