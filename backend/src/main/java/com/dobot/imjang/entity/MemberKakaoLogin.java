@@ -21,11 +21,15 @@ public class MemberKakaoLogin {
 
   @Column(nullable = false, unique = true)
   String kakaoUserId;
+
+  public String getKakaoUserId() {
+    return kakaoUserId;
+  }
+
   // String nickname;
   // String profileImageUrl;
   // String email;
   // String phoneNumber;
-
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdDate;

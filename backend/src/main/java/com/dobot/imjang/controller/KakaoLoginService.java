@@ -1,5 +1,9 @@
 package com.dobot.imjang.controller;
 
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -10,13 +14,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.dobot.imjang.entity.Member;
+import com.dobot.imjang.repository.MemberRepository;
+
 @Service
 public class KakaoLoginService {
   private final RestTemplate restTemplate;
+  private final MemberRepository memberRepository;
 
   @Autowired
-  public KakaoLoginService(RestTemplate restTemplate) {
+  public KakaoLoginService(RestTemplate restTemplate, MemberRepository memberRepository) {
     this.restTemplate = restTemplate;
+    this.memberRepository = memberRepository;
   }
 
   @Value("${kakao.clientId}")
@@ -31,6 +40,11 @@ public class KakaoLoginService {
 
     // Get user information using the access token
     String userInfo = getUserInfo(accessToken);
+
+    List<Member> members = this.memberRepository.findAll();
+    List<Member> membersWithKakaoLogin = members.stream()
+        .filter(member -> member.getKakaoLogin() != null && member.getKakaoLogin().getKakaoUserId() == userInfo.code)
+        .collect(Collectors.toList());
 
     // Process the user information
     // ...

@@ -5,8 +5,10 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -27,7 +29,15 @@ public class Member {
   @Column(length = 50, nullable = false)
   String email;
 
+  @OneToOne(fetch = FetchType.EAGER)
+  MemberKakaoLogin kakaoLogin;
+
+  public MemberKakaoLogin getKakaoLogin() {
+    return kakaoLogin;
+  }
+
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdDate;
+
 }
