@@ -29,7 +29,7 @@ public class Member {
   @Column(length = 50, nullable = false)
   String email;
 
-  @OneToOne(fetch = FetchType.EAGER)
+  @OneToOne(mappedBy = "member")
   MemberKakaoLogin kakaoLogin;
 
   public MemberKakaoLogin getKakaoLogin() {

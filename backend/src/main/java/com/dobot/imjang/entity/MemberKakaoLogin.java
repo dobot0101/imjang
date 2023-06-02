@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -22,14 +23,17 @@ public class MemberKakaoLogin {
   @Column(nullable = false, unique = true)
   String kakaoUserId;
 
+  @OneToOne(mappedBy = "kakaoLogin")
+  Member member;
+
+  public Member getMember() {
+    return member;
+  }
+
   public String getKakaoUserId() {
     return kakaoUserId;
   }
 
-  // String nickname;
-  // String profileImageUrl;
-  // String email;
-  // String phoneNumber;
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdDate;

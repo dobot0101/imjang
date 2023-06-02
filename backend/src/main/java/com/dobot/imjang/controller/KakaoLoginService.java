@@ -1,8 +1,6 @@
 package com.dobot.imjang.controller;
 
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,18 +12,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.dobot.imjang.dto.KakaoUserInfo;
 import com.dobot.imjang.entity.Member;
-import com.dobot.imjang.repository.MemberRepository;
+import com.dobot.imjang.entity.MemberKakaoLogin;
+import com.dobot.imjang.repository.MemberKakaoLoginRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class KakaoLoginService {
   private final RestTemplate restTemplate;
-  private final MemberRepository memberRepository;
+  private final MemberKakaoLoginRepository memberKakaoLoginRepository;
 
   @Autowired
-  public KakaoLoginService(RestTemplate restTemplate, MemberRepository memberRepository) {
+  public KakaoLoginService(RestTemplate restTemplate,
+      MemberKakaoLoginRepository memberKakaoLoginRepository) {
     this.restTemplate = restTemplate;
-    this.memberRepository = memberRepository;
+    this.memberKakaoLoginRepository = memberKakaoLoginRepository;
   }
 
   @Value("${kakao.clientId}")
@@ -41,13 +43,21 @@ public class KakaoLoginService {
     // Get user information using the access token
     String userInfo = getUserInfo(accessToken);
 
-    List<Member> members = this.memberRepository.findAll();
-    List<Member> membersWithKakaoLogin = members.stream()
-        .filter(member -> member.getKakaoLogin() != null && member.getKakaoLogin().getKakaoUserId() == userInfo.code)
-        .collect(Collectors.toList());
+    ObjectMapper objectMapper = new ObjectMapper();
+    KakaoUserInfo kakaoUserInfo;
+    try {
+      kakaoUserInfo = objectMapper.readValue(userInfo, KakaoUserInfo.class);
+      Optional<MemberKakaoLogin> optional = this.memberKakaoLoginRepository.findByKakaoUserId(kakaoUserInfo.getId());
+      Member member = optional.map(MemberKakaoLogin::getMember).orElse(null);
+      if (member != null) {
+        // 로그인 처리
+      } else {
+        // 회원가입 처리
+      }
 
-    // Process the user information
-    // ...
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     return "Kakao login successful!";
   }
