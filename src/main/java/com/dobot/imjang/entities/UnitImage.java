@@ -1,0 +1,33 @@
+package com.dobot.imjang.entities;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+@Entity
+public class UnitImage {
+  @Id
+  @Type(type = "uuid-char")
+  @GeneratedValue(generator = "uuid2")
+  @GenericGenerator(name = "uuid2", strategy = "uuid2")
+  UUID id;
+
+  @Column(nullable = false)
+  String filename;
+
+  @ManyToOne
+  Unit unit;
+
+  @CreationTimestamp
+  @Column(nullable = false, updatable = false)
+  private LocalDateTime createdDate;
+}

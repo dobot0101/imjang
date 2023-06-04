@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.dobot.imjang.entity.MemberKakaoLogin;
+import com.dobot.imjang.entities.MemberKakaoLogin;
 
 public interface MemberKakaoLoginRepository extends JpaRepository<MemberKakaoLogin, String> {
 
