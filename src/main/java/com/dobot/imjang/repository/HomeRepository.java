@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import com.dobot.imjang.entity.Home;
 
-// public interface HomeRepository extends JpaRepository<Home, UUID> {
 public interface HomeRepository {
   Home save(Home home);
 
@@ -15,5 +14,4 @@ public interface HomeRepository {
   Optional<Home> findById(UUID id);
 
   List<Home> findAll();
-
 }

@@ -16,7 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 @Entity
-public class Home {
+public class Building {
   @Id
   @Type(type = "uuid-char")
   @GeneratedValue(generator = "uuid2")
@@ -24,26 +24,44 @@ public class Home {
   UUID id;
 
   @Column(nullable = false)
-  String name;
+  String name; // 건물 이름 (예: 아파트 이름)
 
   @Column(nullable = false)
-  String address;
+  String address; // 건물 주소
 
-  @Column()
-  String memo;
+  @CreationTimestamp
+  @Column(nullable = false, updatable = false)
+  LocalDateTime createdDate;
 
-  @Column()
-  Integer area;
+  @Enumerated(EnumType.String)
+  BuildingType buildingType;
+
+  @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+  List<Unit> units;
+
+  @Enumerated(EnumType.String)
+  ElevatorStatus elevatorStatus;
+
+  @Enumerated(EnumType.String)
+  EntranceStructure entranceStructure;
+
+  @Enumerated(EnumType.String)
+  ParkingSpace parkingSpace;
+
+  @OneToMany(mappedBy = "home", cascade = CascadeType.ALL, orphanRemoval = true)
+  List<SchoolPresence> schoolPresences;
+
+  @OneToMany(mappedBy = "home", cascade = CascadeType.ALL, orphanRemoval = true)
+  List<Facility> facilities;
 
   @OneToMany(mappedBy = "home", cascade = CascadeType.ALL)
   List<HomeInformationItem> homeInformationItems;
 
+  @OneToMany(mappedBy = "home", cascade = CascadeType.ALL, orphanRemoval = true)
+  List<Transportation> transportations;
+
   @OneToMany(mappedBy = "home", cascade = CascadeType.ALL)
   List<HomeImage> images;
-
-  @CreationTimestamp
-  @Column(nullable = false, updatable = false)
-  private LocalDateTime createdDate;
 
   public String getName() {
     return name;
@@ -65,10 +83,6 @@ public class Home {
     this.memo = memo;
   }
 
-  public void setArea(Integer area) {
-    this.area = area;
-  }
-
   public UUID getId() {
     return id;
   }
@@ -79,10 +93,6 @@ public class Home {
 
   public String getMemo() {
     return memo;
-  }
-
-  public Integer getArea() {
-    return area;
   }
 
   public List<HomeInformationItem> getHomeInformationItems() {
@@ -108,5 +118,25 @@ public class Home {
   public void setCreatedDate(LocalDateTime createdDate) {
     this.createdDate = createdDate;
   }
+}
+
+public enum ElevatorStatus {
+  AVAILABLE, // 있음
+  UNAVAILABLE, // 없음
+  PARKING_CONNETED // 주차장 연결
+}
+
+public enum EntranceStructure {
+  STAIRS, // 계단식
+  CORRIDOR // 복도식
+}
+
+public enum ParkingSpace {
+  ABUNDANT, // 많음
+  AVERAGE, // 보통
+  LIMITED // 적음
+}
+
+public enum BuildingType {
 
 }
