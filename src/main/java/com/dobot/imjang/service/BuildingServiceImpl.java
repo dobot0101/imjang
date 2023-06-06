@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dobot.imjang.dtos.BuildingCreateRequest;
@@ -18,7 +17,6 @@ import com.dobot.imjang.repository.BuildingRepository;
 public class BuildingServiceImpl implements BuildingService {
     private final BuildingRepository buildingRepository;
 
-    @Autowired
     public BuildingServiceImpl(BuildingRepository buildingRepository) {
         this.buildingRepository = buildingRepository;
     }

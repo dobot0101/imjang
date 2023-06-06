@@ -2,7 +2,6 @@ package com.dobot.imjang.controllers;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.dobot.imjang.dtos.AccessTokenRequest;
+import com.dobot.imjang.dtos.AccessTokenResponse;
 import com.dobot.imjang.dtos.KakaoUserInfo;
 import com.dobot.imjang.entities.Member;
 import com.dobot.imjang.entities.MemberKakaoLogin;
@@ -23,7 +24,6 @@ public class KakaoLoginService {
   private final RestTemplate restTemplate;
   private final MemberKakaoLoginRepository memberKakaoLoginRepository;
 
-  @Autowired
   public KakaoLoginService(RestTemplate restTemplate,
       MemberKakaoLoginRepository memberKakaoLoginRepository) {
     this.restTemplate = restTemplate;

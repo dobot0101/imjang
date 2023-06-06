@@ -1,4 +1,4 @@
-package com.dobot.imjang.controllers;
+package com.dobot.imjang.dtos;
 
 public class AccessTokenRequest {
   String grantType;
