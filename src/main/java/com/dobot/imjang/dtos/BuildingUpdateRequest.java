@@ -3,6 +3,10 @@ package com.dobot.imjang.dtos;
 import java.util.List;
 import java.util.UUID;
 
+import com.dobot.imjang.entities.Facility;
+import com.dobot.imjang.entities.Transportation;
+import com.dobot.imjang.entities.Unit;
+
 public class BuildingUpdateRequest {
   private String name;
   private String address;
@@ -57,6 +61,18 @@ public class BuildingUpdateRequest {
 
   public void setInformationItemIds(List<UUID> informationItemIds) {
     this.informationItemIds = informationItemIds;
+  }
+
+  public List<Unit> getUnits() {
+    return null;
+  }
+
+  public List<Facility> getFacilities() {
+    return null;
+  }
+
+  public List<Transportation> getTransportations() {
+    return null;
   }
 
 }

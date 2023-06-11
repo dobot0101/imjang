@@ -11,14 +11,13 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import com.dobot.imjang.enums.ElevatorStatus;
 import com.dobot.imjang.enums.EntranceStructure;
 import com.dobot.imjang.enums.ParkingSpace;
 
@@ -31,6 +30,12 @@ public class Building {
   UUID id;
 
   @Column(nullable = false)
+  private double latitude;
+
+  @Column(nullable = false)
+  private double longitude;
+
+  @Column(nullable = false)
   String name; // 건물 이름 (예: 아파트 이름)
 
   @Column(nullable = false)
@@ -39,10 +44,6 @@ public class Building {
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
   LocalDateTime createdDate;
-
-  @ManyToOne
-  @JoinColumn(name = "building_type_id")
-  BuildingType buildingType;
 
   @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
   List<Unit> units;
@@ -57,7 +58,7 @@ public class Building {
   ParkingSpace parkingSpace;
 
   @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
-  List<SchoolPresence> schoolPresences;
+  List<SchoolDistrict> schoolDistrict;
 
   @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
   List<Facility> facilities;
@@ -96,4 +97,77 @@ public class Building {
   public void setCreatedDate(LocalDateTime createdDate) {
     this.createdDate = createdDate;
   }
+
+  public void setUnits(List<Unit> units) {
+    this.units = units;
+  }
+
+  public void setElevatorStatus(ElevatorStatus elevatorStatus) {
+    this.elevatorStatus = elevatorStatus;
+  }
+
+  public void setEntranceStructure(EntranceStructure entranceStructure) {
+    this.entranceStructure = entranceStructure;
+  }
+
+  public void setParkingSpace(ParkingSpace parkingSpace) {
+    this.parkingSpace = parkingSpace;
+  }
+
+  public void setFacilities(List<Facility> facilities) {
+    this.facilities = facilities;
+  }
+
+  public void setTransportations(List<Transportation> transportations) {
+    this.transportations = transportations;
+  }
+
+  public double getLatitude() {
+    return latitude;
+  }
+
+  public void setLatitude(double latitude) {
+    this.latitude = latitude;
+  }
+
+  public double getLongitude() {
+    return longitude;
+  }
+
+  public void setLongitude(double longitude) {
+    this.longitude = longitude;
+  }
+
+  public List<Unit> getUnits() {
+    return units;
+  }
+
+  public ElevatorStatus getElevatorStatus() {
+    return elevatorStatus;
+  }
+
+  public EntranceStructure getEntranceStructure() {
+    return entranceStructure;
+  }
+
+  public ParkingSpace getParkingSpace() {
+    return parkingSpace;
+  }
+
+  public List<SchoolDistrict> getSchoolDistrict() {
+    return schoolDistrict;
+  }
+
+  public void setSchoolDistrict(List<SchoolDistrict> schoolDistrict) {
+    this.schoolDistrict = schoolDistrict;
+  }
+
+  public List<Facility> getFacilities() {
+    return facilities;
+  }
+
+  public List<Transportation> getTransportations() {
+    return transportations;
+  }
+
 }

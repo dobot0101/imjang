@@ -1,4 +1,4 @@
-package com.dobot.imjang.entities;
+package com.dobot.imjang.enums;
 
 public enum TransactionType {
   SALE, // 매매
