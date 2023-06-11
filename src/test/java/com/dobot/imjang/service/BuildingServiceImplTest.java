@@ -20,10 +20,8 @@ import com.dobot.imjang.entities.Building;
 public class BuildingServiceImplTest {
 
   @Autowired
-  BuildingServiceImpl buildingServiceImpl;
+  BuildingService buildingServiceImpl;
 
-  // @Transactional
-  // @Rollback
   @Test
   void 전체목록조회() {
     List<Building> allBuildings = this.buildingServiceImpl.getAllBuildings();

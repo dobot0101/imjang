@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dobot.imjang.dtos.BuildingCreateRequest;
 import com.dobot.imjang.dtos.BuildingUpdateRequest;
 import com.dobot.imjang.entities.Building;
-import com.dobot.imjang.interfaces.BuildingService;
+import com.dobot.imjang.service.BuildingService;
 
 @RestController
 @RequestMapping("/building")

@@ -1,27 +1,33 @@
-version: "3.7"
+version: "3.1"
+
 services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: imjang
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_password
+    ports:
+      - 3306:3306
+    volumes:
+      - db_data:/var/lib/mysql
+
   app:
+    restart: always
     build:
       context: .
-      # dockerfile: dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/test?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=test
-  db:
-    image: mysql:8.0
-    restart: always
-    container_name: mysql_container
-    environment:
-      - MYSQL_ROOT_PASSWORD=test
-      - MYSQL_DATABASE=test
-    ports:
-      - "3306:3306"
-    volumes:
-      - db-data:/var/lib/mysql
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/imjang
+      SPRING_DATASOURCE_USERNAME: test_user
+      SPRING_DATASOURCE_PASSWORD: test_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
 volumes:
-  db-data:
+  db_data:

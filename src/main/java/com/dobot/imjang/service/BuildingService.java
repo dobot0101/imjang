@@ -10,23 +10,20 @@ import com.dobot.imjang.dtos.BuildingCreateRequest;
 import com.dobot.imjang.dtos.BuildingUpdateRequest;
 import com.dobot.imjang.entities.Building;
 import com.dobot.imjang.exceptions.NotFoundException;
-import com.dobot.imjang.interfaces.BuildingService;
 import com.dobot.imjang.repository.BuildingRepository;
 
 @Service
-public class BuildingServiceImpl implements BuildingService {
+public class BuildingService {
     private final BuildingRepository buildingRepository;
 
-    public BuildingServiceImpl(BuildingRepository buildingRepository) {
+    public BuildingService(BuildingRepository buildingRepository) {
         this.buildingRepository = buildingRepository;
     }
 
-    @Override
     public List<Building> getAllBuildings() {
         return buildingRepository.findAll();
     }
 
-    @Override
     public Building getBuildingById(UUID id) {
         Optional<Building> optional = buildingRepository.findById(id);
         if (!optional.isPresent()) {
@@ -35,7 +32,6 @@ public class BuildingServiceImpl implements BuildingService {
         return optional.get();
     }
 
-    @Override
     public Building createBuilding(BuildingCreateRequest createReq) {
         Building home = new Building();
         home.setAddress(createReq.getAddress());
@@ -43,7 +39,6 @@ public class BuildingServiceImpl implements BuildingService {
         return buildingRepository.save(home);
     }
 
-    @Override
     public Building updateBuilding(UUID id, BuildingUpdateRequest updateReq) {
         Optional<Building> homeOptional = buildingRepository.findById(id);
         if (!homeOptional.isPresent()) {
@@ -57,7 +52,6 @@ public class BuildingServiceImpl implements BuildingService {
         return buildingRepository.save(home);
     }
 
-    @Override
     public void deleteBuilding(UUID id) {
         buildingRepository.deleteById(id);
     }
