@@ -68,7 +68,7 @@ public class Unit {
   @JoinColumn(name = "building_id")
   Building building;
 
-  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
   List<UnitImage> images;
 
   public void setId(UUID id) {

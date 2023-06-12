@@ -22,7 +22,7 @@ public class UnitImage {
   UUID id;
 
   @Column(nullable = false)
-  String filename;
+  String imageUrl;
 
   @ManyToOne
   Unit unit;
@@ -30,4 +30,21 @@ public class UnitImage {
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdDate;
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
+
+  public void setUnit(Unit unit) {
+    this.unit = unit;
+  }
+
+  public void setCreatedDate(LocalDateTime createdDate) {
+    this.createdDate = createdDate;
+  }
+
 }
