@@ -1,6 +1,7 @@
 package com.dobot.imjang.enums;
 
+// 수압
 public enum WaterPressure {
-  GOOD, // 좋음
-  BAD // 나쁨
+  좋음, // 좋음
+  나쁨 // 나쁨
 }

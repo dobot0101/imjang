@@ -80,8 +80,8 @@ public class KakaoLoginService {
   private AccessTokenRequest getAccessTokenRequest(String code) {
     AccessTokenRequest request = new AccessTokenRequest();
     request.setGrantType("authorization_code");
-    request.setClientId(kakaoClientId);
-    request.setRedirectUri(kakaoRedirectUri);
+    request.setKakaoClientId(kakaoClientId);
+    request.setKakaoRedirectUri(kakaoRedirectUri);
     request.setCode(code);
     return request;
   }

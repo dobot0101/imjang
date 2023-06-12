@@ -133,7 +133,7 @@ public class UnitService {
       building.setLongitude(0);
       building.setName(null);
       building.setParkingSpace(null);
-      building.setSchoolDistrict(null);
+      building.setSchoolDistricts(null);
       building.setTransportations(null);
     }
     return building;

@@ -1,6 +1,8 @@
 package com.dobot.imjang.enums;
+
+// 소음
 public enum NoiseLevel {
-  NONE, // 없음
-  NORMAL, // 보통
-  SEVERE // 심함
+  없음, // 없음
+  보통, // 보통
+  심함 // 심함
 }

@@ -1,5 +1,7 @@
 package com.dobot.imjang.enums;
+
+// 통풍
 public enum Ventilation {
-  GOOD, // 좋
-  BAD // 나
+  좋음, // 좋
+  나쁨 // 나
 }

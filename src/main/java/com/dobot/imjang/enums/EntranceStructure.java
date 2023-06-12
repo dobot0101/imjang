@@ -1,5 +1,7 @@
 package com.dobot.imjang.enums;
+
+// 현관 구조
 public enum EntranceStructure {
-  STAIRS, // 계단식
-  CORRIDOR // 복도식
+  계단식, // 계단식
+  복도식 // 복도식
 }

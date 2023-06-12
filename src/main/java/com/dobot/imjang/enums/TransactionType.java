@@ -1,7 +1,8 @@
 package com.dobot.imjang.enums;
 
+// 계약 방식
 public enum TransactionType {
-  SALE, // 매매
-  JEONSE, // 전세
-  MONTHLY // 월세
+  매매, // 매매
+  전세, // 전세
+  월세 // 월세
 }

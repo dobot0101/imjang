@@ -21,6 +21,11 @@ import com.dobot.imjang.enums.ElevatorStatus;
 import com.dobot.imjang.enums.EntranceStructure;
 import com.dobot.imjang.enums.ParkingSpace;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 public class Building {
   @Id
@@ -58,116 +63,12 @@ public class Building {
   ParkingSpace parkingSpace;
 
   @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
-  List<SchoolDistrict> schoolDistrict;
+  List<SchoolDistrict> schoolDistricts;
 
   @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
   List<Facility> facilities;
 
   @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
   List<Transportation> transportations;
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
-  }
-
-  public void setAddress(String address) {
-    this.address = address;
-  }
-
-  public UUID getId() {
-    return id;
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  public LocalDateTime getCreatedDate() {
-    return createdDate;
-  }
-
-  public void setCreatedDate(LocalDateTime createdDate) {
-    this.createdDate = createdDate;
-  }
-
-  public void setUnits(List<Unit> units) {
-    this.units = units;
-  }
-
-  public void setElevatorStatus(ElevatorStatus elevatorStatus) {
-    this.elevatorStatus = elevatorStatus;
-  }
-
-  public void setEntranceStructure(EntranceStructure entranceStructure) {
-    this.entranceStructure = entranceStructure;
-  }
-
-  public void setParkingSpace(ParkingSpace parkingSpace) {
-    this.parkingSpace = parkingSpace;
-  }
-
-  public void setFacilities(List<Facility> facilities) {
-    this.facilities = facilities;
-  }
-
-  public void setTransportations(List<Transportation> transportations) {
-    this.transportations = transportations;
-  }
-
-  public double getLatitude() {
-    return latitude;
-  }
-
-  public void setLatitude(double latitude) {
-    this.latitude = latitude;
-  }
-
-  public double getLongitude() {
-    return longitude;
-  }
-
-  public void setLongitude(double longitude) {
-    this.longitude = longitude;
-  }
-
-  public List<Unit> getUnits() {
-    return units;
-  }
-
-  public ElevatorStatus getElevatorStatus() {
-    return elevatorStatus;
-  }
-
-  public EntranceStructure getEntranceStructure() {
-    return entranceStructure;
-  }
-
-  public ParkingSpace getParkingSpace() {
-    return parkingSpace;
-  }
-
-  public List<SchoolDistrict> getSchoolDistrict() {
-    return schoolDistrict;
-  }
-
-  public void setSchoolDistrict(List<SchoolDistrict> schoolDistrict) {
-    this.schoolDistrict = schoolDistrict;
-  }
-
-  public List<Facility> getFacilities() {
-    return facilities;
-  }
-
-  public List<Transportation> getTransportations() {
-    return transportations;
-  }
 
 }

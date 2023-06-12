@@ -1,7 +1,8 @@
 package com.dobot.imjang.enums;
 
+// 결로, 곰팡이
 public enum CondensationMoldLevel {
-  NONE, // 없음
-  NORMAL, // 보통
-  SEVERE // 심함
+  없음, // 없음
+  보통, // 보통
+  심함 // 심함
 }

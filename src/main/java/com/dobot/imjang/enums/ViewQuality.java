@@ -1,6 +1,8 @@
 package com.dobot.imjang.enums;
+
+// 뷰
 public enum ViewQuality {
-  GOOD, // 좋음
-  AVERAGE, // 보통
-  BAD // 나쁨
+  좋음, // 좋음
+  보통, // 보통
+  나쁨 // 나쁨
 }

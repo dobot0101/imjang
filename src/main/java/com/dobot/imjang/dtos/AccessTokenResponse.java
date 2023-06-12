@@ -1,5 +1,8 @@
 package com.dobot.imjang.dtos;
 
+import lombok.Getter;
+
+@Getter
 public class AccessTokenResponse {
   String accessToken;
   String tokenType;
@@ -8,8 +11,4 @@ public class AccessTokenResponse {
   String refreshToken;
   Integer refreshTokenExpiresIn;
   String scope;
-
-  public String getAccessToken() {
-    return this.accessToken;
-  }
 }

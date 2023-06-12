@@ -12,6 +12,11 @@ import com.dobot.imjang.enums.Ventilation;
 import com.dobot.imjang.enums.ViewQuality;
 import com.dobot.imjang.enums.WaterPressure;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UnitCreateRequest {
   UUID buidlingId;
   String buildingNumber; // 동
@@ -29,69 +34,5 @@ public class UnitCreateRequest {
   CondensationMoldLevel condensationMoldLevel; // 없음, 보통, 심함
   LeakStatus leakStatus; // 없음, 있음
   List<String> imageUrls;
-
-  public UUID getBuidlingId() {
-    return buidlingId;
-  }
-
-  public String getBuildingNumber() {
-    return buildingNumber;
-  }
-
-  public String getRoomNumber() {
-    return roomNumber;
-  }
-
-  public Double getArea() {
-    return area;
-  }
-
-  public String getMemo() {
-    return memo;
-  }
-
-  public TransactionType getTransactionType() {
-    return transactionType;
-  }
-
-  public Double getTransactionPrice() {
-    return transactionPrice;
-  }
-
-  public Double getDeposit() {
-    return deposit;
-  }
-
-  public Direction getDirection() {
-    return direction;
-  }
-
-  public ViewQuality getViewQuality() {
-    return viewQuality;
-  }
-
-  public Ventilation getVentilation() {
-    return ventilation;
-  }
-
-  public WaterPressure getWaterPressure() {
-    return waterPressure;
-  }
-
-  public NoiseLevel getNoiseLevel() {
-    return noiseLevel;
-  }
-
-  public CondensationMoldLevel getCondensationMoldLevel() {
-    return condensationMoldLevel;
-  }
-
-  public LeakStatus getLeakStatus() {
-    return leakStatus;
-  }
-
-  public List<String> getImageUrls() {
-    return imageUrls;
-  }
 
 }
