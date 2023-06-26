@@ -6,22 +6,18 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-
 import com.dobot.imjang.enums.SchoolType;
 
+import lombok.Setter;
+
+@Setter
 @Entity
 public class SchoolDistrict {
     @Id
-    @Type(type = "uuid-char")
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     UUID id;
 
     @Enumerated(EnumType.STRING)
@@ -30,17 +26,4 @@ public class SchoolDistrict {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "building_id")
     Building building;
-
-    // public void setId(UUID id) {
-    // this.id = id;
-    // }
-
-    public void setSchoolType(SchoolType schoolType) {
-        this.schoolType = schoolType;
-    }
-
-    public void setBuilding(Building building) {
-        this.building = building;
-    }
-
 }

@@ -1,5 +1,6 @@
 package com.dobot.imjang.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,6 +14,8 @@ import com.dobot.imjang.entities.Building;
 import com.dobot.imjang.entities.Facility;
 import com.dobot.imjang.entities.SchoolDistrict;
 import com.dobot.imjang.entities.Transportation;
+import com.dobot.imjang.entities.Unit;
+import com.dobot.imjang.entities.UnitImage;
 import com.dobot.imjang.enums.FacilityType;
 import com.dobot.imjang.enums.SchoolType;
 import com.dobot.imjang.enums.TransportationType;
@@ -45,10 +48,22 @@ public class BuildingService {
         building.setName(req.getName());
         building.setEntranceStructure(req.getEntranceStructure());
         building.setElevatorStatus(req.getElevatorStatus());
-
         building.setLatitude(req.getLatitude());
         building.setLongitude(req.getLongitude());
         building.setParkingSpace(req.getParkingSpace());
+        building.setCreatedDate(LocalDateTime.now());
+
+        // 학군
+        List<SchoolType> schoolTypes = req.getSchoolTypes();
+        if (!schoolTypes.isEmpty()) {
+            List<SchoolDistrict> schoolDistricts = schoolTypes.stream().map(schoolType -> {
+                SchoolDistrict schoolDistrict = new SchoolDistrict();
+                schoolDistrict.setSchoolType(schoolType);
+                schoolDistrict.setId(UUID.randomUUID());
+                return schoolDistrict;
+            }).collect(Collectors.toList());
+            building.setSchoolDistricts(schoolDistricts);
+        }
 
         // 편의시설
         List<FacilityType> facilityTypes = req.getFacilityTypes();
@@ -72,16 +87,37 @@ public class BuildingService {
             building.setTransportations(transportations);
         }
 
-        // 학군
-        List<SchoolType> schoolTypes = req.getSchoolTypes();
-        if (!schoolTypes.isEmpty()) {
-            List<SchoolDistrict> schoolDistricts = schoolTypes.stream().map(schoolType -> {
-                SchoolDistrict schoolDistrict = new SchoolDistrict();
-                schoolDistrict.setSchoolType(schoolType);
-                return schoolDistrict;
+        Unit unit = new Unit();
+        unit.setArea(req.getArea());
+        unit.setBuildingNumber(req.getBuildingNumber());
+        unit.setCondensationMoldLevel(req.getCondensationMoldLevel());
+        unit.setDeposit(req.getDeposit());
+        unit.setDirection(req.getDirection());
+        unit.setId(UUID.randomUUID());
+        unit.setLeakStatus(req.getLeakStatus());
+        unit.setMemo(req.getMemo());
+        unit.setNoiseLevel(req.getNoiseLevel());
+        unit.setRoomNumber(req.getRoomNumber());
+        unit.setTransactionPrice(req.getTransactionPrice());
+        unit.setTransactionType(req.getTransactionType());
+        unit.setVentilation(req.getVentilation());
+        unit.setViewQuality(req.getViewQuality());
+        unit.setWaterPressure(req.getWaterPressure());
+
+        List<String> imageUrls = req.getImageUrls();
+        if (!imageUrls.isEmpty()) {
+            List<UnitImage> unitImages = imageUrls.stream().map(imageUrl -> {
+                UnitImage unitImage = new UnitImage();
+                unitImage.setId(UUID.randomUUID());
+                unitImage.setImageUrl(imageUrl);
+                return unitImage;
             }).collect(Collectors.toList());
-            building.setSchoolDistricts(schoolDistricts);
+            unit.setImages(unitImages);
         }
+
+        List<Unit> units = building.getUnits();
+        units.add(unit);
+        building.setUnits(units);
 
         return buildingRepository.save(building);
     }

@@ -5,20 +5,19 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 public class UnitImage {
   @Id
-  @Type(type = "uuid-char")
-  @GeneratedValue(generator = "uuid2")
-  @GenericGenerator(name = "uuid2", strategy = "uuid2")
   UUID id;
 
   @Column(nullable = false)
@@ -30,21 +29,4 @@ public class UnitImage {
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdDate;
-
-  public void setId(UUID id) {
-    this.id = id;
-  }
-
-  public void setImageUrl(String imageUrl) {
-    this.imageUrl = imageUrl;
-  }
-
-  public void setUnit(Unit unit) {
-    this.unit = unit;
-  }
-
-  public void setCreatedDate(LocalDateTime createdDate) {
-    this.createdDate = createdDate;
-  }
-
 }

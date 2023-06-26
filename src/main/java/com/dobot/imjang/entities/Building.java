@@ -29,9 +29,6 @@ import lombok.Setter;
 @Entity
 public class Building {
   @Id
-  @Type(type = "uuid-char")
-  @GeneratedValue(generator = "uuid2")
-  @GenericGenerator(name = "uuid2", strategy = "uuid2")
   UUID id;
 
   @Column(nullable = false)
