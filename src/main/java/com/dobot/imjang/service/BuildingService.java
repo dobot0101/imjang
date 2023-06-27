@@ -8,8 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.dobot.imjang.dtos.BuildingCreateRequest;
-import com.dobot.imjang.dtos.BuildingUpdateRequest;
+import com.dobot.imjang.dtos.BuildingRequest;
 import com.dobot.imjang.entities.Building;
 import com.dobot.imjang.entities.Facility;
 import com.dobot.imjang.entities.SchoolDistrict;
@@ -42,8 +41,30 @@ public class BuildingService {
         return optional.get();
     }
 
-    public Building createBuilding(BuildingCreateRequest req) {
+    public Building createBuilding(BuildingRequest req) {
         Building building = new Building();
+        setBuildingInformations(req, building);
+
+        return buildingRepository.save(building);
+    }
+
+    public Building updateBuilding(UUID id, BuildingRequest req) {
+        Optional<Building> optional = buildingRepository.findById(id);
+        if (!optional.isPresent()) {
+            throw new NotFoundException("Building not found");
+        }
+
+        Building building = optional.get();
+        this.setBuildingInformations(req, building);
+
+        return buildingRepository.save(building);
+    }
+
+    public void deleteBuilding(UUID id) {
+        buildingRepository.deleteById(id);
+    }
+
+    private void setBuildingInformations(BuildingRequest req, Building building) {
         building.setAddress(req.getAddress());
         building.setName(req.getName());
         building.setEntranceStructure(req.getEntranceStructure());
@@ -88,12 +109,12 @@ public class BuildingService {
         }
 
         Unit unit = new Unit();
+        unit.setId(UUID.randomUUID());
         unit.setArea(req.getArea());
         unit.setBuildingNumber(req.getBuildingNumber());
         unit.setCondensationMoldLevel(req.getCondensationMoldLevel());
         unit.setDeposit(req.getDeposit());
         unit.setDirection(req.getDirection());
-        unit.setId(UUID.randomUUID());
         unit.setLeakStatus(req.getLeakStatus());
         unit.setMemo(req.getMemo());
         unit.setNoiseLevel(req.getNoiseLevel());
@@ -118,39 +139,5 @@ public class BuildingService {
         List<Unit> units = building.getUnits();
         units.add(unit);
         building.setUnits(units);
-
-        return buildingRepository.save(building);
-    }
-
-    public Building updateBuilding(UUID id, BuildingUpdateRequest updateReq) {
-        Optional<Building> optional = buildingRepository.findById(id);
-        if (!optional.isPresent()) {
-            throw new NotFoundException("Building not found");
-        }
-
-        Building building = optional.get();
-        building.setName(updateReq.getName());
-        building.setAddress(updateReq.getAddress());
-
-        // List<Unit> units = updateReq.getUnits();
-        // if (units.size() > 0) {
-        // building.setUnits(units);
-        // }
-
-        // List<Facility> facilities = updateReq.getFacilities();
-        // if (facilities.size() > 0) {
-        // building.setFacilities(facilities);
-        // }
-
-        // List<Transportation> transportations = updateReq.getTransportations();
-        // if (transportations.size() > 0) {
-        // building.setTransportations(transportations);
-        // }
-
-        return buildingRepository.save(building);
-    }
-
-    public void deleteBuilding(UUID id) {
-        buildingRepository.deleteById(id);
     }
 }

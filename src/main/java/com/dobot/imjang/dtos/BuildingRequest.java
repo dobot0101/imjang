@@ -22,8 +22,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BuildingCreateRequest {
-
+public class BuildingRequest {
   // 건물(아파트, 빌라, 오피스텔 등)
   String name;
   String address;
@@ -54,5 +53,4 @@ public class BuildingCreateRequest {
   CondensationMoldLevel condensationMoldLevel; // 없음, 보통, 심함
   LeakStatus leakStatus; // 없음, 있음
   List<String> imageUrls;
-
 }
