@@ -1,4 +1,4 @@
-package com.dobot.imjang.controllers;
+package com.dobot.imjang.service;
 
 import java.util.Optional;
 
@@ -74,7 +74,11 @@ public class KakaoLoginService {
     ResponseEntity<AccessTokenResponse> response = restTemplate.postForEntity(accessTokenUrl, entity,
         AccessTokenResponse.class);
 
-    return response.getBody().getAccessToken();
+    AccessTokenResponse body = response.getBody();
+    if (body != null) {
+      return body.getAccessToken();
+    }
+    return null;
   }
 
   private AccessTokenRequest getAccessTokenRequest(String code) {

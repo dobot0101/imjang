@@ -1,11 +1,15 @@
 package com.dobot.imjang.controllers;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import com.dobot.imjang.service.KakaoLoginService;
+
+@RequestMapping(name = "/kakao-login")
+@RestController
 public class KakaoLoginController {
   private final KakaoLoginService kakaoLoginService;
 
@@ -13,10 +17,9 @@ public class KakaoLoginController {
     this.kakaoLoginService = kakaoLoginService;
   }
 
-  @GetMapping("/kakao/callback")
+  @GetMapping("/callback")
   @ResponseBody
-  public String kakaoCallback(@RequestParam("code") String code) {
-    String result = this.kakaoLoginService.processCallback(code);
-    return result;
+  public String callback(@RequestParam("code") String code) {
+    return this.kakaoLoginService.processCallback(code);
   }
 }
