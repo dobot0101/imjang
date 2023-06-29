@@ -10,5 +10,4 @@ public class KakaoUserInfo {
   private String nickname;
   private String email;
   private String profileImage;
-
 }

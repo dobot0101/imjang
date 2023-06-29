@@ -17,17 +17,21 @@ import com.dobot.imjang.dtos.KakaoUserInfo;
 import com.dobot.imjang.entities.Member;
 import com.dobot.imjang.entities.MemberKakaoLogin;
 import com.dobot.imjang.repository.MemberKakaoLoginRepository;
+import com.dobot.imjang.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class KakaoLoginService {
   private final RestTemplate restTemplate;
   private final MemberKakaoLoginRepository memberKakaoLoginRepository;
+  private final AuthService authService;
 
   public KakaoLoginService(RestTemplate restTemplate,
-      MemberKakaoLoginRepository memberKakaoLoginRepository) {
+      MemberKakaoLoginRepository memberKakaoLoginRepository, MemberRepository memberRepository,
+      AuthService authService) {
     this.restTemplate = restTemplate;
     this.memberKakaoLoginRepository = memberKakaoLoginRepository;
+    this.authService = authService;
   }
 
   @Value("${kakao.clientId}")
@@ -50,11 +54,10 @@ public class KakaoLoginService {
       Optional<MemberKakaoLogin> optional = this.memberKakaoLoginRepository.findByKakaoUserId(kakaoUserInfo.getId());
       Member member = optional.map(MemberKakaoLogin::getMember).orElse(null);
       if (member != null) {
-        // 로그인 처리
+        this.authService.login(member);
       } else {
-        // 회원가입 처리
+        this.authService.signup(kakaoUserInfo);
       }
-
     } catch (Exception e) {
       e.printStackTrace();
     }
