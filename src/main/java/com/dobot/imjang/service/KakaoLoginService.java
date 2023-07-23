@@ -1,6 +1,8 @@
-package com.dobot.imjang.controllers;
+package com.dobot.imjang.service;
 
 import java.util.Optional;
+
+import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -17,17 +19,21 @@ import com.dobot.imjang.dtos.KakaoUserInfo;
 import com.dobot.imjang.entities.Member;
 import com.dobot.imjang.entities.MemberKakaoLogin;
 import com.dobot.imjang.repository.MemberKakaoLoginRepository;
+import com.dobot.imjang.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class KakaoLoginService {
   private final RestTemplate restTemplate;
   private final MemberKakaoLoginRepository memberKakaoLoginRepository;
+  private final AuthService authService;
 
   public KakaoLoginService(RestTemplate restTemplate,
-      MemberKakaoLoginRepository memberKakaoLoginRepository) {
+      MemberKakaoLoginRepository memberKakaoLoginRepository, MemberRepository memberRepository,
+      AuthService authService) {
     this.restTemplate = restTemplate;
     this.memberKakaoLoginRepository = memberKakaoLoginRepository;
+    this.authService = authService;
   }
 
   @Value("${kakao.clientId}")
@@ -49,12 +55,18 @@ public class KakaoLoginService {
       kakaoUserInfo = objectMapper.readValue(userInfo, KakaoUserInfo.class);
       Optional<MemberKakaoLogin> optional = this.memberKakaoLoginRepository.findByKakaoUserId(kakaoUserInfo.getId());
       Member member = optional.map(MemberKakaoLogin::getMember).orElse(null);
+      String jwt = null;
       if (member != null) {
-        // 로그인 처리
+        jwt = this.authService.login(member);
       } else {
-        // 회원가입 처리
+        member = this.authService.signup(kakaoUserInfo);
       }
 
+      if (jwt == null) {
+        throw new AuthenticationException("authentication failed");
+      }
+
+      return jwt;
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -74,7 +86,11 @@ public class KakaoLoginService {
     ResponseEntity<AccessTokenResponse> response = restTemplate.postForEntity(accessTokenUrl, entity,
         AccessTokenResponse.class);
 
-    return response.getBody().getAccessToken();
+    AccessTokenResponse body = response.getBody();
+    if (body != null) {
+      return body.getAccessToken();
+    }
+    return null;
   }
 
   private AccessTokenRequest getAccessTokenRequest(String code) {

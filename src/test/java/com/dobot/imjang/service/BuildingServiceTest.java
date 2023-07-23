@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.dobot.imjang.dtos.BuildingRequest;
+import com.dobot.imjang.dtos.CreateBuildingRequest;
 import com.dobot.imjang.entities.Building;
 
 @SpringBootTest
@@ -31,7 +31,7 @@ public class BuildingServiceTest {
 
   @Test
   void 저장() {
-    BuildingRequest buildingCreateRequest = new BuildingRequest();
+    CreateBuildingRequest buildingCreateRequest = new CreateBuildingRequest();
     buildingCreateRequest.setAddress("경인로 15길 70-22");
     buildingCreateRequest.setName("테스트 빌딩");
     Building building = buildingService.createBuilding(buildingCreateRequest);

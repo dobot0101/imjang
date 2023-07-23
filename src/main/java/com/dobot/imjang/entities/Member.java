@@ -10,14 +10,28 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+// @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity()
 public class Member {
+
+  @Builder
+  public Member(UUID id, String nickname, String email, MemberKakaoLogin kakaoLogin) {
+    this.id = id;
+    this.nickname = nickname;
+    this.email = email;
+    this.kakaoLogin = kakaoLogin;
+  }
 
   @Id
   UUID id;
 
-  @Column(length = 20, nullable = false)
-  String name;
+  @Column(length = 20, nullable = true)
+  String nickname;
 
   @Column(length = 50, nullable = false)
   String email;

@@ -2,17 +2,15 @@ version: "3.1"
 
 services:
   db:
-    image: mysql:5.7
+    image: postgres:13.11
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: imjang
-      MYSQL_USER: test_user
-      MYSQL_PASSWORD: test_password
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
     ports:
-      - 3306:3306
+      - 5433:5432
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
 
   app:
     restart: always
@@ -24,9 +22,9 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/imjang
-      SPRING_DATASOURCE_USERNAME: test_user
-      SPRING_DATASOURCE_PASSWORD: test_password
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
 volumes:
