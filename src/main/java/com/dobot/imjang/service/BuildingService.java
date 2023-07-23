@@ -15,10 +15,12 @@ import com.dobot.imjang.entities.SchoolDistrict;
 import com.dobot.imjang.entities.Transportation;
 import com.dobot.imjang.entities.Unit;
 import com.dobot.imjang.entities.UnitImage;
+import com.dobot.imjang.entities.UnitTransactionType;
 import com.dobot.imjang.enums.FacilityType;
 import com.dobot.imjang.enums.SchoolType;
+import com.dobot.imjang.enums.TransactionType;
 import com.dobot.imjang.enums.TransportationType;
-import com.dobot.imjang.exceptions.NotFoundException;
+import com.dobot.imjang.exception.NotFoundException;
 import com.dobot.imjang.repository.BuildingRepository;
 
 @Service
@@ -44,7 +46,7 @@ public class BuildingService {
     public Building createBuilding(CreateBuildingRequest request) {
         Building building = new Building();
         building.setId(UUID.randomUUID());
-        setBuildingInformations(request, building);
+        setBuildingInformation(request, building);
 
         return buildingRepository.save(building);
     }
@@ -56,7 +58,7 @@ public class BuildingService {
         }
 
         Building building = optional.get();
-        this.setBuildingInformations(req, building);
+        this.setBuildingInformation(req, building);
 
         return buildingRepository.save(building);
     }
@@ -65,7 +67,7 @@ public class BuildingService {
         buildingRepository.deleteById(id);
     }
 
-    private Building setBuildingInformations(CreateBuildingRequest request, Building building) {
+    private Building setBuildingInformation(CreateBuildingRequest request, Building building) {
         building.setAddress(request.getAddress());
         building.setName(request.getName());
         building.setEntranceStructure(request.getEntranceStructure());
@@ -121,7 +123,17 @@ public class BuildingService {
         unit.setNoiseLevel(request.getNoiseLevel());
         unit.setRoomNumber(request.getRoomNumber());
         unit.setTransactionPrice(request.getTransactionPrice());
-        unit.setTransactionType(request.getTransactionType());
+
+        List<TransactionType> transactionTypes = request.getTransactionTypes();
+        if (transactionTypes != null && transactionTypes.isEmpty()) {
+            unit.setTransactionTypes(transactionTypes.stream().map(t -> {
+                UnitTransactionType unitTransactionType = new UnitTransactionType();
+                unitTransactionType.setId(UUID.randomUUID());
+                unitTransactionType.setTransactionType(t);
+                return unitTransactionType;
+            }).collect(Collectors.toList()));
+        }
+
         unit.setVentilation(request.getVentilation());
         unit.setViewQuality(request.getViewQuality());
         unit.setWaterPressure(request.getWaterPressure());

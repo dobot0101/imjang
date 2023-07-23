@@ -1,9 +1,11 @@
 package com.dobot.imjang.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,11 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.dobot.imjang.enums.CondensationMoldLevel;
 import com.dobot.imjang.enums.Direction;
 import com.dobot.imjang.enums.LeakStatus;
 import com.dobot.imjang.enums.NoiseLevel;
-import com.dobot.imjang.enums.TransactionType;
 import com.dobot.imjang.enums.Ventilation;
 import com.dobot.imjang.enums.ViewQuality;
 import com.dobot.imjang.enums.WaterPressure;
@@ -36,8 +39,9 @@ public class Unit {
   Double area; // 면적
   String memo; // 메모
 
-  @Enumerated(EnumType.STRING)
-  TransactionType transactionType; // 매매, 전세, 월세
+  // @Enumerated(EnumType.STRING)
+  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
+  List<UnitTransactionType> transactionTypes; // 매매, 전세, 월세
   Double transactionPrice;
   Double deposit; // 월세의 경우에만 사용, 월세 보증금
 
@@ -68,4 +72,8 @@ public class Unit {
 
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
   List<UnitImage> images;
+
+  @CreationTimestamp
+  @Column(nullable = false, updatable = false)
+  LocalDateTime createdDate;
 }

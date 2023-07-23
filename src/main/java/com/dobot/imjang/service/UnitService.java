@@ -11,7 +11,7 @@ import com.dobot.imjang.dtos.UnitUpdateRequest;
 import com.dobot.imjang.entities.Building;
 import com.dobot.imjang.entities.Unit;
 import com.dobot.imjang.entities.UnitImage;
-import com.dobot.imjang.exceptions.NotFoundException;
+import com.dobot.imjang.exception.NotFoundException;
 import com.dobot.imjang.repository.BuildingRepository;
 import com.dobot.imjang.repository.UnitRepository;
 
@@ -50,7 +50,7 @@ public class UnitService {
     unit.setNoiseLevel(req.getNoiseLevel());
     unit.setRoomNumber(req.getRoomNumber());
     unit.setTransactionPrice(req.getTransactionPrice());
-    unit.setTransactionType(req.getTransactionType());
+    unit.setTransactionTypes(req.getTransactionType());
     unit.setVentilation(req.getVentilation());
     unit.setViewQuality(req.getViewQuality());
     unit.setWaterPressure(req.getWaterPressure());
@@ -81,7 +81,7 @@ public class UnitService {
     unit.setNoiseLevel(req.getNoiseLevel());
     unit.setRoomNumber(req.getRoomNumber());
     unit.setTransactionPrice(req.getTransactionPrice());
-    unit.setTransactionType(req.getTransactionType());
+    unit.setTransactionTypes(req.getTransactionType());
     unit.setVentilation(req.getVentilation());
     unit.setViewQuality(req.getViewQuality());
     unit.setWaterPressure(req.getWaterPressure());

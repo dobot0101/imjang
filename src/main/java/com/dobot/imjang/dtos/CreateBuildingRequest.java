@@ -31,49 +31,43 @@ import lombok.Setter;
 @Setter
 public class CreateBuildingRequest {
   // 건물(아파트, 빌라, 오피스텔 등)
-  @NotBlank
+  @NotBlank(message = "이름을 입력해주세요")
   String name;
 
   // 건물 주소
-  @NotBlank
+  @NotBlank(message = "주소를 입력해주세요")
   String address;
 
   // 엘리베이터 유무 및 옵션(지하주차장 연결 여부)
-  @NotNull
   @Enumerated(EnumType.STRING)
   ElevatorStatus elevatorStatus;
 
   // 현관구조 (계단 / 복도)
-  @NotNull
   @Enumerated(EnumType.STRING)
   EntranceStructure entranceStructure;
 
   // 주차공간(많음, 보통, 적음)
-  @NotNull
   @Enumerated(EnumType.STRING)
   ParkingSpace parkingSpace;
 
   // 학군
-  @NotNull
-  @Size(min = 1)
+  @Enumerated(EnumType.STRING)
   List<SchoolType> schoolTypes;
 
   // 주변시설(편의점 등)
-  @NotNull
-  @Size(min = 1)
+  @Enumerated(EnumType.STRING)
   List<FacilityType> facilityTypes;
 
   // 좌표(위도)
-  @NotNull
+  @NotNull(message = "위도를 입력해주세요")
   double latitude;
 
   // 좌표(경도)
-  @NotNull
+  @NotNull(message = "경도를 입력해주세요")
   double longitude;
 
   // 교통수단
-  @NotNull
-  @Size(min = 1)
+  @Enumerated(EnumType.STRING)
   List<TransportationType> transportationTypes;
 
   // 동
@@ -92,9 +86,10 @@ public class CreateBuildingRequest {
   String memo;
 
   // 매매, 전세, 월세
-  @NotNull
+  @NotNull(message = "계약방식을 1개 이상 선택해주세요")
+  @Size(min = 1)
   @Enumerated(EnumType.STRING)
-  TransactionType transactionType;
+  List<TransactionType> transactionTypes;
 
   // 가격
   Double transactionPrice;
@@ -103,37 +98,30 @@ public class CreateBuildingRequest {
   Double deposit;
 
   // 집 방향(ex: 남향 등)
-  @NotNull
   @Enumerated(EnumType.STRING)
   Direction direction;
 
   // 뷰(전망)
-  @NotNull
   @Enumerated(EnumType.STRING)
   ViewQuality viewQuality;
 
   // 통풍
-  @NotNull
   @Enumerated(EnumType.STRING)
   Ventilation ventilation;
 
   // 수압
-  @NotNull
   @Enumerated(EnumType.STRING)
   WaterPressure waterPressure;
 
   // 소음
-  @NotNull
   @Enumerated(EnumType.STRING)
   NoiseLevel noiseLevel;
 
   // 결로, 곰팡이
-  @NotNull
   @Enumerated(EnumType.STRING)
   CondensationMoldLevel condensationMoldLevel;
 
   // 누수
-  @NotNull
   @Enumerated(EnumType.STRING)
   LeakStatus leakStatus;
 

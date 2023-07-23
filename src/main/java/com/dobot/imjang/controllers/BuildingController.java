@@ -38,8 +38,6 @@ public class BuildingController {
   }
 
   @PostMapping("")
-  // public Building createBuilding(@Validated @RequestBody CreateBuildingRequest
-  // buildingCreateRequest) {
   public Building createBuilding(@RequestBody @Valid CreateBuildingRequest buildingCreateRequest) {
     return buildingService.createBuilding(buildingCreateRequest);
   }
