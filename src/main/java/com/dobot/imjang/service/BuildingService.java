@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.dobot.imjang.dtos.BuildingRequest;
+import com.dobot.imjang.dtos.CreateBuildingRequest;
 import com.dobot.imjang.entities.Building;
 import com.dobot.imjang.entities.Facility;
 import com.dobot.imjang.entities.SchoolDistrict;
@@ -41,14 +41,15 @@ public class BuildingService {
         return optional.get();
     }
 
-    public Building createBuilding(BuildingRequest req) {
+    public Building createBuilding(CreateBuildingRequest request) {
         Building building = new Building();
-        setBuildingInformations(req, building);
+        building.setId(UUID.randomUUID());
+        setBuildingInformations(request, building);
 
         return buildingRepository.save(building);
     }
 
-    public Building updateBuilding(UUID id, BuildingRequest req) {
+    public Building updateBuilding(UUID id, CreateBuildingRequest req) {
         Optional<Building> optional = buildingRepository.findById(id);
         if (!optional.isPresent()) {
             throw new NotFoundException("Building not found");
@@ -64,19 +65,19 @@ public class BuildingService {
         buildingRepository.deleteById(id);
     }
 
-    private void setBuildingInformations(BuildingRequest req, Building building) {
-        building.setAddress(req.getAddress());
-        building.setName(req.getName());
-        building.setEntranceStructure(req.getEntranceStructure());
-        building.setElevatorStatus(req.getElevatorStatus());
-        building.setLatitude(req.getLatitude());
-        building.setLongitude(req.getLongitude());
-        building.setParkingSpace(req.getParkingSpace());
+    private Building setBuildingInformations(CreateBuildingRequest request, Building building) {
+        building.setAddress(request.getAddress());
+        building.setName(request.getName());
+        building.setEntranceStructure(request.getEntranceStructure());
+        building.setElevatorStatus(request.getElevatorStatus());
+        building.setLatitude(request.getLatitude());
+        building.setLongitude(request.getLongitude());
+        building.setParkingSpace(request.getParkingSpace());
         building.setCreatedDate(LocalDateTime.now());
 
         // 학군
-        List<SchoolType> schoolTypes = req.getSchoolTypes();
-        if (!schoolTypes.isEmpty()) {
+        List<SchoolType> schoolTypes = request.getSchoolTypes();
+        if (schoolTypes != null) {
             List<SchoolDistrict> schoolDistricts = schoolTypes.stream().map(schoolType -> {
                 SchoolDistrict schoolDistrict = new SchoolDistrict();
                 schoolDistrict.setSchoolType(schoolType);
@@ -87,8 +88,8 @@ public class BuildingService {
         }
 
         // 편의시설
-        List<FacilityType> facilityTypes = req.getFacilityTypes();
-        if (!facilityTypes.isEmpty()) {
+        List<FacilityType> facilityTypes = request.getFacilityTypes();
+        if (facilityTypes != null) {
             building.setFacilities(facilityTypes.stream().map(facilityType -> {
                 Facility facility = new Facility();
                 facility.setFacilityType(facilityType);
@@ -97,8 +98,8 @@ public class BuildingService {
         }
 
         // 교통수단
-        List<TransportationType> transportationTypes = req.getTransportationTypes();
-        if (!transportationTypes.isEmpty()) {
+        List<TransportationType> transportationTypes = request.getTransportationTypes();
+        if (transportationTypes != null) {
             List<Transportation> transportations = transportationTypes.stream().map(transportationType -> {
                 Transportation transportation = new Transportation();
                 transportation.setTransportationType(transportationType);
@@ -110,23 +111,23 @@ public class BuildingService {
 
         Unit unit = new Unit();
         unit.setId(UUID.randomUUID());
-        unit.setArea(req.getArea());
-        unit.setBuildingNumber(req.getBuildingNumber());
-        unit.setCondensationMoldLevel(req.getCondensationMoldLevel());
-        unit.setDeposit(req.getDeposit());
-        unit.setDirection(req.getDirection());
-        unit.setLeakStatus(req.getLeakStatus());
-        unit.setMemo(req.getMemo());
-        unit.setNoiseLevel(req.getNoiseLevel());
-        unit.setRoomNumber(req.getRoomNumber());
-        unit.setTransactionPrice(req.getTransactionPrice());
-        unit.setTransactionType(req.getTransactionType());
-        unit.setVentilation(req.getVentilation());
-        unit.setViewQuality(req.getViewQuality());
-        unit.setWaterPressure(req.getWaterPressure());
+        unit.setArea(request.getArea());
+        unit.setBuildingNumber(request.getBuildingNumber());
+        unit.setCondensationMoldLevel(request.getCondensationMoldLevel());
+        unit.setDeposit(request.getDeposit());
+        unit.setDirection(request.getDirection());
+        unit.setLeakStatus(request.getLeakStatus());
+        unit.setMemo(request.getMemo());
+        unit.setNoiseLevel(request.getNoiseLevel());
+        unit.setRoomNumber(request.getRoomNumber());
+        unit.setTransactionPrice(request.getTransactionPrice());
+        unit.setTransactionType(request.getTransactionType());
+        unit.setVentilation(request.getVentilation());
+        unit.setViewQuality(request.getViewQuality());
+        unit.setWaterPressure(request.getWaterPressure());
 
-        List<String> imageUrls = req.getImageUrls();
-        if (!imageUrls.isEmpty()) {
+        List<String> imageUrls = request.getImageUrls();
+        if (imageUrls != null) {
             List<UnitImage> unitImages = imageUrls.stream().map(imageUrl -> {
                 UnitImage unitImage = new UnitImage();
                 unitImage.setId(UUID.randomUUID());
@@ -137,7 +138,12 @@ public class BuildingService {
         }
 
         List<Unit> units = building.getUnits();
-        units.add(unit);
+        if (units != null) {
+            units.add(unit);
+        }
+
         building.setUnits(units);
+
+        return building;
     }
 }

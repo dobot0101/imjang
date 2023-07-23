@@ -2,6 +2,8 @@ package com.dobot.imjang.service;
 
 import java.util.Optional;
 
+import javax.naming.AuthenticationException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -53,11 +55,18 @@ public class KakaoLoginService {
       kakaoUserInfo = objectMapper.readValue(userInfo, KakaoUserInfo.class);
       Optional<MemberKakaoLogin> optional = this.memberKakaoLoginRepository.findByKakaoUserId(kakaoUserInfo.getId());
       Member member = optional.map(MemberKakaoLogin::getMember).orElse(null);
+      String jwt = null;
       if (member != null) {
-        this.authService.login(member);
+        jwt = this.authService.login(member);
       } else {
-        this.authService.signup(kakaoUserInfo);
+        member = this.authService.signup(kakaoUserInfo);
       }
+
+      if (jwt == null) {
+        throw new AuthenticationException("authentication failed");
+      }
+
+      return jwt;
     } catch (Exception e) {
       e.printStackTrace();
     }

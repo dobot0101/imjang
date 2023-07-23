@@ -23,7 +23,10 @@ public class AuthService {
     return this.memberRepository.save(member);
   }
 
-  public void login(Member member) {
+  public String login(Member member) {
+    // String email = member.getEmail();
 
+    return "";
   }
+
 }
