@@ -13,7 +13,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
 @Entity
 public class UnitImage {
@@ -28,5 +27,5 @@ public class UnitImage {
 
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
-  private LocalDateTime createdDate;
+  LocalDateTime createdDate;
 }

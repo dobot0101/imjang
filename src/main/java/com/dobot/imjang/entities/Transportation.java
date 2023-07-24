@@ -33,5 +33,5 @@ public class Transportation {
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    LocalDateTime createdDate;
+    LocalDateTime createdAt;
 }

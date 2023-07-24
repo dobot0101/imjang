@@ -9,10 +9,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -30,51 +32,73 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Table(indexes = {
+    @Index(columnList = "building_id")
+})
 public class Unit {
   @Id
   UUID id;
 
-  String buildingNumber; // 동
-  String roomNumber; // 호
-  Double area; // 면적
-  String memo; // 메모
+  // 동
+  String buildingNumber;
 
-  // @Enumerated(EnumType.STRING)
+  // 호
+  String roomNumber;
+
+  // 면적
+  Double area;
+
+  // 메모
+  String memo;
+
+  // 매매, 전세, 월세
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
-  List<UnitTransactionType> transactionTypes; // 매매, 전세, 월세
+  List<UnitTransactionType> transactionTypes;
 
+  // 거래 가격
   Double transactionPrice;
-  Double deposit; // 월세의 경우에만 사용, 월세 보증금
 
+  // 월세의 경우에만 사용, 월세 보증금
+  Double deposit;
+
+  // 집 방향(남향, 남동향, 남서향, 동향, 서향, 북향)
   @Enumerated(EnumType.STRING)
-  Direction direction; // 남향, 남동향, 남서향, 동향, 서향, 북향
+  Direction direction;
 
+  // 전망(좋음, 보통, 나쁨)
   @Enumerated(EnumType.STRING)
-  ViewQuality viewQuality; // 좋음, 보통, 나쁨
+  ViewQuality viewQuality;
 
+  // 통풍(좋음, 나쁨)
   @Enumerated(EnumType.STRING)
-  Ventilation ventilation; // 좋음, 나쁨
+  Ventilation ventilation;
 
+  // 수압(좋음, 나쁨)
   @Enumerated(EnumType.STRING)
-  WaterPressure waterPressure; // 좋음, 나쁨
+  WaterPressure waterPressure;
 
+  // 소음(없음, 보통, 심함)
   @Enumerated(EnumType.STRING)
-  NoiseLevel noiseLevel; // 없음, 보통, 심함
+  NoiseLevel noiseLevel;
 
+  // 결로, 곰팡이(없음, 보통, 심함)
   @Enumerated(EnumType.STRING)
-  CondensationMoldLevel condensationMoldLevel; // 없음, 보통, 심함
+  CondensationMoldLevel condensationMoldLevel;
 
+  // 누수(없음, 있음)
   @Enumerated(EnumType.STRING)
-  LeakStatus leakStatus; // 없음, 있음
+  LeakStatus leakStatus;
 
-  @ManyToOne
-  @JoinColumn(name = "building_id")
+  @ManyToOne()
   Building building;
 
-  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   List<UnitImage> images;
 
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
-  LocalDateTime createdDate;
+  LocalDateTime createdAt;
+
+  @CreationTimestamp
+  LocalDateTime modifiedAt;
 }

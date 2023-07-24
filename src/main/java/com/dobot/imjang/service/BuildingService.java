@@ -69,7 +69,6 @@ public class BuildingService {
         building.setLatitude(buildingRequest.getLatitude());
         building.setLongitude(buildingRequest.getLongitude());
         building.setParkingSpace(buildingRequest.getParkingSpace());
-        // building.setCreatedDate(LocalDateTime.now());
 
         // 학군
         List<SchoolType> schoolTypes = buildingRequest.getSchoolTypes();

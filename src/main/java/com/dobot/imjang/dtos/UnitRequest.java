@@ -17,7 +17,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UnitCreateRequest {
+public class UnitRequest {
   UUID buidlingId;
   String buildingNumber; // 동
   String roomNumber; // 호

@@ -30,5 +30,5 @@ public class MemberKakaoLogin {
 
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
-  private LocalDateTime createdDate;
+  private LocalDateTime createdAt;
 }

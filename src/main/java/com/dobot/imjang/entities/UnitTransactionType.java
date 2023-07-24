@@ -30,5 +30,5 @@ public class UnitTransactionType {
 
   @CreationTimestamp
   @Column(nullable = false, updatable = false)
-  LocalDateTime createdDate;
+  LocalDateTime createdAt;
 }
