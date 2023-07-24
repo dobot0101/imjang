@@ -29,7 +29,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateBuildingRequest {
+public class BuildingRequest {
   // 건물(아파트, 빌라, 오피스텔 등)
   @NotBlank(message = "이름을 입력해주세요")
   String name;

@@ -11,6 +11,8 @@ import com.dobot.imjang.dtos.UnitUpdateRequest;
 import com.dobot.imjang.entities.Building;
 import com.dobot.imjang.entities.Unit;
 import com.dobot.imjang.entities.UnitImage;
+import com.dobot.imjang.entities.UnitTransactionType;
+import com.dobot.imjang.enums.TransactionType;
 import com.dobot.imjang.exception.NotFoundException;
 import com.dobot.imjang.repository.BuildingRepository;
 import com.dobot.imjang.repository.UnitRepository;
@@ -40,25 +42,7 @@ public class UnitService {
     Building building = getOrCreateBuilding(req);
 
     Unit unit = new Unit();
-    unit.setArea(req.getArea());
-    unit.setBuildingNumber(req.getBuildingNumber());
-    unit.setCondensationMoldLevel(req.getCondensationMoldLevel());
-    unit.setDeposit(req.getDeposit());
-    unit.setDirection(req.getDirection());
-    unit.setLeakStatus(req.getLeakStatus());
-    unit.setMemo(req.getMemo());
-    unit.setNoiseLevel(req.getNoiseLevel());
-    unit.setRoomNumber(req.getRoomNumber());
-    unit.setTransactionPrice(req.getTransactionPrice());
-    unit.setTransactionTypes(req.getTransactionType());
-    unit.setVentilation(req.getVentilation());
-    unit.setViewQuality(req.getViewQuality());
-    unit.setWaterPressure(req.getWaterPressure());
-
-    List<UnitImage> unitImages = getUnitImages(req.getImageUrls());
-    if (unitImages.size() > 0) {
-      unit.setImages(unitImages);
-    }
+    unit = addUnitProperties(req, unit);
 
     List<Unit> unitList = building.getUnits();
     unitList.add(unit);
@@ -68,8 +52,42 @@ public class UnitService {
     return unit;
   }
 
+  private Unit addUnitProperties(UnitCreateRequest req, Unit unit) {
+    unit.setArea(req.getArea());
+    unit.setBuildingNumber(req.getBuildingNumber());
+    unit.setCondensationMoldLevel(req.getCondensationMoldLevel());
+    unit.setDeposit(req.getDeposit());
+    unit.setDirection(req.getDirection());
+    unit.setLeakStatus(req.getLeakStatus());
+    unit.setMemo(req.getMemo());
+    unit.setNoiseLevel(req.getNoiseLevel());
+    unit.setRoomNumber(req.getRoomNumber());
+    unit.setTransactionPrice(req.getTransactionPrice());
+    unit.setVentilation(req.getVentilation());
+    unit.setViewQuality(req.getViewQuality());
+    unit.setWaterPressure(req.getWaterPressure());
+
+    List<TransactionType> transactionTypes = req.getTransactionTypes();
+    List<UnitTransactionType> unitTransactionTypes = transactionTypes.stream().map(t -> {
+      UnitTransactionType unitTransactionType = new UnitTransactionType();
+      unitTransactionType.setId(UUID.randomUUID());
+      unitTransactionType.setTransactionType(t);
+      return unitTransactionType;
+    }).collect(Collectors.toList());
+    unit.setTransactionTypes(unitTransactionTypes);
+
+    List<UnitImage> unitImages = getUnitImages(req.getImageUrls());
+    if (unitImages.size() > 0) {
+      unit.setImages(unitImages);
+    }
+
+    return unit;
+  }
+
   public Unit updateUnit(UnitUpdateRequest req) {
     Unit unit = this.getUnitById(req.getId());
+
+    this.addUnitProperties(req, unit);
 
     unit.setArea(req.getArea());
     unit.setBuildingNumber(req.getBuildingNumber());
@@ -81,15 +99,19 @@ public class UnitService {
     unit.setNoiseLevel(req.getNoiseLevel());
     unit.setRoomNumber(req.getRoomNumber());
     unit.setTransactionPrice(req.getTransactionPrice());
-    unit.setTransactionTypes(req.getTransactionType());
+
+    List<TransactionType> transactionTypes = unit.getTransactionTypes();
+    req.getTransactionTypes().forEach(t -> {
+      transactionTypes.add(t);
+    });
+    unit.setTransactionTypes(transactionTypes);
+
     unit.setVentilation(req.getVentilation());
     unit.setViewQuality(req.getViewQuality());
     unit.setWaterPressure(req.getWaterPressure());
 
     List<UnitImage> unitImages = getUnitImages(req.getImageUrls());
-    if (unitImages.size() > 0) {
-      unit.setImages(unitImages);
-    }
+    unit.setImages(unitImages);
 
     this.unitRepository.save(unit);
 

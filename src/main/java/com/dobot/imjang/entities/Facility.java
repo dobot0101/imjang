@@ -1,5 +1,9 @@
 package com.dobot.imjang.entities;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -8,13 +12,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.dobot.imjang.enums.FacilityType;
 
-@Entity
-public class Facility {
+import lombok.Setter;
 
+@Entity
+@Setter
+public class Facility {
     @Id
-    private Long id;
+    private UUID id;
 
     @Enumerated(EnumType.STRING)
     FacilityType facilityType;
@@ -23,18 +31,7 @@ public class Facility {
     @JoinColumn(name = "building_id")
     private Building building;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setFacilityType(FacilityType facilityType) {
-        this.facilityType = facilityType;
-    }
-
-    public void setBuilding(Building building) {
-        this.building = building;
-    }
-
-    // Getters and setters...
-
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    LocalDateTime createdDate;
 }

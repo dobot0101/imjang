@@ -23,7 +23,7 @@ public class UnitCreateRequest {
   String roomNumber; // 호
   Double area; // 면적
   String memo; // 메모
-  TransactionType transactionType; // 매매, 전세, 월세
+  List<TransactionType> transactionTypes; // 매매, 전세, 월세
   Double transactionPrice;
   Double deposit; // 월세의 경우에만 사용, 월세 보증금
   Direction direction; // 남향, 남동향, 남서향, 동향, 서향, 북향

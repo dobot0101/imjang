@@ -42,6 +42,7 @@ public class Unit {
   // @Enumerated(EnumType.STRING)
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
   List<UnitTransactionType> transactionTypes; // 매매, 전세, 월세
+
   Double transactionPrice;
   Double deposit; // 월세의 경우에만 사용, 월세 보증금
 

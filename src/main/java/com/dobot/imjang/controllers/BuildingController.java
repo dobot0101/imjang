@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dobot.imjang.dtos.CreateBuildingRequest;
+import com.dobot.imjang.dtos.BuildingRequest;
 import com.dobot.imjang.entities.Building;
 import com.dobot.imjang.service.BuildingService;
 
@@ -38,13 +38,13 @@ public class BuildingController {
   }
 
   @PostMapping("")
-  public Building createBuilding(@RequestBody @Valid CreateBuildingRequest buildingCreateRequest) {
+  public Building createBuilding(@RequestBody @Valid BuildingRequest buildingCreateRequest) {
     return buildingService.createBuilding(buildingCreateRequest);
   }
 
   @PutMapping("/{id}")
   public Building updateBuilding(@PathVariable("id") UUID id,
-      @RequestBody @Valid CreateBuildingRequest buildingUpdateRequest) {
+      @RequestBody @Valid BuildingRequest buildingUpdateRequest) {
     return buildingService.updateBuilding(id, buildingUpdateRequest);
   }
 

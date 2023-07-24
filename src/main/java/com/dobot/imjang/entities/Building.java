@@ -40,10 +40,6 @@ public class Building {
   @Column(nullable = false)
   String address; // 건물 주소
 
-  @CreationTimestamp
-  @Column(nullable = false, updatable = false)
-  LocalDateTime createdDate;
-
   @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
   List<Unit> units;
 
@@ -65,4 +61,7 @@ public class Building {
   @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
   List<Transportation> transportations;
 
+  @CreationTimestamp
+  @Column(nullable = false, updatable = false)
+  LocalDateTime createdDate;
 }

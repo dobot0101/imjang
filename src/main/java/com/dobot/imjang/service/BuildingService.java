@@ -1,6 +1,5 @@
 package com.dobot.imjang.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -8,17 +7,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.dobot.imjang.dtos.CreateBuildingRequest;
+import com.dobot.imjang.dtos.BuildingRequest;
 import com.dobot.imjang.entities.Building;
 import com.dobot.imjang.entities.Facility;
 import com.dobot.imjang.entities.SchoolDistrict;
 import com.dobot.imjang.entities.Transportation;
-import com.dobot.imjang.entities.Unit;
-import com.dobot.imjang.entities.UnitImage;
-import com.dobot.imjang.entities.UnitTransactionType;
 import com.dobot.imjang.enums.FacilityType;
 import com.dobot.imjang.enums.SchoolType;
-import com.dobot.imjang.enums.TransactionType;
 import com.dobot.imjang.enums.TransportationType;
 import com.dobot.imjang.exception.NotFoundException;
 import com.dobot.imjang.repository.BuildingRepository;
@@ -43,22 +38,21 @@ public class BuildingService {
         return optional.get();
     }
 
-    public Building createBuilding(CreateBuildingRequest request) {
+    public Building createBuilding(BuildingRequest buildingRequest) {
         Building building = new Building();
         building.setId(UUID.randomUUID());
-        setBuildingInformation(request, building);
-
+        setBuildingInformation(buildingRequest, building);
         return buildingRepository.save(building);
     }
 
-    public Building updateBuilding(UUID id, CreateBuildingRequest req) {
+    public Building updateBuilding(UUID id, BuildingRequest buildingRequest) {
         Optional<Building> optional = buildingRepository.findById(id);
         if (!optional.isPresent()) {
             throw new NotFoundException("Building not found");
         }
 
         Building building = optional.get();
-        this.setBuildingInformation(req, building);
+        this.setBuildingInformation(buildingRequest, building);
 
         return buildingRepository.save(building);
     }
@@ -67,94 +61,50 @@ public class BuildingService {
         buildingRepository.deleteById(id);
     }
 
-    private Building setBuildingInformation(CreateBuildingRequest request, Building building) {
-        building.setAddress(request.getAddress());
-        building.setName(request.getName());
-        building.setEntranceStructure(request.getEntranceStructure());
-        building.setElevatorStatus(request.getElevatorStatus());
-        building.setLatitude(request.getLatitude());
-        building.setLongitude(request.getLongitude());
-        building.setParkingSpace(request.getParkingSpace());
-        building.setCreatedDate(LocalDateTime.now());
+    private Building setBuildingInformation(BuildingRequest buildingRequest, Building building) {
+        building.setAddress(buildingRequest.getAddress());
+        building.setName(buildingRequest.getName());
+        building.setEntranceStructure(buildingRequest.getEntranceStructure());
+        building.setElevatorStatus(buildingRequest.getElevatorStatus());
+        building.setLatitude(buildingRequest.getLatitude());
+        building.setLongitude(buildingRequest.getLongitude());
+        building.setParkingSpace(buildingRequest.getParkingSpace());
+        // building.setCreatedDate(LocalDateTime.now());
 
         // 학군
-        List<SchoolType> schoolTypes = request.getSchoolTypes();
-        if (schoolTypes != null) {
-            List<SchoolDistrict> schoolDistricts = schoolTypes.stream().map(schoolType -> {
-                SchoolDistrict schoolDistrict = new SchoolDistrict();
-                schoolDistrict.setSchoolType(schoolType);
-                schoolDistrict.setId(UUID.randomUUID());
-                return schoolDistrict;
-            }).collect(Collectors.toList());
-            building.setSchoolDistricts(schoolDistricts);
-        }
+        List<SchoolType> schoolTypes = buildingRequest.getSchoolTypes();
+        List<SchoolDistrict> schoolDistricts = Optional.ofNullable(schoolTypes)
+                .map(types -> types.stream()
+                        .map(schoolType -> {
+                            SchoolDistrict schoolDistrict = new SchoolDistrict();
+                            schoolDistrict.setId(UUID.randomUUID());
+                            schoolDistrict.setSchoolType(schoolType);
+                            return schoolDistrict;
+                        })
+                        .collect(Collectors.toList()))
+                .orElse(null);
+        building.setSchoolDistricts(schoolDistricts);
 
         // 편의시설
-        List<FacilityType> facilityTypes = request.getFacilityTypes();
-        if (facilityTypes != null) {
-            building.setFacilities(facilityTypes.stream().map(facilityType -> {
-                Facility facility = new Facility();
-                facility.setFacilityType(facilityType);
-                return facility;
-            }).collect(Collectors.toList()));
-        }
+        List<FacilityType> facilityTypes = buildingRequest.getFacilityTypes();
+        List<Facility> facilities = Optional.ofNullable(facilityTypes).map(types -> types.stream().map(facilityType -> {
+            Facility facility = new Facility();
+            facility.setId(UUID.randomUUID());
+            facility.setFacilityType(facilityType);
+            return facility;
+        }).collect(Collectors.toList())).orElse(null);
+        building.setFacilities(facilities);
 
         // 교통수단
-        List<TransportationType> transportationTypes = request.getTransportationTypes();
-        if (transportationTypes != null) {
-            List<Transportation> transportations = transportationTypes.stream().map(transportationType -> {
-                Transportation transportation = new Transportation();
-                transportation.setTransportationType(transportationType);
-                return transportation;
-            }).collect(Collectors.toList());
-
-            building.setTransportations(transportations);
-        }
-
-        Unit unit = new Unit();
-        unit.setId(UUID.randomUUID());
-        unit.setArea(request.getArea());
-        unit.setBuildingNumber(request.getBuildingNumber());
-        unit.setCondensationMoldLevel(request.getCondensationMoldLevel());
-        unit.setDeposit(request.getDeposit());
-        unit.setDirection(request.getDirection());
-        unit.setLeakStatus(request.getLeakStatus());
-        unit.setMemo(request.getMemo());
-        unit.setNoiseLevel(request.getNoiseLevel());
-        unit.setRoomNumber(request.getRoomNumber());
-        unit.setTransactionPrice(request.getTransactionPrice());
-
-        List<TransactionType> transactionTypes = request.getTransactionTypes();
-        if (transactionTypes != null && transactionTypes.isEmpty()) {
-            unit.setTransactionTypes(transactionTypes.stream().map(t -> {
-                UnitTransactionType unitTransactionType = new UnitTransactionType();
-                unitTransactionType.setId(UUID.randomUUID());
-                unitTransactionType.setTransactionType(t);
-                return unitTransactionType;
-            }).collect(Collectors.toList()));
-        }
-
-        unit.setVentilation(request.getVentilation());
-        unit.setViewQuality(request.getViewQuality());
-        unit.setWaterPressure(request.getWaterPressure());
-
-        List<String> imageUrls = request.getImageUrls();
-        if (imageUrls != null) {
-            List<UnitImage> unitImages = imageUrls.stream().map(imageUrl -> {
-                UnitImage unitImage = new UnitImage();
-                unitImage.setId(UUID.randomUUID());
-                unitImage.setImageUrl(imageUrl);
-                return unitImage;
-            }).collect(Collectors.toList());
-            unit.setImages(unitImages);
-        }
-
-        List<Unit> units = building.getUnits();
-        if (units != null) {
-            units.add(unit);
-        }
-
-        building.setUnits(units);
+        List<TransportationType> transportationTypes = buildingRequest.getTransportationTypes();
+        List<Transportation> transportations = Optional.ofNullable(transportationTypes)
+                .map(types -> types.stream().map(transportationType -> {
+                    Transportation transportation = new Transportation();
+                    transportation.setId(UUID.randomUUID());
+                    transportation.setTransportationType(transportationType);
+                    return transportation;
+                }).collect(Collectors.toList())).orElse(null);
+        building.setTransportations(transportations);
 
         return building;
     }
