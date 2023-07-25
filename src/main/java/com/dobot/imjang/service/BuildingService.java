@@ -15,6 +15,7 @@ import com.dobot.imjang.entities.Transportation;
 import com.dobot.imjang.enums.FacilityType;
 import com.dobot.imjang.enums.SchoolType;
 import com.dobot.imjang.enums.TransportationType;
+import com.dobot.imjang.exception.DuplicateLocationException;
 import com.dobot.imjang.exception.NotFoundException;
 import com.dobot.imjang.repository.BuildingRepository;
 
@@ -39,10 +40,26 @@ public class BuildingService {
     }
 
     public Building createBuilding(BuildingRequest buildingRequest) {
+        validBuildingRequest(buildingRequest);
         Building building = new Building();
         building.setId(UUID.randomUUID());
         setBuildingInformation(buildingRequest, building);
         return buildingRepository.save(building);
+    }
+
+    private void validBuildingRequest(BuildingRequest buildingRequest) throws Error {
+        isDuplicatedLocation(buildingRequest);
+    }
+
+    private void isDuplicatedLocation(BuildingRequest buildingRequest) {
+        double latitude = buildingRequest.getLatitude();
+        double longitude = buildingRequest.getLongitude();
+
+        List<Building> existingBuildings = this.buildingRepository.findByLatitudeAndLongitude(latitude, longitude);
+
+        if (existingBuildings.size() > 0) {
+            throw new DuplicateLocationException(Double.toString(latitude), Double.toString(longitude));
+        }
     }
 
     public Building updateBuilding(UUID id, BuildingRequest buildingRequest) {

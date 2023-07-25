@@ -1,6 +1,5 @@
 package com.dobot.imjang.entities;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.CreationTimestamp;
 
 import com.dobot.imjang.enums.ElevatorStatus;
 import com.dobot.imjang.enums.EntranceStructure;
@@ -29,7 +26,7 @@ import lombok.Setter;
 @Table(indexes = {
     @Index(columnList = "latitude, longitude", unique = true)
 })
-public class Building {
+public class Building extends BaseTimeEntity {
   @Id
   UUID id;
 
@@ -42,15 +39,12 @@ public class Building {
   private double longitude;
 
   // 건물 이름 (예: 아파트 단지 이름)
-  @Column(nullable = false)
+  @Column(nullable = false, length = 20)
   String name;
 
   // 건물 주소
-  @Column(nullable = false)
+  @Column(nullable = false, length = 100)
   String address;
-
-  // @OneToMany(mappedBy = "building", orphanRemoval = true)
-  // List<Unit> units;
 
   // 엘리베이터(있음, 없음, 지하주차장 연결)
   @Enumerated(EnumType.STRING)
@@ -75,11 +69,4 @@ public class Building {
   // 교통수단
   @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
   List<Transportation> transportations;
-
-  @CreationTimestamp
-  @Column(nullable = true, updatable = false)
-  LocalDateTime createdAt;
-
-  @CreationTimestamp
-  LocalDateTime modifiedAt;
 }

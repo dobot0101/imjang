@@ -14,4 +14,6 @@ public interface BuildingRepository {
   Optional<Building> findById(UUID id);
 
   List<Building> findAll();
+
+  List<Building> findByLatitudeAndLongitude(double latitude, double longitude);
 }

@@ -3,8 +3,8 @@ package com.dobot.imjang.controllers;
 import java.util.List;
 import java.util.UUID;
 
-import javax.validation.Valid;
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,13 +38,14 @@ public class BuildingController {
   }
 
   @PostMapping("")
-  public Building createBuilding(@RequestBody @Valid BuildingRequest buildingCreateRequest) {
-    return buildingService.createBuilding(buildingCreateRequest);
+  public ResponseEntity<Building> createBuilding(@RequestBody @Validated BuildingRequest buildingCreateRequest) {
+    Building building = buildingService.createBuilding(buildingCreateRequest);
+    return ResponseEntity.ok().body(building);
   }
 
   @PutMapping("/{id}")
   public Building updateBuilding(@PathVariable("id") UUID id,
-      @RequestBody @Valid BuildingRequest buildingUpdateRequest) {
+      @RequestBody @Validated BuildingRequest buildingUpdateRequest) {
     return buildingService.updateBuilding(id, buildingUpdateRequest);
   }
 

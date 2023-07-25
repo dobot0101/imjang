@@ -1,11 +1,9 @@
 package com.dobot.imjang.entities;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,8 +13,6 @@ import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.CreationTimestamp;
 
 import com.dobot.imjang.enums.CondensationMoldLevel;
 import com.dobot.imjang.enums.Direction;
@@ -35,7 +31,7 @@ import lombok.Setter;
 @Table(indexes = {
     @Index(columnList = "building_id")
 })
-public class Unit {
+public class Unit extends BaseTimeEntity {
   @Id
   UUID id;
 
@@ -94,11 +90,4 @@ public class Unit {
 
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   List<UnitImage> images;
-
-  @CreationTimestamp
-  @Column(nullable = false, updatable = false)
-  LocalDateTime createdAt;
-
-  @CreationTimestamp
-  LocalDateTime modifiedAt;
 }
