@@ -1,15 +1,21 @@
 package com.dobot.imjang.exception;
 
+import java.time.LocalDateTime;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
-
+public class CustomExceptionHandler {
   @ExceptionHandler(DuplicateLocationException.class)
-  public ResponseEntity<String> handleDuplicateLocationException(DuplicateLocationException ex) {
-    return ResponseEntity.badRequest().body(ex.getMessage());
+  public ResponseEntity<ErrorResponse> handleDuplicateLocationException(DuplicateLocationException ex) {
+    ErrorResponse errorResponse = new ErrorResponse();
+    errorResponse.setMessage(ex.getMessage());
+    errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
+    errorResponse.setTimestamp(LocalDateTime.now());
+
+    return ResponseEntity.badRequest().body(errorResponse);
   }
 }

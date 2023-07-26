@@ -1,5 +1,6 @@
 package com.dobot.imjang.exception;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,16 +12,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalDtoValidationExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Map<String, String>> dtoValidation(final MethodArgumentNotValidException e) {
+  public ResponseEntity<ErrorResponse> dtoValidation(final MethodArgumentNotValidException e) {
     Map<String, String> errors = new HashMap<>();
     e.getBindingResult().getAllErrors().forEach((error) -> {
       String fieldName = ((FieldError) error).getField();
       String errorMessage = error.getDefaultMessage();
       errors.put(fieldName, errorMessage);
     });
+
+    ErrorResponse errorResponse = new ErrorResponse();
+    errorResponse.setMessage("Invalid DTO!");
+    errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
+    errorResponse.setTimestamp(LocalDateTime.now());
+    errorResponse.setErrorData(errors);
+
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(errors);
+        .body(errorResponse);
   }
 }

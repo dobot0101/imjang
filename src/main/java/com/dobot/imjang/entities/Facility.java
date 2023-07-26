@@ -27,7 +27,7 @@ public class Facility {
     @Enumerated(EnumType.STRING)
     FacilityType facilityType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "building_id")
     private Building building;
 

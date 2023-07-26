@@ -106,6 +106,7 @@ public class BuildingService {
         List<Facility> facilities = Optional.ofNullable(facilityTypes).map(types -> types.stream().map(facilityType -> {
             Facility facility = new Facility();
             facility.setId(UUID.randomUUID());
+            facility.setBuilding(building);
             facility.setFacilityType(facilityType);
             return facility;
         }).collect(Collectors.toList())).orElse(null);

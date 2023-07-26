@@ -7,6 +7,8 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.dobot.imjang.enums.ElevatorStatus;
 import com.dobot.imjang.enums.EntranceStructure;
 import com.dobot.imjang.enums.FacilityType;
@@ -22,10 +24,12 @@ import lombok.Setter;
 public class BuildingRequest {
   // 건물(아파트, 빌라, 오피스텔 등)
   @NotBlank(message = "이름을 입력해주세요")
+  @Length(max = 20)
   String name;
 
   // 건물 주소
   @NotBlank(message = "주소를 입력해주세요")
+  @Length(max = 100)
   String address;
 
   // 엘리베이터 유무 및 옵션(지하주차장 연결 여부)

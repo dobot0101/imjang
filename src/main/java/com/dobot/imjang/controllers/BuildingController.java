@@ -1,6 +1,8 @@
 package com.dobot.imjang.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -38,15 +40,21 @@ public class BuildingController {
   }
 
   @PostMapping("")
-  public ResponseEntity<Building> createBuilding(@RequestBody @Validated BuildingRequest buildingCreateRequest) {
+  public ResponseEntity<Map<String, String>> createBuilding(
+      @RequestBody @Validated BuildingRequest buildingCreateRequest) {
     Building building = buildingService.createBuilding(buildingCreateRequest);
-    return ResponseEntity.ok().body(building);
+    Map<String, String> response = new HashMap<String, String>();
+    response.put("savedBuildingId", building.getId().toString());
+    return ResponseEntity.ok(response);
   }
 
   @PutMapping("/{id}")
-  public Building updateBuilding(@PathVariable("id") UUID id,
+  public ResponseEntity<Map<String, String>> updateBuilding(@PathVariable("id") UUID id,
       @RequestBody @Validated BuildingRequest buildingUpdateRequest) {
-    return buildingService.updateBuilding(id, buildingUpdateRequest);
+    Building building = buildingService.updateBuilding(id, buildingUpdateRequest);
+    Map<String, String> response = new HashMap<String, String>();
+    response.put("updatedBuildingId", building.getId().toString());
+    return ResponseEntity.ok(response);
   }
 
   @DeleteMapping("/{id}")

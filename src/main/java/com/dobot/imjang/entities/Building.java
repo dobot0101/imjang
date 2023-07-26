@@ -59,14 +59,14 @@ public class Building extends BaseTimeEntity {
   ParkingSpace parkingSpace;
 
   // 학군
-  @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "building", cascade = CascadeType.ALL)
   List<SchoolDistrict> schoolDistricts;
 
   // 주변시설
-  @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "building", cascade = CascadeType.ALL)
   List<Facility> facilities;
 
   // 교통수단
-  @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "building", cascade = CascadeType.ALL)
   List<Transportation> transportations;
 }
