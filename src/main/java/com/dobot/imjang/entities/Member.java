@@ -22,6 +22,7 @@ public class Member extends BaseTime {
     this.password = password;
   }
 
+  @Getter
   @Id
   UUID id;
 
