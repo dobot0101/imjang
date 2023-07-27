@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.dobot.imjang.entities.UnitImage;
 
-public interface HomeImageRepository extends JpaRepository<UnitImage, UUID> {
+public interface UnitImageRepository extends JpaRepository<UnitImage, UUID> {
 }

@@ -2,12 +2,13 @@ package com.dobot.imjang.entities;
 
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,6 +28,7 @@ public class Member extends BaseTime {
   @Column(length = 50, nullable = false)
   String email;
 
-  @Column(length = 20, nullable = false)
+  @Getter
+  @Column(length = 100, nullable = false)
   String password;
 }
