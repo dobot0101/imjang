@@ -31,7 +31,7 @@ import lombok.Setter;
 @Table(indexes = {
     @Index(columnList = "building_id")
 })
-public class Unit extends BaseTimeEntity {
+public class Unit extends BaseTime {
   @Id
   UUID id;
 

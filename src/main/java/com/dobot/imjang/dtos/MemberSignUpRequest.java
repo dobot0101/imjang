@@ -8,11 +8,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class KakaoUserInfo {
-  @NotBlank
-  private String id;
-  private String nickname;
+public class MemberSignUpRequest {
   @Email
   private String email;
-  private String profileImage;
+
+  @NotBlank
+  private String password;
 }

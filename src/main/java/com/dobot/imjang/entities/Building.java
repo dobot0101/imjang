@@ -26,7 +26,7 @@ import lombok.Setter;
 @Table(indexes = {
     @Index(columnList = "latitude, longitude", unique = true)
 })
-public class Building extends BaseTimeEntity {
+public class Building extends BaseTime {
   @Id
   UUID id;
 
