@@ -5,28 +5,37 @@ import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.dobot.imjang.dtos.AuthLoginRequest;
+import com.dobot.imjang.dtos.LoginRequest;
 import com.dobot.imjang.entities.Member;
+import com.dobot.imjang.exception.ExceptionMessage;
+import com.dobot.imjang.exception.InvalidPasswordException;
+import com.dobot.imjang.exception.NotFoundException;
 import com.dobot.imjang.repository.MemberRepository;
+import com.dobot.imjang.util.JwtUtil;
 
 @Service
 public class AuthService {
   MemberRepository memberRepository;
   PasswordEncoder passwordEncoder;
+  JwtUtil jwtUtil;
 
-  public AuthService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+  public AuthService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
     this.memberRepository = memberRepository;
     this.passwordEncoder = passwordEncoder;
+    this.jwtUtil = jwtUtil;
   }
 
-  public String login(AuthLoginRequest authLoginRequest) {
-    Optional<Member> optional = this.memberRepository.findByEmail(authLoginRequest.getEmail());
+  public String login(LoginRequest loginRequest) throws Exception {
+    Optional<Member> optional = this.memberRepository.findByEmail(loginRequest.getEmail());
     if (optional.isPresent()) {
       Member member = optional.get();
-      if (this.passwordEncoder.matches(authLoginRequest.getPassword(), member.getPassword())) {
-        // JWT 생성 및 반환
+      if (this.passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
+        return jwtUtil.createToken(member.getName());
+      } else {
+        throw new InvalidPasswordException(ExceptionMessage.INVALID_PASSWORD.getMessage());
       }
+    } else {
+      throw new NotFoundException(ExceptionMessage.MEMBER_NOT_FOUND.getMessage());
     }
-    return null;
   }
 }

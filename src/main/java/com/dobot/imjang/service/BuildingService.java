@@ -16,6 +16,7 @@ import com.dobot.imjang.enums.FacilityType;
 import com.dobot.imjang.enums.SchoolType;
 import com.dobot.imjang.enums.TransportationType;
 import com.dobot.imjang.exception.DuplicateLocationException;
+import com.dobot.imjang.exception.ExceptionMessage;
 import com.dobot.imjang.exception.NotFoundException;
 import com.dobot.imjang.repository.BuildingRepository;
 
@@ -34,7 +35,7 @@ public class BuildingService {
     public Building getBuildingById(UUID id) {
         Optional<Building> optional = buildingRepository.findById(id);
         if (!optional.isPresent()) {
-            throw new NotFoundException("Building not found");
+            throw new NotFoundException(ExceptionMessage.BUILDING_NOT_FOUND.getMessage());
         }
         return optional.get();
     }
@@ -65,7 +66,7 @@ public class BuildingService {
     public Building updateBuilding(UUID id, BuildingRequest buildingRequest) {
         Optional<Building> optional = buildingRepository.findById(id);
         if (!optional.isPresent()) {
-            throw new NotFoundException("Building not found");
+            throw new NotFoundException(ExceptionMessage.BUILDING_NOT_FOUND.getMessage());
         }
 
         Building building = optional.get();

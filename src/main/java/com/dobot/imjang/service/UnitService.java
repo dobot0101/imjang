@@ -11,6 +11,7 @@ import com.dobot.imjang.entities.Unit;
 import com.dobot.imjang.entities.UnitImage;
 import com.dobot.imjang.entities.UnitTransactionType;
 import com.dobot.imjang.enums.TransactionType;
+import com.dobot.imjang.exception.ExceptionMessage;
 import com.dobot.imjang.exception.NotFoundException;
 import com.dobot.imjang.repository.BuildingRepository;
 import com.dobot.imjang.repository.UnitRepository;
@@ -31,7 +32,7 @@ public class UnitService {
   public Unit createUnit(UnitRequest unitRequest) {
     Optional<Building> optional = this.buildingRepository.findById(unitRequest.getBuidlingId());
     if (optional.isEmpty()) {
-      throw new NotFoundException("Building not found");
+      throw new NotFoundException(ExceptionMessage.BUILDING_NOT_FOUND.getMessage());
     }
 
     Unit unit = new Unit();
@@ -42,7 +43,7 @@ public class UnitService {
   public Unit updateUnit(UUID id, UnitRequest unitRequest) {
     Optional<Unit> optional = this.unitRepository.findById(id);
     if (optional.isEmpty()) {
-      throw new NotFoundException("Unit not found");
+      throw new NotFoundException(ExceptionMessage.UNIT_NOT_FOUND.getMessage());
     }
 
     Unit unit = optional.get();
