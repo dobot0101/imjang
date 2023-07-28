@@ -25,20 +25,24 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-    httpSecurity.csrf(csrfCustomizer -> csrfCustomizer.disable())
+    httpSecurity
+        .csrf(csrfCustomizer -> csrfCustomizer.disable())
         .authorizeHttpRequests((authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-            .requestMatchers("/member/signup").permitAll().anyRequest().authenticated()))
+            .requestMatchers("/member/login", "member/login").permitAll()
+        // .anyRequest().authenticated()
+        ))
         .exceptionHandling(exceptionHandlingConfigurer -> {
-          exceptionHandlingConfigurer.authenticationEntryPoint(this.unauthorizedEntryPoint)
-              .accessDeniedHandler(this.accessDeniedHandler);
+          exceptionHandlingConfigurer
+              .accessDeniedHandler(this.accessDeniedHandler).authenticationEntryPoint(this.unauthorizedEntryPoint);
         });
     return httpSecurity.build();
   }
 
   private final AuthenticationEntryPoint unauthorizedEntryPoint = (request, response, authException) -> {
-    ErrorResponse fail = new ErrorResponse(HttpStatus.UNAUTHORIZED, "Spring security unauthorized...");
+    ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED,
+        "Spring Security Unauthorized...");
     response.setStatus(HttpStatus.UNAUTHORIZED.value());
-    String json = new ObjectMapper().writeValueAsString(fail);
+    String json = new ObjectMapper().writeValueAsString(errorResponse);
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     PrintWriter writer = response.getWriter();
     writer.write(json);
@@ -46,9 +50,10 @@ public class SecurityConfig {
   };
 
   private final AccessDeniedHandler accessDeniedHandler = (request, response, accessDeniedException) -> {
-    ErrorResponse fail = new ErrorResponse(HttpStatus.FORBIDDEN, "Spring security forbidden...");
+    ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, "Spring Security Forbidden...");
     response.setStatus(HttpStatus.FORBIDDEN.value());
-    String json = new ObjectMapper().writeValueAsString(fail);
+    String json = new ObjectMapper()
+        .writeValueAsString(errorResponse);
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     PrintWriter writer = response.getWriter();
     writer.write(json);
@@ -58,7 +63,6 @@ public class SecurityConfig {
   @Getter
   @RequiredArgsConstructor
   public class ErrorResponse {
-
     private final HttpStatus status;
     private final String message;
   }
