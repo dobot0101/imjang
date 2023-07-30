@@ -17,8 +17,8 @@ public class MemberService {
     this.passwordEncoder = passwordEncoder;
   }
 
-  public String createMember(MemberSignUpRequest memberSignUpRequest) {
+  public Member createMember(MemberSignUpRequest memberSignUpRequest) {
     Member savedMember = this.memberRepository.save(memberSignUpRequest.toEntity(this.passwordEncoder));
-    return savedMember.getId().toString();
+    return savedMember;
   }
 }

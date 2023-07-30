@@ -4,14 +4,16 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtUtil {
-  private final String secret = "secret"; // JWT secret key
-  private final long validityInMilliseconds = 3600000; // 1 hour
+  // 추후 application.yml 파일로 이동
+  private final String secret = "V4GQW2wdD9QoTPgAPQ/EvNQgzuzVSyP4fqj05mqWTwLYxMRJzGGsknXdsBIuMKVI";
+  private final long validityInMilliseconds = 60 * 60 * 1000; // 1 hour
 
   public String createToken(String username) {
     Date now = new Date();

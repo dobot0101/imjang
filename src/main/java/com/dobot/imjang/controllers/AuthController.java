@@ -1,6 +1,5 @@
 package com.dobot.imjang.controllers;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,8 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dobot.imjang.dtos.LoginRequest;
-import com.dobot.imjang.exception.InvalidPasswordException;
-import com.dobot.imjang.exception.NotFoundException;
+import com.dobot.imjang.dtos.LoginResponse;
 import com.dobot.imjang.service.AuthService;
 
 @RestController
@@ -23,16 +21,9 @@ public class AuthController {
   }
 
   @PostMapping(path = "/login")
-  public ResponseEntity<String> login(@RequestBody @Validated LoginRequest authLoginRequest) {
-    try {
-      return ResponseEntity.ok().body(this.authService.login(authLoginRequest));
-    } catch (NotFoundException e) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-    } catch (InvalidPasswordException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    } catch (Exception e) {
-      System.err.println(e.getMessage());
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
-    }
+  public ResponseEntity<LoginResponse> login(@RequestBody @Validated LoginRequest authLoginRequest) throws Exception {
+    String token = this.authService.login(authLoginRequest);
+    LoginResponse response = new LoginResponse(token);
+    return ResponseEntity.ok().body(response);
   }
 }

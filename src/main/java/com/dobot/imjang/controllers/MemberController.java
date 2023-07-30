@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dobot.imjang.dtos.CreateMemberResponse;
 import com.dobot.imjang.dtos.MemberSignUpRequest;
+import com.dobot.imjang.entities.Member;
 import com.dobot.imjang.service.MemberService;
 
 @RestController
@@ -20,7 +22,9 @@ public class MemberController {
   }
 
   @PostMapping(path = "/signup")
-  public ResponseEntity<String> signUp(@RequestBody @Validated MemberSignUpRequest memberSignUpRequest) {
-    return ResponseEntity.ok().body(this.memberService.createMember(memberSignUpRequest));
+  public ResponseEntity<CreateMemberResponse> signUp(@RequestBody @Validated MemberSignUpRequest memberSignUpRequest) {
+    Member createdMember = this.memberService.createMember(memberSignUpRequest);
+    CreateMemberResponse response = new CreateMemberResponse(createdMember.getId());
+    return ResponseEntity.ok().body(response);
   }
 }
