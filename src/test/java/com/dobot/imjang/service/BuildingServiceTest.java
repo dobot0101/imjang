@@ -12,8 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.dobot.imjang.dtos.BuildingRequest;
-import com.dobot.imjang.entities.Building;
+import com.dobot.imjang.domain.building.dtos.BuildingRequest;
+import com.dobot.imjang.domain.building.entities.Building;
+import com.dobot.imjang.domain.building.services.BuildingService;
 
 @SpringBootTest
 @Transactional
