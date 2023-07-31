@@ -1,4 +1,4 @@
-package com.dobot.imjang.exception;
+package com.dobot.imjang.domain.common.exceptions;
 
 // Custom 예외 클래스 정의
 public class DuplicateLocationException extends RuntimeException {

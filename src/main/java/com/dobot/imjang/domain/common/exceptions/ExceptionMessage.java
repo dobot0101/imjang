@@ -1,4 +1,4 @@
-package com.dobot.imjang.exception;
+package com.dobot.imjang.domain.common.exceptions;
 
 public enum ExceptionMessage {
     BUILDING_NOT_FOUND("빌딩이 존재하지 않습니다."),

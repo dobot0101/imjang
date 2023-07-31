@@ -1,4 +1,4 @@
-package com.dobot.imjang.exception;
+package com.dobot.imjang.domain.common.exceptions;
 
 public class NotFoundException extends RuntimeException {
   public NotFoundException(String message) {
