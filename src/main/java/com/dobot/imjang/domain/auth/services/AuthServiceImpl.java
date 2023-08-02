@@ -11,15 +11,15 @@ import com.dobot.imjang.domain.common.exceptions.InvalidPasswordException;
 import com.dobot.imjang.domain.common.exceptions.NotFoundException;
 import com.dobot.imjang.domain.member.entities.Member;
 import com.dobot.imjang.domain.member.repositories.MemberRepository;
-import com.dobot.imjang.util.JwtUtil;
+import com.dobot.imjang.util.JwtProvider;
 
 @Service
 public class AuthServiceImpl implements AuthService {
   MemberRepository memberRepository;
   PasswordEncoder passwordEncoder;
-  JwtUtil jwtUtil;
+  JwtProvider jwtUtil;
 
-  public AuthServiceImpl(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+  public AuthServiceImpl(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtProvider jwtUtil) {
     this.memberRepository = memberRepository;
     this.passwordEncoder = passwordEncoder;
     this.jwtUtil = jwtUtil;

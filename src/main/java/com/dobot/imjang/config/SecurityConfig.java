@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-  private final String[] WHITE_LIST = { "/auth/login", "/member/signup" };
+  private final String[] allowedUrls = { "/auth/login", "/member/signup" };
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -38,7 +38,7 @@ public class SecurityConfig {
         .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests((authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-            .requestMatchers(this.WHITE_LIST).permitAll()
+            .requestMatchers(this.allowedUrls).permitAll()
             .anyRequest().authenticated()))
         .exceptionHandling(exceptionHandlingConfigurer -> {
           exceptionHandlingConfigurer

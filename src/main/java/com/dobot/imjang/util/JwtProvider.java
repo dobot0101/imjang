@@ -2,29 +2,37 @@ package com.dobot.imjang.util;
 
 import java.util.Date;
 
+import javax.crypto.spec.SecretKeySpec;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
-public class JwtUtil {
-  // 추후 application.yml 파일로 이동
-  private final String secret = "V4GQW2wdD9QoTPgAPQ/EvNQgzuzVSyP4fqj05mqWTwLYxMRJzGGsknXdsBIuMKVI";
-  private final long validityInMilliseconds = 60 * 60 * 1000; // 1 hour
+public class JwtProvider {
+  private final String secret;
+  private final long expiration;
+
+  public JwtProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration}") long expiration) {
+    this.secret = secret;
+    this.expiration = expiration;
+  }
 
   public String createToken(String username) {
     Date now = new Date();
-    Date validity = new Date(now.getTime() + validityInMilliseconds);
+    Date expirationDate = new Date(now.getTime() + expiration);
 
     return Jwts.builder()
         .setSubject(username)
         .setIssuedAt(now)
-        .setExpiration(validity)
-        .signWith(SignatureAlgorithm.HS256, secret)
+        .setExpiration(expirationDate)
+        // .signWith(SignatureAlgorithm.HS256, secret)
+        .signWith(new SecretKeySpec(secret.getBytes(), SignatureAlgorithm.HS256.getJcaName()))
         .compact();
+
   }
 
   public String getUsernameFromToken(String token) {
