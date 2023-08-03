@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,6 +25,11 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 public class SecurityConfig {
   private final String[] allowedUrls = { "/auth/login", "/member/signup" };
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+  public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+  }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -43,7 +49,7 @@ public class SecurityConfig {
         .exceptionHandling(exceptionHandlingConfigurer -> {
           exceptionHandlingConfigurer
               .accessDeniedHandler(this.accessDeniedHandler).authenticationEntryPoint(this.unauthorizedEntryPoint);
-        });
+        }).addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class);
     return httpSecurity.build();
   }
 

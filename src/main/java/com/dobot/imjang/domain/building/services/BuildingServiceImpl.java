@@ -44,6 +44,8 @@ public class BuildingServiceImpl implements BuildingService {
         validBuildingRequest(buildingRequest);
         Building building = new Building();
         building.setId(UUID.randomUUID());
+        building.setLongitude(buildingRequest.getLongitude());
+        building.setParkingSpace(buildingRequest.getParkingSpace());
         setBuildingInformation(buildingRequest, building);
         return buildingRepository.save(building);
     }
@@ -85,8 +87,6 @@ public class BuildingServiceImpl implements BuildingService {
         building.setEntranceStructure(buildingRequest.getEntranceStructure());
         building.setElevatorStatus(buildingRequest.getElevatorStatus());
         building.setLatitude(buildingRequest.getLatitude());
-        building.setLongitude(buildingRequest.getLongitude());
-        building.setParkingSpace(buildingRequest.getParkingSpace());
 
         // 학군
         List<SchoolType> schoolTypes = buildingRequest.getSchoolTypes();

@@ -7,7 +7,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -21,30 +20,21 @@ public class JwtProvider {
     this.expiration = expiration;
   }
 
-  public String createToken(String username) {
+  public String createToken(String memberId) {
     Date now = new Date();
     Date expirationDate = new Date(now.getTime() + expiration);
 
     return Jwts.builder()
-        .setSubject(username)
+        .setSubject(memberId)
         .setIssuedAt(now)
         .setExpiration(expirationDate)
-        // .signWith(SignatureAlgorithm.HS256, secret)
-        .signWith(new SecretKeySpec(secret.getBytes(), SignatureAlgorithm.HS256.getJcaName()))
+        .signWith(new SecretKeySpec(secret.getBytes(),
+            SignatureAlgorithm.HS256.getJcaName()))
         .compact();
 
   }
 
-  public String getUsernameFromToken(String token) {
-    return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-  }
-
-  public boolean validateToken(String token) {
-    try {
-      Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-      return true;
-    } catch (JwtException | IllegalArgumentException e) {
-      return false;
-    }
+  public String validateTokenAndGetSubject(String token) {
+    return Jwts.parserBuilder().setSigningKey(secret.getBytes()).build().parseClaimsJws(token).getBody().getSubject();
   }
 }

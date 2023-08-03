@@ -30,7 +30,7 @@ public class AuthServiceImpl implements AuthService {
     if (optional.isPresent()) {
       Member member = optional.get();
       if (this.passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
-        return jwtUtil.createToken(member.getName());
+        return jwtUtil.createToken(member.getId().toString());
       } else {
         throw new InvalidPasswordException(ExceptionMessage.INVALID_PASSWORD.getMessage());
       }
