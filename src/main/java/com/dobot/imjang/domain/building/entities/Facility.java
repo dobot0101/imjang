@@ -1,13 +1,10 @@
 package com.dobot.imjang.domain.building.entities;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.hibernate.annotations.CreationTimestamp;
-
 import com.dobot.imjang.domain.building.enums.FacilityType;
+import com.dobot.imjang.domain.common.entities.BaseTime;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,7 +15,7 @@ import lombok.Setter;
 
 @Entity
 @Setter
-public class Facility {
+public class Facility extends BaseTime {
     @Id
     private UUID id;
 
@@ -28,8 +25,4 @@ public class Facility {
     @ManyToOne()
     @JoinColumn(name = "building_id")
     private Building building;
-
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    LocalDateTime createdAt;
 }

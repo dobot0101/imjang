@@ -1,20 +1,18 @@
 package com.dobot.imjang.domain.unit.entities;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.dobot.imjang.domain.common.entities.BaseTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-
-import org.hibernate.annotations.CreationTimestamp;
-
 import lombok.Setter;
 
 @Setter
 @Entity
-public class UnitImage {
+public class UnitImage extends BaseTime {
   @Id
   UUID id;
 
@@ -23,8 +21,4 @@ public class UnitImage {
 
   @ManyToOne
   Unit unit;
-
-  @CreationTimestamp
-  @Column(nullable = false, updatable = false)
-  LocalDateTime createdDate;
 }

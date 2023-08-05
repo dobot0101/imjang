@@ -1,24 +1,20 @@
 package com.dobot.imjang.domain.unit.entities;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
+import com.dobot.imjang.domain.common.entities.BaseTime;
+import com.dobot.imjang.domain.unit.enums.TransactionType;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import com.dobot.imjang.domain.unit.enums.TransactionType;
-
 import lombok.Setter;
 
 @Entity
 @Setter
-public class UnitTransactionType {
+public class UnitTransactionType extends BaseTime {
   @Id
   UUID id;
 
@@ -28,7 +24,4 @@ public class UnitTransactionType {
   @Enumerated(EnumType.STRING)
   TransactionType transactionType;
 
-  @CreationTimestamp
-  @Column(nullable = false, updatable = false)
-  LocalDateTime createdAt;
 }
