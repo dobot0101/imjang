@@ -3,17 +3,6 @@ package com.dobot.imjang.domain.unit.entities;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
 import com.dobot.imjang.domain.building.entities.Building;
 import com.dobot.imjang.domain.common.entities.BaseTime;
 import com.dobot.imjang.domain.unit.enums.CondensationMoldLevel;
@@ -24,6 +13,17 @@ import com.dobot.imjang.domain.unit.enums.Ventilation;
 import com.dobot.imjang.domain.unit.enums.ViewQuality;
 import com.dobot.imjang.domain.unit.enums.WaterPressure;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,10 +48,6 @@ public class Unit extends BaseTime {
 
   // 메모
   String memo;
-
-  // 매매, 전세, 월세
-  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
-  List<UnitTransactionType> transactionTypes;
 
   // 거래 가격
   Double transactionPrice;
@@ -88,8 +84,13 @@ public class Unit extends BaseTime {
   LeakStatus leakStatus;
 
   @ManyToOne()
+  @JoinColumn(name = "building_id")
   Building building;
 
-  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   List<UnitImage> images;
+
+  // 매매, 전세, 월세
+  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  List<UnitTransactionType> transactionTypes;
 }

@@ -1,6 +1,5 @@
 package com.dobot.imjang.domain.member.services;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
