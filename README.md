@@ -6,12 +6,15 @@
 
 - Java 17
 - Spring Boot 3.1.2
-- DPostgresql
+- Postgresql
 - Spring Data Jpa, Spring Security, Spring Validation 등
+- AWS S3
 
 # 주요 기능
-- 부동산 임장 정보 관리 (학군, 교통, 곰팡이, 결로 등)
-- 회원가입/로그인 및 인증
+
+- 부동산 임장 정보 저장, 조회, 삭제
+- Spring Security를 사용한 JWT 인증 및 인가
+- AWS S3 파일 업로드
 
 # ERD
 

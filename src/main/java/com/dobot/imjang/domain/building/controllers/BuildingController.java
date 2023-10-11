@@ -20,6 +20,8 @@ import com.dobot.imjang.domain.building.dtos.BuildingRequest;
 import com.dobot.imjang.domain.building.entities.Building;
 import com.dobot.imjang.domain.building.services.BuildingService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/building")
 public class BuildingController {
@@ -41,7 +43,7 @@ public class BuildingController {
 
   @PostMapping("")
   public ResponseEntity<Map<String, String>> createBuilding(
-      @RequestBody @Validated BuildingRequest buildingCreateRequest) {
+      @RequestBody @Valid BuildingRequest buildingCreateRequest) {
     Building building = buildingService.createBuilding(buildingCreateRequest);
     Map<String, String> response = new HashMap<String, String>();
     response.put("savedBuildingId", building.getId().toString());
