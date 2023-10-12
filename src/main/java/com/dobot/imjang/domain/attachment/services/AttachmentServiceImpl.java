@@ -1,4 +1,4 @@
-package com.dobot.imjang.domain.media.services;
+package com.dobot.imjang.domain.attachment.services;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,24 +15,24 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.dobot.imjang.domain.media.entities.Media;
-import com.dobot.imjang.domain.media.repositories.MediaRepository;
+import com.dobot.imjang.domain.attachment.entities.Attachment;
+import com.dobot.imjang.domain.attachment.repositories.AttachmentRepository;
 
 @Service
-public class MediaServiceImpl implements MediaService {
+public class AttachmentServiceImpl implements AttachmentService {
 
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
   private final AmazonS3 amazonS3;
-  private final MediaRepository mediaRepository;
+  private final AttachmentRepository attachmentRepository;
 
-  public MediaServiceImpl(AmazonS3 amazonS3, MediaRepository mediaRepository) {
+  public AttachmentServiceImpl(AmazonS3 amazonS3, AttachmentRepository attachmentRepository) {
     this.amazonS3 = amazonS3;
-    this.mediaRepository = mediaRepository;
+    this.attachmentRepository = attachmentRepository;
   }
 
   @Override
-  public Media uploadFile(MultipartFile multipartFile) {
+  public Attachment uploadFile(MultipartFile multipartFile) {
     String originalFilename = multipartFile.getOriginalFilename();
     String uploadFilename = getUploadFilename(originalFilename);
 
@@ -52,9 +52,9 @@ public class MediaServiceImpl implements MediaService {
     // 접근가능한 URL 가져오기
     String mediaUrl = amazonS3.getUrl(bucket, uploadFilename).toString();
 
-    Media media = Media.builder().id(UUID.randomUUID()).fileType(multipartFile.getContentType())
+    Attachment media = Attachment.builder().id(UUID.randomUUID()).fileType(multipartFile.getContentType())
         .mediaUrl(mediaUrl).originalFilename(originalFilename).build();
-    mediaRepository.save(media);
+    attachmentRepository.save(media);
 
     return media;
   }

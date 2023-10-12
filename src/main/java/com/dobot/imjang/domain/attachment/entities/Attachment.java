@@ -1,4 +1,4 @@
-package com.dobot.imjang.domain.media.entities;
+package com.dobot.imjang.domain.attachment.entities;
 
 import java.util.UUID;
 
@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Media extends BaseTime {
+public class Attachment extends BaseTime {
   @Builder
-  public Media(UUID id, String originalFilename, String fileType, String mediaUrl) {
+  public Attachment(UUID id, String originalFilename, String fileType, String mediaUrl) {
     this.id = id;
     this.originalFilename = originalFilename;
     this.fileType = fileType;

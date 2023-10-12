@@ -1,4 +1,4 @@
-package com.dobot.imjang.domain.media.controllers;
+package com.dobot.imjang.domain.attachment.controllers;
 
 import java.io.IOException;
 
@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dobot.imjang.domain.media.entities.Media;
-import com.dobot.imjang.domain.media.services.MediaService;
+import com.dobot.imjang.domain.attachment.entities.Attachment;
+import com.dobot.imjang.domain.attachment.services.AttachmentService;
 
 @Controller
-class MediaController {
-  private final MediaService mediaService;
+class AttachmentController {
+  private final AttachmentService attahmentService;
 
-  public MediaController(MediaService mediaService) {
-    this.mediaService = mediaService;
+  public AttachmentController(AttachmentService attachmentService) {
+    this.attahmentService = attachmentService;
   }
 
   @PostMapping("/upload")
@@ -26,8 +26,8 @@ class MediaController {
     }
 
     try {
-      Media media = this.mediaService.uploadFile(file);
-      return ResponseEntity.ok(media.getMediaUrl());
+      Attachment attachment = this.attahmentService.uploadFile(file);
+      return ResponseEntity.ok(attachment.getMediaUrl());
     } catch (Exception e) {
       e.printStackTrace();
       return ResponseEntity.status(500).body("File upload failed");
