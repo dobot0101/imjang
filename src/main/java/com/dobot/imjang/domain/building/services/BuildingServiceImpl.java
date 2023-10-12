@@ -16,9 +16,8 @@ import com.dobot.imjang.domain.building.enums.FacilityType;
 import com.dobot.imjang.domain.building.enums.SchoolType;
 import com.dobot.imjang.domain.building.enums.TransportationType;
 import com.dobot.imjang.domain.building.repositories.BuildingRepository;
-import com.dobot.imjang.domain.common.exceptions.DuplicateLocationException;
-import com.dobot.imjang.domain.common.exceptions.ExceptionMessage;
-import com.dobot.imjang.domain.common.exceptions.NotFoundException;
+import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ErrorCode;
 
 @Service
 public class BuildingServiceImpl implements BuildingService {
@@ -35,7 +34,7 @@ public class BuildingServiceImpl implements BuildingService {
     public Building getBuildingById(UUID id) {
         Optional<Building> optional = buildingRepository.findById(id);
         if (!optional.isPresent()) {
-            throw new NotFoundException(ExceptionMessage.BUILDING_NOT_FOUND.getMessage());
+            throw new CustomException(ErrorCode.BUILDING_NOT_FOUND);
         }
         return optional.get();
     }
@@ -50,7 +49,7 @@ public class BuildingServiceImpl implements BuildingService {
         return buildingRepository.save(building);
     }
 
-    private void validBuildingRequest(BuildingRequest buildingRequest) throws Error {
+    private void validBuildingRequest(BuildingRequest buildingRequest) {
         isDuplicatedLocation(buildingRequest);
     }
 
@@ -61,14 +60,15 @@ public class BuildingServiceImpl implements BuildingService {
         List<Building> existingBuildings = this.buildingRepository.findByLatitudeAndLongitude(latitude, longitude);
 
         if (existingBuildings.size() > 0) {
-            throw new DuplicateLocationException(Double.toString(latitude), Double.toString(longitude));
+            throw new CustomException(ErrorCode.DUPLICATE_LOCATION,
+                    "좌표 중복 에러 [" + latitude + ", " + longitude + "]");
         }
     }
 
     public Building updateBuilding(UUID id, BuildingRequest buildingRequest) {
         Optional<Building> optional = buildingRepository.findById(id);
         if (!optional.isPresent()) {
-            throw new NotFoundException(ExceptionMessage.BUILDING_NOT_FOUND.getMessage());
+            throw new CustomException(ErrorCode.BUILDING_NOT_FOUND);
         }
 
         Building building = optional.get();

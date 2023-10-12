@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import jakarta.transaction.Transactional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.dobot.imjang.domain.building.dtos.BuildingRequest;
 import com.dobot.imjang.domain.building.entities.Building;
 import com.dobot.imjang.domain.building.services.BuildingService;
-import com.dobot.imjang.domain.common.exceptions.NotFoundException;
+import com.dobot.imjang.domain.common.exception.CustomException;
+
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @Transactional
@@ -52,7 +52,7 @@ public class BuildingServiceTest {
     Building building = buildingService.createBuilding(buildingCreateRequest);
     buildingService.deleteBuilding(building.getId());
 
-    assertThrows(NotFoundException.class, () -> {
+    assertThrows(CustomException.class, () -> {
       buildingService.getBuildingById(building.getId());
     });
   }

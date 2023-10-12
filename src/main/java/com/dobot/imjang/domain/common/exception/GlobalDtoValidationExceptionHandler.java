@@ -1,10 +1,9 @@
-package com.dobot.imjang.domain.common.exceptions;
+package com.dobot.imjang.domain.common.exception;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalDtoValidationExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> dtoValidation(final MethodArgumentNotValidException e) {
+  public ResponseEntity<ExceptionDto> dtoValidation(final MethodArgumentNotValidException e) {
     Map<String, String> errors = new HashMap<>();
     e.getBindingResult().getAllErrors().forEach((error) -> {
       String fieldName = ((FieldError) error).getField();
@@ -22,13 +21,10 @@ public class GlobalDtoValidationExceptionHandler {
       errors.put(fieldName, errorMessage);
     });
 
-    ErrorResponse errorResponse = new ErrorResponse();
-    errorResponse.setMessage("Invalid DTO!");
-    errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
-    errorResponse.setTimestamp(LocalDateTime.now());
-    errorResponse.setErrorData(errors);
+    ExceptionDto exceptionDto = ExceptionDto.builder().message("Invalid Dto!")
+        .timestamp(LocalDateTime.now()).errorData(errors).build();
 
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(errorResponse);
+    return ResponseEntity.status(exceptionDto.getErrorCode().getStatus())
+        .body(exceptionDto);
   }
 }

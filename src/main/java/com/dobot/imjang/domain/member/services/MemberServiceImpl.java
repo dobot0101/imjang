@@ -5,7 +5,8 @@ import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.dobot.imjang.domain.common.exceptions.NotFoundException;
+import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.dtos.MemberSignUpRequest;
 import com.dobot.imjang.domain.member.entities.Member;
 import com.dobot.imjang.domain.member.repositories.MemberRepository;
@@ -28,6 +29,6 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public Member getMemberById(UUID id) {
     return this.memberRepository.findById(id.toString())
-        .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다. 아이디: " + id));
+        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, "회원을 찾을 수 없습니다. 아이디: " + id));
   }
 }

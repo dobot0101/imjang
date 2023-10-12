@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import com.dobot.imjang.domain.building.entities.Building;
 import com.dobot.imjang.domain.building.repositories.BuildingRepository;
-import com.dobot.imjang.domain.common.exceptions.ExceptionMessage;
-import com.dobot.imjang.domain.common.exceptions.NotFoundException;
+import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.unit.dtos.UnitRequest;
 import com.dobot.imjang.domain.unit.entities.Unit;
 import com.dobot.imjang.domain.unit.entities.UnitImage;
@@ -32,7 +32,7 @@ public class UnitServiceImpl implements UnitService {
   public Unit createUnit(UnitRequest unitRequest) {
     Optional<Building> optional = this.buildingRepository.findById(unitRequest.getBuidlingId());
     if (optional.isEmpty()) {
-      throw new NotFoundException(ExceptionMessage.BUILDING_NOT_FOUND.getMessage());
+      throw new CustomException(ErrorCode.BUILDING_NOT_FOUND);
     }
 
     Unit unit = new Unit();
@@ -43,7 +43,7 @@ public class UnitServiceImpl implements UnitService {
   public Unit updateUnit(UUID id, UnitRequest unitRequest) {
     Optional<Unit> optional = this.unitRepository.findById(id);
     if (optional.isEmpty()) {
-      throw new NotFoundException(ExceptionMessage.UNIT_NOT_FOUND.getMessage());
+      throw new CustomException(ErrorCode.UNIT_NOT_FOUND);
     }
 
     Unit unit = optional.get();

@@ -6,9 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.dobot.imjang.domain.auth.dtos.LoginRequest;
-import com.dobot.imjang.domain.common.exceptions.ExceptionMessage;
-import com.dobot.imjang.domain.common.exceptions.InvalidPasswordException;
-import com.dobot.imjang.domain.common.exceptions.NotFoundException;
+import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.entities.Member;
 import com.dobot.imjang.domain.member.repositories.MemberRepository;
 import com.dobot.imjang.util.JwtProvider;
@@ -32,10 +31,10 @@ public class AuthServiceImpl implements AuthService {
       if (this.passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
         return jwtUtil.createToken(member.getId().toString());
       } else {
-        throw new InvalidPasswordException(ExceptionMessage.INVALID_PASSWORD.getMessage());
+        throw new CustomException(ErrorCode.INVALID_PASSWORD);
       }
     } else {
-      throw new NotFoundException(ExceptionMessage.MEMBER_NOT_FOUND.getMessage());
+      throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
     }
   }
 }
