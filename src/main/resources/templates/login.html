@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8" />
+    <title>로그인</title>
+  </head>
+  <body>
+    <h2>로그인</h2>
+    <form
+      id="loginForm"
+      th:action="@{/auth/login}"
+      method="post"
+      th:object="${loginRequestDto}"
+    >
+      <label for="email">이메일:</label>
+      <input type="text" id="email" name="email" th:field="*{email}" required />
+      <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+      <br />
+      <label for="password">비밀번호:</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        th:field="*{password}"
+        required
+      />
+      <span
+        th:if="${#fields.hasErrors('password')}"
+        th:errors="*{password}"
+      ></span>
+      <br />
+      <button type="submit">로그인</button>
+    </form>
+    <script>
+      // 폼 제출 이벤트 처리
+      $("#loginForm").submit(function (event) {
+        event.preventDefault(); // 폼 제출 동작 중지
+        var formData = $(this).serialize(); // 폼 데이터 직렬화
+
+        // 로그인 API로 POST 요청 보내기
+        $.ajax({
+          type: "POST",
+          url: "/auth/login", // API 엔드포인트 URL
+          dataType: "json",
+          data: formData,
+          success: function (data) {
+            if (data.token) {
+              localStorage.setItem("token", data.token);
+            }
+
+            const userInfo = {};
+            if (data.name) {
+              userInfo.name = data.name;
+            }
+
+            if (data.email) {
+              userInfo.email = data.email;
+            }
+
+            if (Object.keys(userInfo).length > 0) {
+              localStorage.setItem("userInfo", JSON.stringify(userInfo));
+            }
+
+            window.location.href = "/";
+          },
+          error: function (xhr, status, error) {
+            // 로그인 실패 시 동작 (예: 에러 메시지 표시)
+            console.error("로그인 실패:", error);
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

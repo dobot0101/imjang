@@ -1,19 +1,5 @@
-version: "3.1"
-
 services:
-  db:
-    image: postgres:13.11
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-    ports:
-      - 5433:5432
-    volumes:
-      - db_data:/var/lib/postgresql/data
-
   app:
-    restart: always
     build:
       context: .
       dockerfile: Dockerfile
@@ -25,7 +11,17 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create
+  db:
+    image: postgres:13.11
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - 5433:5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
 volumes:
   db_data:

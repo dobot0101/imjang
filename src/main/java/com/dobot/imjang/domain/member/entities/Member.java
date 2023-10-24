@@ -32,6 +32,7 @@ public class Member extends BaseTime {
   @Id
   UUID id;
 
+  @Getter
   @Column(length = 50, nullable = false)
   String email;
 

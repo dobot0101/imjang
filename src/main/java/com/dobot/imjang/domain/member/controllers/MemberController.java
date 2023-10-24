@@ -1,18 +1,18 @@
 package com.dobot.imjang.domain.member.controllers;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.dobot.imjang.domain.member.dtos.CreateMemberResponse;
-import com.dobot.imjang.domain.member.dtos.MemberSignUpRequest;
-import com.dobot.imjang.domain.member.entities.Member;
+import com.dobot.imjang.domain.member.dtos.SignUpRequestDto;
 import com.dobot.imjang.domain.member.services.MemberService;
 
-@RestController
+import jakarta.validation.Valid;
+
+@Controller
 @RequestMapping("/member")
 public class MemberController {
   private final MemberService memberService;
@@ -21,10 +21,18 @@ public class MemberController {
     this.memberService = memberService;
   }
 
-  @PostMapping(path = "/signup")
-  public ResponseEntity<CreateMemberResponse> signUp(@RequestBody @Validated MemberSignUpRequest memberSignUpRequest) {
-    Member createdMember = this.memberService.createMember(memberSignUpRequest);
-    CreateMemberResponse response = new CreateMemberResponse(createdMember.getId());
-    return ResponseEntity.ok().body(response);
+  @PostMapping("/signup")
+  public String signup(@Valid SignUpRequestDto signUpRequestDto, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return "signup";
+    }
+    this.memberService.createMember(signUpRequestDto);
+    return "redirect:/auth/login";
+  }
+
+  @GetMapping("/signup")
+  public String showSignupForm(Model model) {
+    model.addAttribute("signUpRequestDto", new SignUpRequestDto());
+    return "signup";
   }
 }

@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-  private final String[] allowedUrls = { "/auth/login", "/member/signup" };
+  private final String[] allowedUrls = { "/auth/login", "/member/signup", "/" };
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
   public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -49,7 +49,9 @@ public class SecurityConfig {
         .exceptionHandling(exceptionHandlingConfigurer -> {
           exceptionHandlingConfigurer
               .accessDeniedHandler(this.accessDeniedHandler).authenticationEntryPoint(this.unauthorizedEntryPoint);
-        }).addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class);
+        })
+
+        .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class);
     return httpSecurity.build();
   }
 

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8" />
+    <title>홈</title>
+  </head>
+  <body>
+    <h2>홈</h2>
+    <span id="username"></span>님 안녕하세요!
+    <script>
+      $(document).ready(() => {
+        const userInfoStr = localStorage.getItem("userInfo");
+        if (userInfoStr) {
+          const userInfo = JSON.parse(userInfoStr);
+          if (userInfo.name) {
+            $("#username").text(userInfo.name);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
