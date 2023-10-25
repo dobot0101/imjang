@@ -2,13 +2,128 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+      charset="UTF-8"
+    />
     <title>홈</title>
+    <style>
+      /* 스타일링을 통해 지도를 화면에 꽉 채우도록 설정 */
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      #map {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
   </head>
   <body>
     <h2>홈</h2>
     <span id="email"></span>님 안녕하세요!
     <button type="button" id="logoutBtn">로그아웃</button>
+    <div id="map"></div>
+
+    <script
+      type="text/javascript"
+      src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=707dwqhvjo&callback=initMap"
+    ></script>
+    <script type="text/javascript">
+      var map = null;
+      var markers = [];
+      var infoWindow = new naver.maps.InfoWindow();
+
+      function initMap() {
+        map = new naver.maps.Map("map", {
+          center: new naver.maps.LatLng(37.3595704, 127.105399),
+          zoom: 10,
+        });
+
+        naver.maps.Event.addListener(map, "click", function (e) {
+          const infoExists = checkInfo();
+          addMarker(e.coord, infoExists);
+        });
+      }
+
+      function checkInfo() {
+        // 여기에 정보가 이미 등록되어 있는지 확인하는 코드를 작성
+        // 예를 들어, 서버에서 정보를 가져오거나 로컬 스토리지에 저장된 정보를 확인할 수 있습니다.
+        // 정보가 등록되었으면 true를 반환, 그렇지 않으면 false를 반환
+        return false; // 임의로 false를 반환하도록 설정
+      }
+
+      function addMarker(coord, infoExists) {
+        var marker = new naver.maps.Marker({
+          position: coord,
+          map: map,
+        });
+
+        markers.push(marker);
+
+        // 마커를 클릭했을 때 InfoWindow를 열고 "상세보기" 또는 "등록하기" 버튼을 표시
+        naver.maps.Event.addListener(marker, "click", function () {
+          var content = "<div>";
+          if (infoExists) {
+            content += '<button id="detailButton">상세보기</button>';
+          } else {
+            content += '<button id="registerButton">등록하기</button>';
+          }
+          content += '<button id="deleteMarker">삭제하기</button>';
+          content += "</div>";
+          infoWindow.setContent(content);
+          infoWindow.open(map, marker);
+
+          // "상세보기" 버튼 클릭 시 상세 정보 페이지로 이동
+          if (infoExists) {
+            document
+              .getElementById("detailButton")
+              .addEventListener("click", function () {
+                console.log("상세보기 버튼 클릭");
+                // 상세 정보 페이지로 이동하는 코드를 여기에 작성
+                // window.location.href = "detail_page.html";
+              });
+          }
+
+          // "등록하기" 버튼 클릭 시 정보 입력 페이지로 이동
+          if (!infoExists) {
+            document
+              .getElementById("registerButton")
+              .addEventListener("click", function () {
+                console.log("등록하기 버튼 클릭");
+                // 정보 입력 페이지로 이동하는 코드를 여기에 작성
+                // window.location.href = "info_input_page.html";
+              });
+          }
+
+          // "마커 삭제" 버튼 클릭 시 마커 삭제
+          document
+            .getElementById("deleteMarker")
+            .addEventListener("click", function () {
+              infoWindow.close(); // InfoWindow 닫기
+              removeMarker(marker); // 마커 삭제
+            });
+        });
+      }
+
+      function removeMarker(marker) {
+        var index = markers.indexOf(marker);
+        if (index > -1) {
+          markers.splice(index, 1);
+          marker.setMap(null); // 마커 지도에서 제거
+        }
+      }
+
+      window.navermap_authFailure = function () {
+        alert("네이버 지도 인증 실패");
+      };
+    </script>
+
     <script>
       $(document).ready(() => {
         const userInfoStr = localStorage.getItem("userInfo");
@@ -18,12 +133,13 @@
             $("#email").text(userInfo.email);
           }
         }
+
+        initMap();
       });
 
       $("#logoutBtn").on("click", () => {
         localStorage.clear();
         window.location.href = "/auth/login";
-        // window.location.href = "/";
       });
     </script>
   </body>
