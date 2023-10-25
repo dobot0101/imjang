@@ -1,4 +1,4 @@
-package com.dobot.imjang.domain.member.repositories;
+package com.dobot.imjang.domain.member.respositories;
 
 import java.util.Optional;
 import java.util.UUID;

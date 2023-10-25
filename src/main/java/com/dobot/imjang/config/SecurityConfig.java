@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,8 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.dobot.imjang.domain.auth.services.CustomUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
@@ -23,36 +26,41 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
   private final String[] allowedUrls = { "/auth/login", "/member/signup", "/" };
-  private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-  public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-  }
+  private final JwtAuthenticationFilter authenticationFilter;
+  private final CustomUserDetailsService userDetailsService;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     httpSecurity
-        .csrf(csrfCustomizer -> csrfCustomizer.disable())
-        .cors(corsCustomizer -> corsCustomizer.disable())
-
-        /**
-         * session을 사용하지 않고 매 요청마다 인증을 확인해야되는 JWT 방식을 사용하기 때문에 아래와 같이
-         * SessionCreationPolicy.STATELESS 설정
-         */
+        .csrf(customizer -> customizer.disable())
+        .cors(customizer -> customizer.disable())
+        .formLogin(customizer -> customizer.disable())
+        .httpBasic(customizer -> customizer.disable())
         .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests((authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-            .requestMatchers(this.allowedUrls).permitAll()
-            .anyRequest().authenticated()))
-        .exceptionHandling(exceptionHandlingConfigurer -> {
-          exceptionHandlingConfigurer
-              .accessDeniedHandler(this.accessDeniedHandler).authenticationEntryPoint(this.unauthorizedEntryPoint);
+        .authorizeHttpRequests((customizer -> customizer
+            .requestMatchers(this.allowedUrls)
+            .permitAll()
+            .anyRequest()
+            .authenticated()))
+        .exceptionHandling(customizer -> {
+          customizer
+              .accessDeniedHandler(this.accessDeniedHandler)
+              .authenticationEntryPoint(this.unauthorizedEntryPoint);
         })
-
-        .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class);
+        .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return httpSecurity.build();
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(HttpSecurity http,
+      BCryptPasswordEncoder bcryptPasswordEncoder) throws Exception {
+    AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
+    builder.userDetailsService(userDetailsService).passwordEncoder(bcryptPasswordEncoder);
+    return builder.build();
   }
 
   private final AuthenticationEntryPoint unauthorizedEntryPoint = (request, response, authException) -> {

@@ -7,16 +7,23 @@
   </head>
   <body>
     <h2>홈</h2>
-    <span id="username"></span>님 안녕하세요!
+    <span id="email"></span>님 안녕하세요!
+    <button type="button" id="logoutBtn">로그아웃</button>
     <script>
       $(document).ready(() => {
         const userInfoStr = localStorage.getItem("userInfo");
         if (userInfoStr) {
           const userInfo = JSON.parse(userInfoStr);
-          if (userInfo.name) {
-            $("#username").text(userInfo.name);
+          if (userInfo.email) {
+            $("#email").text(userInfo.email);
           }
         }
+      });
+
+      $("#logoutBtn").on("click", () => {
+        localStorage.clear();
+        window.location.href = "/auth/login";
+        // window.location.href = "/";
       });
     </script>
   </body>

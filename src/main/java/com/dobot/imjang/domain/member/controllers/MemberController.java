@@ -22,11 +22,11 @@ public class MemberController {
   }
 
   @PostMapping("/signup")
-  public String signup(@Valid SignUpRequestDto signUpRequestDto, BindingResult bindingResult) {
+  public String signup(@Valid SignUpRequestDto signUpRequestDto, BindingResult bindingResult) throws Exception {
     if (bindingResult.hasErrors()) {
       return "signup";
     }
-    this.memberService.createMember(signUpRequestDto);
+    this.memberService.signUp(signUpRequestDto);
     return "redirect:/auth/login";
   }
 

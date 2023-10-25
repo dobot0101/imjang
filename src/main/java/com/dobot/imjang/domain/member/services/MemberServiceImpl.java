@@ -9,9 +9,8 @@ import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.dtos.SignUpRequestDto;
 import com.dobot.imjang.domain.member.entities.Member;
-import com.dobot.imjang.domain.member.repositories.MemberRepository;
+import com.dobot.imjang.domain.member.respositories.MemberRepository;
 
-import jakarta.validation.ValidationException;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -23,12 +22,18 @@ public class MemberServiceImpl implements MemberService {
     this.passwordEncoder = passwordEncoder;
   }
 
-  public Member createMember(SignUpRequestDto memberSignUpRequest) {
-    if (!memberSignUpRequest.getPassword().equals(memberSignUpRequest.getConfirmPassword())) {
-      throw new ValidationException("비밀번호를 확인해주세요.");
+  @Override
+  public Member signUp(SignUpRequestDto signUpRequestDto) throws Exception {
+    if (memberRepository.findByEmail(signUpRequestDto.getEmail()).isPresent()) {
+      throw new Exception("이미 존재하는 이메일입니다.");
     }
-    Member savedMember = this.memberRepository.save(memberSignUpRequest.toEntity(this.passwordEncoder));
-    return savedMember;
+
+    if (!signUpRequestDto.getPassword().equals(signUpRequestDto.getConfirmPassword())) {
+      throw new Exception("비밀번호를 확인해주세요.");
+    }
+
+    Member member = this.memberRepository.save(signUpRequestDto.toEntity(this.passwordEncoder));
+    return member;
   }
 
   @Override

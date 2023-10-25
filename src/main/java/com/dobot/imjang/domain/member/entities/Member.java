@@ -9,6 +9,8 @@ import com.dobot.imjang.domain.common.entities.BaseTime;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
@@ -21,28 +23,33 @@ import lombok.NoArgsConstructor;
 public class Member extends BaseTime {
 
   @Builder
-  public Member(UUID id, String email, String password, String name) {
+  public Member(UUID id, String email, String password, String name, Role role) {
     this.id = id;
     this.email = email;
     this.password = password;
     this.name = name;
+    this.role = role;
   }
 
   @Getter
   @Id
-  UUID id;
+  private UUID id;
 
   @Getter
   @Column(length = 50, nullable = false)
-  String email;
+  private String email;
 
   @Getter
   @Column(length = 20, nullable = false)
-  String name;
+  private String name;
 
   @Getter
   @Column(length = 100, nullable = false)
-  String password;
+  private String password;
+
+  @Getter
+  @Enumerated(EnumType.STRING)
+  private Role role;
 
   @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)
   List<Building> buildings;

@@ -8,5 +8,5 @@ import com.dobot.imjang.domain.member.entities.Member;
 public interface MemberService {
   public Member getMemberById(UUID id);
 
-  public Member createMember(SignUpRequestDto memberSignUpRequest);
+  public Member signUp(SignUpRequestDto memberSignUpRequest) throws Exception;
 }

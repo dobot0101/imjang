@@ -6,18 +6,17 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.dobot.imjang.domain.building.enums.ElevatorStatus;
 import com.dobot.imjang.domain.building.enums.EntranceStructure;
 import com.dobot.imjang.domain.building.enums.FacilityType;
 import com.dobot.imjang.domain.building.enums.ParkingSpace;
+import com.dobot.imjang.domain.building.enums.ElevatorStatus;
 import com.dobot.imjang.domain.building.enums.SchoolType;
 import com.dobot.imjang.domain.building.enums.TransportationType;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Setter
