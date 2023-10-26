@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <meta charset="UTF-8" />
-    <title>로그인</title>
-  </head>
-  <body>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="layout/default_layout"
+>
+  <th:block layout:fragment="content">
     <h2>로그인</h2>
     <form
       id="loginForm"
@@ -60,12 +59,16 @@
 
             window.location.href = "/";
           },
-          error: function (xhr, status, error) {
+          // error: function (xhr, status, error) {
+          error: function (data) {
             // 로그인 실패 시 동작 (예: 에러 메시지 표시)
-            console.error("로그인 실패:", error);
+            console.error("로그인 실패");
+            if (data.responseJSON && data.responseJSON.message) {
+              alert(data.responseJSON.message);
+            }
           },
         });
       });
     </script>
-  </body>
+  </th:block>
 </html>

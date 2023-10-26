@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -42,10 +44,20 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(e.getErrorCode().getStatus()).body(exceptionDto);
   }
 
+  @ExceptionHandler(BadCredentialsException.class)
+  public ResponseEntity<ExceptionDto> handleCustomException(BadCredentialsException e) {
+    ExceptionDto exceptionDto = ExceptionDto.builder().message("인증에 실패했습니다.")
+        .timestamp(LocalDateTime.now()).build();
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionDto);
+  }
+
   // 그 외의 서버에서 발생하는 에러 핸들러
   @ExceptionHandler(RuntimeException.class)
-  public ResponseEntity<String> handleRuntimException(RuntimeException e) {
+  public ResponseEntity<ExceptionDto> handleRuntimException(RuntimeException e) {
     log.error(e.getMessage(), e);
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버에서 오류가 발생했습니다.");
+    ExceptionDto exceptionDto = ExceptionDto.builder().message("서버에서 오류가 발생했습니다.").timestamp(LocalDateTime.now())
+        .build();
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionDto);
   }
 }

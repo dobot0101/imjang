@@ -4,19 +4,16 @@ import java.time.LocalDateTime;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class ExceptionDto {
   private String message;
-  private ErrorCode errorCode;
-
-  public ErrorCode getErrorCode() {
-    return errorCode;
-  }
-
   private LocalDateTime timestamp;
   private Object errorData;
+  private ErrorCode errorCode;
 
   @Builder
   public ExceptionDto(String message, ErrorCode errorCode, LocalDateTime timestamp, Object errorData) {

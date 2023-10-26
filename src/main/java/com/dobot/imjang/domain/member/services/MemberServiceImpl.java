@@ -39,6 +39,6 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public Member getMemberById(UUID id) {
     return this.memberRepository.findById(id)
-        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, "회원을 찾을 수 없습니다. 아이디: " + id));
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND, "회원을 찾을 수 없습니다. 아이디: " + id));
   }
 }
