@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.dobot.imjang.domain.auth.services.CustomUserDetailsService;
+import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ErrorCode;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -71,14 +73,16 @@ public class JwtProvider {
       return true;
     } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
       log.info("잘못된 JWT 서명입니다.");
+      throw new CustomException(ErrorCode.JWT_NOT_VALID, "잘못된 JWT 서명입니다.");
     } catch (ExpiredJwtException e) {
       log.info("만료된 JWT 토큰입니다.");
+      throw new CustomException(ErrorCode.JWT_NOT_VALID, "만료된 JWT 토큰입니다.");
     } catch (UnsupportedJwtException e) {
       log.info("지원되지 않는 JWT 토큰입니다.");
+      throw new CustomException(ErrorCode.JWT_NOT_VALID, "지원되지 않는 JWT 토큰입니다.");
     } catch (IllegalArgumentException e) {
       log.info("JWT 토큰이 잘못되었습니다.");
+      throw new CustomException(ErrorCode.JWT_NOT_VALID, "JWT 토큰이 잘못되었습니다.");
     }
-    return false;
   }
-
 }
