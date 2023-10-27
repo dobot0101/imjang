@@ -7,18 +7,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.dobot.imjang.domain.auth.services.CustomUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
@@ -26,41 +22,51 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 public class SecurityConfig {
-  private final String[] allowedUrls = { "/auth/login", "/member/signup", "/" };
-  private final JwtAuthenticationFilter authenticationFilter;
-  private final CustomUserDetailsService userDetailsService;
+  private final String[] allowedUrls = { "/auth/login", "/member/signup" };
+  // private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     httpSecurity
         .csrf(customizer -> customizer.disable())
         .cors(customizer -> customizer.disable())
-        .formLogin(customizer -> customizer.disable())
+        .formLogin(
+            customizer -> customizer
+                .loginPage("/auth/login")
+                .defaultSuccessUrl("/")
+                .loginProcessingUrl("/auth/login")
+                .failureUrl("/auth/login")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .permitAll())
+        .logout(
+            customizer -> customizer
+                .logoutUrl("/auth/logout")
+                .logoutSuccessUrl("/auth/login")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID"))
         .httpBasic(customizer -> customizer.disable())
-        .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests((customizer -> customizer
             .requestMatchers(this.allowedUrls)
             .permitAll()
             .anyRequest()
-            .authenticated()))
-        .exceptionHandling(customizer -> {
-          customizer
-              .accessDeniedHandler(this.accessDeniedHandler)
-              .authenticationEntryPoint(this.unauthorizedEntryPoint);
-        })
-        .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .authenticated()));
+    // .exceptionHandling(customizer -> {
+    // customizer
+    // .accessDeniedHandler(this.accessDeniedHandler)
+    // .authenticationEntryPoint(this.unauthorizedEntryPoint);
+    // });
+    // .addFilterBefore(jwtAuthenticationFilter,
+    // UsernamePasswordAuthenticationFilter.class);
     return httpSecurity.build();
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(HttpSecurity http,
-      BCryptPasswordEncoder bcryptPasswordEncoder) throws Exception {
-    AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-    builder.userDetailsService(userDetailsService).passwordEncoder(bcryptPasswordEncoder);
-    return builder.build();
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+      throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
   }
 
   private final AuthenticationEntryPoint unauthorizedEntryPoint = (request, response, authException) -> {
@@ -95,7 +101,7 @@ public class SecurityConfig {
   }
 
   @Bean
-  public PasswordEncoder passwordEncoder() {
+  public BCryptPasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 }

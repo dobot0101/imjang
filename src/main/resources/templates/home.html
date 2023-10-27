@@ -6,7 +6,7 @@
 >
   <th:block layout:fragment="content">
     <h2>홈</h2>
-    <span id="email"></span>님 안녕하세요!
+    <span id="email" th:text="${username}"></span>님 안녕하세요!
     <button type="button" id="logoutBtn">로그아웃</button>
     <div id="map"></div>
 
@@ -72,12 +72,11 @@
 
           // "등록하기" 버튼 클릭 시 정보 입력 페이지로 이동
           if (!infoExists) {
+            $("#registerButton").on("click", function () {});
             document
               .getElementById("registerButton")
               .addEventListener("click", function () {
-                console.log("등록하기 버튼 클릭");
-                // 정보 입력 페이지로 이동하는 코드를 여기에 작성
-                // window.location.href = "info_input_page.html";
+                moveToRegisterPage();
               });
           }
 
@@ -88,6 +87,31 @@
               infoWindow.close(); // InfoWindow 닫기
               removeMarker(marker); // 마커 삭제
             });
+        });
+      }
+
+      function moveToRegisterPage() {
+        const jwtToken = localStorage.getItem("jwtToken");
+        if (!jwtToken) {
+          console.error(`Jwt doesn't exist`);
+          return;
+        }
+
+        $.ajax({
+          type: "GET",
+          url: "/building/register",
+          headers: {
+            Authorization: "Bearer " + jwtToken, // JWT 토큰을 Authorization 헤더에 추가
+          },
+          success: function (response) {
+            console.log(response);
+            // 성공 시 이동 로직 또는 페이지 갱신 등을 수행합니다.
+            // window.location.href = "/destination-page"; // 페이지 이동 예시
+          },
+          error: function () {
+            // 오류 처리 로직
+            console.log("등록하기 페이지 이동 실패");
+          },
         });
       }
 
@@ -106,20 +130,11 @@
 
     <script>
       $(document).ready(() => {
-        const userInfoStr = localStorage.getItem("userInfo");
-        if (userInfoStr) {
-          const userInfo = JSON.parse(userInfoStr);
-          if (userInfo.email) {
-            $("#email").text(userInfo.email);
-          }
-        }
-
         initMap();
       });
 
       $("#logoutBtn").on("click", () => {
-        localStorage.clear();
-        window.location.href = "/auth/login";
+        window.location.href = "/auth/logout";
       });
     </script>
   </th:block>

@@ -13,6 +13,7 @@ public class ExceptionDto {
   private String message;
   private LocalDateTime timestamp;
   private Object errorData;
+
   private ErrorCode errorCode;
 
   @Builder

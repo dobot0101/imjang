@@ -11,16 +11,13 @@ import com.dobot.imjang.domain.member.dtos.SignUpRequestDto;
 import com.dobot.imjang.domain.member.entities.Member;
 import com.dobot.imjang.domain.member.respositories.MemberRepository;
 
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
   private final MemberRepository memberRepository;
-  private final PasswordEncoder passwordEncoder;
-
-  public MemberServiceImpl(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
-    this.memberRepository = memberRepository;
-    this.passwordEncoder = passwordEncoder;
-  }
+  private final PasswordEncoder bcryptPasswordEncoder;
 
   @Override
   public Member signUp(SignUpRequestDto signUpRequestDto) throws Exception {
@@ -32,8 +29,8 @@ public class MemberServiceImpl implements MemberService {
       throw new Exception("비밀번호를 확인해주세요.");
     }
 
-    Member member = this.memberRepository.save(signUpRequestDto.toEntity(this.passwordEncoder));
-    return member;
+    Member member = signUpRequestDto.toEntity(this.bcryptPasswordEncoder);
+    return this.memberRepository.save(member);
   }
 
   @Override

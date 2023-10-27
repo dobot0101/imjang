@@ -5,10 +5,12 @@ import java.util.Date;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.dobot.imjang.domain.auth.services.CustomUserDetailsService;
 import com.dobot.imjang.domain.common.exception.CustomException;
@@ -20,6 +22,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -36,35 +39,29 @@ public class JwtProvider {
     this.userDetailsService = userDetailsService;
   }
 
-  public String generateToken(UserDetails user) {
+  public String generateToken(UserDetails userDetails) {
     Date now = new Date();
     Date expirationDate = new Date(now.getTime() + expiration);
-    Claims claims = Jwts.claims();
-    claims.put("roles", user.getAuthorities());
 
-    return Jwts.builder()
-        .setSubject(user.getUsername())
+    Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
+    claims.put("roles", userDetails.getAuthorities());
+
+    String jwt = Jwts.builder()
         .setClaims(claims)
         .setIssuedAt(now)
         .setExpiration(expirationDate)
         .signWith(new SecretKeySpec(secret.getBytes(),
             SignatureAlgorithm.HS256.getJcaName()))
         .compact();
+
+    return jwt;
   }
 
   public Authentication getAuthentication(String token) {
-    UserDetails userDetails = userDetailsService.loadUserByUsername(this.extractMemberId(token));
+    String username = Jwts.parserBuilder().setSigningKey(secret.getBytes()).build().parseClaimsJws(token).getBody()
+        .getSubject();
+    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
     return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), "", userDetails.getAuthorities());
-  }
-
-  public String extractMemberId(String token) {
-    return Jwts.parserBuilder().setSigningKey(secret.getBytes()).build().parseClaimsJwt(token).getBody().getSubject();
-  }
-
-  public boolean isTokenExpired(String token) {
-    Date expiration = Jwts.parserBuilder().setSigningKey(secret.getBytes()).build().parseClaimsJws(token).getBody()
-        .getExpiration();
-    return expiration.before(new Date());
   }
 
   public boolean validateToken(String token) {
@@ -84,5 +81,13 @@ public class JwtProvider {
       log.info("JWT 토큰이 잘못되었습니다.");
       throw new CustomException(ErrorCode.JWT_NOT_VALID, "JWT 토큰이 잘못되었습니다.");
     }
+  }
+
+  public String resolveToken(HttpServletRequest request) {
+    String jwt = request.getHeader(HttpHeaders.AUTHORIZATION);
+    if (StringUtils.hasText(jwt) && jwt.startsWith("Bearer ")) {
+      return jwt.substring(7);
+    }
+    return null;
   }
 }

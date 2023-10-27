@@ -31,44 +31,5 @@
       <br />
       <button type="submit">로그인</button>
     </form>
-    <script>
-      // 폼 제출 이벤트 처리
-      $("#loginForm").submit(function (event) {
-        event.preventDefault(); // 폼 제출 동작 중지
-        var formData = $(this).serialize(); // 폼 데이터 직렬화
-
-        // 로그인 API로 POST 요청 보내기
-        $.ajax({
-          type: "POST",
-          url: "/auth/login", // API 엔드포인트 URL
-          dataType: "json",
-          data: formData,
-          success: function (data) {
-            if (data.token) {
-              localStorage.setItem("token", data.token);
-            }
-
-            const userInfo = {};
-            if (data.email) {
-              userInfo.email = data.email;
-            }
-
-            if (Object.keys(userInfo).length > 0) {
-              localStorage.setItem("userInfo", JSON.stringify(userInfo));
-            }
-
-            window.location.href = "/";
-          },
-          // error: function (xhr, status, error) {
-          error: function (data) {
-            // 로그인 실패 시 동작 (예: 에러 메시지 표시)
-            console.error("로그인 실패");
-            if (data.responseJSON && data.responseJSON.message) {
-              alert(data.responseJSON.message);
-            }
-          },
-        });
-      });
-    </script>
   </th:block>
 </html>
