@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dobot.imjang.domain.building.dtos.BuildingRequest;
+import com.dobot.imjang.domain.building.dtos.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.entities.Building;
 import com.dobot.imjang.domain.building.services.BuildingService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/building")
+@RequestMapping("/api/building")
 public class BuildingController {
   private final BuildingService buildingService;
 
@@ -43,8 +43,8 @@ public class BuildingController {
 
   @PostMapping("")
   public ResponseEntity<Map<String, String>> createBuilding(
-      @RequestBody @Valid BuildingRequest buildingCreateRequest) {
-    Building building = buildingService.createBuilding(buildingCreateRequest);
+      @RequestBody @Valid BuildingCreateOrUpdateRequestDto buildingCreateOrUpdateRequestDto) {
+    Building building = buildingService.createBuilding(buildingCreateOrUpdateRequestDto);
     Map<String, String> response = new HashMap<String, String>();
     response.put("savedBuildingId", building.getId().toString());
     return ResponseEntity.ok(response);
@@ -52,8 +52,8 @@ public class BuildingController {
 
   @PutMapping("/{id}")
   public ResponseEntity<Map<String, String>> updateBuilding(@PathVariable("id") UUID id,
-      @RequestBody @Validated BuildingRequest buildingUpdateRequest) {
-    Building building = buildingService.updateBuilding(id, buildingUpdateRequest);
+      @RequestBody @Validated BuildingCreateOrUpdateRequestDto bulidingCreateOrUpdateDto) {
+    Building building = buildingService.updateBuilding(id, bulidingCreateOrUpdateDto);
     Map<String, String> response = new HashMap<String, String>();
     response.put("updatedBuildingId", building.getId().toString());
     return ResponseEntity.ok(response);
@@ -62,5 +62,10 @@ public class BuildingController {
   @DeleteMapping("/{id}")
   public void deleteBuilding(@PathVariable("id") UUID id) {
     buildingService.deleteBuilding(id);
+  }
+
+  @GetMapping("/register")
+  public String showBuildingRegisterForm() {
+    return "create-building";
   }
 }

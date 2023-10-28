@@ -51,7 +51,7 @@ public class Building extends BaseTime {
   @Column(nullable = false, length = 100)
   String address;
 
-  // 엘리베이터(있음, 없음, 지하주차장 연결)
+  // 엘리베이터(있음, 없음)
   @Enumerated(EnumType.STRING)
   ElevatorStatus elevatorStatus;
 

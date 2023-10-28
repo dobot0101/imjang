@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.dobot.imjang.domain.building.dtos.BuildingRequest;
+import com.dobot.imjang.domain.building.dtos.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.entities.Building;
 import com.dobot.imjang.domain.building.entities.Facility;
 import com.dobot.imjang.domain.building.entities.SchoolDistrict;
@@ -39,7 +39,7 @@ public class BuildingServiceImpl implements BuildingService {
         return optional.get();
     }
 
-    public Building createBuilding(BuildingRequest buildingRequest) {
+    public Building createBuilding(BuildingCreateOrUpdateRequestDto buildingRequest) {
         validBuildingRequest(buildingRequest);
         Building building = new Building();
         building.setId(UUID.randomUUID());
@@ -49,11 +49,11 @@ public class BuildingServiceImpl implements BuildingService {
         return buildingRepository.save(building);
     }
 
-    private void validBuildingRequest(BuildingRequest buildingRequest) {
+    private void validBuildingRequest(BuildingCreateOrUpdateRequestDto buildingRequest) {
         isDuplicatedLocation(buildingRequest);
     }
 
-    private void isDuplicatedLocation(BuildingRequest buildingRequest) {
+    private void isDuplicatedLocation(BuildingCreateOrUpdateRequestDto buildingRequest) {
         double latitude = buildingRequest.getLatitude();
         double longitude = buildingRequest.getLongitude();
 
@@ -65,7 +65,7 @@ public class BuildingServiceImpl implements BuildingService {
         }
     }
 
-    public Building updateBuilding(UUID id, BuildingRequest buildingRequest) {
+    public Building updateBuilding(UUID id, BuildingCreateOrUpdateRequestDto buildingRequest) {
         Optional<Building> optional = buildingRepository.findById(id);
         if (!optional.isPresent()) {
             throw new CustomException(ErrorCode.BUILDING_NOT_FOUND);
@@ -81,7 +81,7 @@ public class BuildingServiceImpl implements BuildingService {
         buildingRepository.deleteById(id);
     }
 
-    private Building setBuildingInformation(BuildingRequest buildingRequest, Building building) {
+    private Building setBuildingInformation(BuildingCreateOrUpdateRequestDto buildingRequest, Building building) {
         building.setAddress(buildingRequest.getAddress());
         building.setName(buildingRequest.getName());
         building.setEntranceStructure(buildingRequest.getEntranceStructure());

@@ -10,9 +10,13 @@
     <button type="button" id="logoutBtn">로그아웃</button>
     <div id="map"></div>
 
+    <!-- <script
+      type="text/javascript"
+      src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=707dwqhvjo&callback=initMap&submodules=geocoder"
+    ></script> -->
     <script
       type="text/javascript"
-      src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=707dwqhvjo&callback=initMap"
+      src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=707dwqhvjo&submodules=geocoder"
     ></script>
     <script type="text/javascript">
       var map = null;
@@ -22,7 +26,7 @@
       function initMap() {
         map = new naver.maps.Map("map", {
           center: new naver.maps.LatLng(37.3595704, 127.105399),
-          zoom: 10,
+          zoom: 20,
         });
 
         naver.maps.Event.addListener(map, "click", function (e) {
@@ -72,11 +76,30 @@
 
           // "등록하기" 버튼 클릭 시 정보 입력 페이지로 이동
           if (!infoExists) {
-            $("#registerButton").on("click", function () {});
             document
               .getElementById("registerButton")
               .addEventListener("click", function () {
-                moveToRegisterPage();
+                const { _lat, _lng } = marker.getPosition();
+                if (!_lat || !_lng) {
+                  throw new Error(`좌표 값이 없습니다.`);
+                }
+
+                // Reverse Geocoding을 사용하여 좌표를 주소로 변환
+                naver.maps.Service.reverseGeocode({
+                  location: new naver.maps.LatLng(_lat, _lng),
+                  callback: function (status, response) {
+                    if (status === naver.maps.Service.Status.OK) {
+                      console.log("response data: ", response);
+                      var result = response.v2,
+                        address = result.address,
+                        items = result.results;
+                      console.log("목록: " + items);
+                      console.log("주소: " + address);
+                    }
+                  },
+                });
+
+                // window.location.href = `/building/register?lat=${_lat}&lng=${_lng}`;
               });
           }
 
@@ -87,31 +110,6 @@
               infoWindow.close(); // InfoWindow 닫기
               removeMarker(marker); // 마커 삭제
             });
-        });
-      }
-
-      function moveToRegisterPage() {
-        const jwtToken = localStorage.getItem("jwtToken");
-        if (!jwtToken) {
-          console.error(`Jwt doesn't exist`);
-          return;
-        }
-
-        $.ajax({
-          type: "GET",
-          url: "/building/register",
-          headers: {
-            Authorization: "Bearer " + jwtToken, // JWT 토큰을 Authorization 헤더에 추가
-          },
-          success: function (response) {
-            console.log(response);
-            // 성공 시 이동 로직 또는 페이지 갱신 등을 수행합니다.
-            // window.location.href = "/destination-page"; // 페이지 이동 예시
-          },
-          error: function () {
-            // 오류 처리 로직
-            console.log("등록하기 페이지 이동 실패");
-          },
         });
       }
 

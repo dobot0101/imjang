@@ -3,7 +3,7 @@ package com.dobot.imjang.domain.building.services;
 import java.util.List;
 import java.util.UUID;
 
-import com.dobot.imjang.domain.building.dtos.BuildingRequest;
+import com.dobot.imjang.domain.building.dtos.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.entities.Building;
 
 public interface BuildingService {
@@ -11,9 +11,9 @@ public interface BuildingService {
 
     public Building getBuildingById(UUID id);
 
-    public Building createBuilding(BuildingRequest buildingRequest);
+    public Building createBuilding(BuildingCreateOrUpdateRequestDto buildingRequest);
 
-    public Building updateBuilding(UUID id, BuildingRequest buildingRequest);
+    public Building updateBuilding(UUID id, BuildingCreateOrUpdateRequestDto buildingRequest);
 
     public void deleteBuilding(UUID id);
 }

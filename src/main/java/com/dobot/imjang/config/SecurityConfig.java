@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .permitAll())
+        .sessionManagement(customizer -> customizer.invalidSessionUrl("/auth/login"))
         .logout(
             customizer -> customizer
                 .logoutUrl("/auth/logout")

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.dobot.imjang.domain.building.dtos.BuildingRequest;
+import com.dobot.imjang.domain.building.dtos.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.entities.Building;
 import com.dobot.imjang.domain.building.services.BuildingService;
 import com.dobot.imjang.domain.common.exception.CustomException;
@@ -34,22 +34,22 @@ public class BuildingServiceTest {
 
   @Test
   void 저장() {
-    BuildingRequest buildingCreateRequest = new BuildingRequest();
-    buildingCreateRequest.setAddress("경인로 15길 70-22");
-    buildingCreateRequest.setName("테스트 빌딩");
-    Building building = buildingService.createBuilding(buildingCreateRequest);
+    BuildingCreateOrUpdateRequestDto buildingCreateOrUpdateDto = BuildingCreateOrUpdateRequestDto.builder()
+        .address("경인로 15길 70-22").name("테스트 빌딩").build();
+    Building building = buildingService.createBuilding(buildingCreateOrUpdateDto);
 
     assertNotNull(building, "빌딩 객체가 생성되어야 합니다.");
-    assertEquals(buildingCreateRequest.getName(), building.getName(), "빌딩 이름이 일치해야 합니다.");
-    assertEquals(buildingCreateRequest.getAddress(), building.getAddress(), "빌딩 주소가 일치해야 합니다.");
+    assertEquals(buildingCreateOrUpdateDto.getName(), building.getName(), "빌딩 이름이 일치해야 합니다.");
+    assertEquals(buildingCreateOrUpdateDto.getAddress(), building.getAddress(), "빌딩 주소가 일치해야 합니다.");
   }
 
   @Test
   void 삭제() {
-    BuildingRequest buildingCreateRequest = new BuildingRequest();
-    buildingCreateRequest.setAddress("경인로 15길 70-22");
-    buildingCreateRequest.setName("테스트 빌딩");
-    Building building = buildingService.createBuilding(buildingCreateRequest);
+
+    BuildingCreateOrUpdateRequestDto buildingCreateOrUpdateDto = BuildingCreateOrUpdateRequestDto.builder()
+        .address("경인로 15길 70-22")
+        .name("테스트 빌딩").build();
+    Building building = buildingService.createBuilding(buildingCreateOrUpdateDto);
     buildingService.deleteBuilding(building.getId());
 
     assertThrows(CustomException.class, () -> {

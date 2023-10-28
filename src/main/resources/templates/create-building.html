@@ -9,69 +9,65 @@
     <form action="/saveBuilding" method="post">
         <!-- 위도 입력 필드 -->
         <label for="latitude">위도:</label>
-        <input type="hidden" id="latitude" name="latitude" th:value="${building.latitude}" required><br>
+        <input type="hidden" id="latitude" name="latitude" th:value="${latitude}" required><br>
 
         <!-- 경도 입력 필드 -->
         <label for="longitude">경도:</label>
-        <input type="hidden" id="longitude" name="longitude" th:value="${building.longitude}" required><br>
+        <input type="hidden" id="longitude" name="longitude" th:value="${longitude}" required><br>
 
         <!-- 건물 이름 입력 필드 -->
         <label for="name">건물 이름:</label>
-        <input type="text" id="name" name="name" th:value="${building.name}" required><br>
+        <input type="text" id="name" name="name" required><br>
 
         <!-- 건물 주소 입력 필드 -->
         <label for="address">건물 주소:</label>
-        <input type="text" id="address" name="address" th:value="${building.address}" required><br>
+        <input type="text" id="address" name="address" required><br>
 
         <!-- 엘리베이터 상태 선택 -->
         <label for="elevatorStatus">엘리베이터:</label>
-        <select id="elevatorStatus" name="elevatorStatus">
-            <option value="HAS_ELEVATOR" th:selected="${building.elevatorStatus == 'HAS_ELEVATOR'}">Has Elevator</option>
-            <option value="NO_ELEVATOR" th:selected="${building.elevatorStatus == 'NO_ELEVATOR'}">No Elevator</option>
-            <option value="UNDERGROUND_PARKING" th:selected="${building.elevatorStatus == 'UNDERGROUND_PARKING'}">Underground Parking</option>
-        </select><br>
+        <label><input type="radio" name="elevatorStatus" value="HAS_ELEVATOR"/>있음</label>
+        <label><input type="radio" name="elevatorStatus" value="NO_ELEVATOR"/>없음</label>
+        <br>
 
         <!-- 현관 구조 선택 -->
         <label for="entranceStructure">현관 구조:</label>
-        <select id="entranceStructure" name="entranceStructure">
-            <option value="STAIRS" th:selected="${building.entranceStructure == 'STAIRS'}">Stairs</option>
-            <option value="CORRIDOR" th:selected="${building.entranceStructure == 'CORRIDOR'}">Corridor</option>
-        </select><br>
+        <label><input type="radio" name="entranceStructure" value="STAIRS"/>계단식</label>
+        <label><input type="radio" name="entranceStructure" value="CORRIDOR"/>복도식</label>
+        <br>
 
         <!-- 주차 공간 선택 -->
         <label for="parkingSpace">주차 공간:</label>
-        <select id="parkingSpace" name="parkingSpace">
-            <option value="PLENTY" th:selected="${building.parkingSpace == 'PLENTY'}">Plenty</option>
-            <option value="LIMITED" th:selected="${building.parkingSpace == 'LIMITED'}">Limited</option>
-            <option value="AVERAGE" th:selected="${building.parkingSpace == 'AVERAGE'}">Average</option>
-        </select><br>
+        <label><input type="radio" name="parkingSpace" value="PLENTY"/>많음</label>
+        <label><input type="radio" name="parkingSpace" value="AVERAGE"/>보통</label>
+        <label><input type="radio" name="parkingSpace" value="LIMITED"/>적음</label>
+        <br>
 
         <!-- 학군 입력 필드 (반복 가능) -->
         <h2>학군</h2>
-        <div th:each="schoolDistrict, schoolStatus : ${building.schoolDistricts}">
-            <input type="text" th:field="*{schoolDistricts[__${schoolStatus.index}__].name}" required>
-            <!-- 추가 학군을 삭제할 수 있는 버튼 -->
-            <button type="button" th:if="${!schoolStatus.first}" th:onclick="'removeSchoolDistrict(' + ${schoolStatus.index} + ')'">Remove</button>
-        </div>
-        <button type="button" onclick="addSchoolDistrict()">Add School District</button>
+        <label><input type="checkbox" name="schoolDistrict[]" value="ELEMENTARY_SCHOOL">초등학교</label>
+        <label><input type="checkbox" name="schoolDistrict[]" value="MIDDLE_SCHOOL">중학교</label>
+        <label><input type="checkbox" name="schoolDistrict[]" value="HIGH_SCHOOL">고등학교</label>
+        <label><input type="checkbox" name="schoolDistrict[]" value="UNIVERSITY">대학교</label>
 
         <!-- 주변 시설 입력 필드 (반복 가능) -->
         <h2>주변 시설</h2>
-        <div th:each="facility, facilityStatus : ${building.facilities}">
-            <input type="text" th:field="*{facilities[__${facilityStatus.index}__].name}" required>
-            <!-- 추가 시설을 삭제할 수 있는 버튼 -->
-            <button type="button" th:if="${!facilityStatus.first}" th:onclick="'removeFacility(' + ${facilityStatus.index} + ')'">Remove</button>
-        </div>
-        <button type="button" onclick="addFacility()">Add Facility</button>
+        <label><input type="checkbox" name="facility[]" value="RESTAURANT">식당</label>
+        <label><input type="checkbox" name="facility[]" value="SUPERMARKET">마트</label>
+        <label><input type="checkbox" name="facility[]" value="HOSPITAL">병원</label>
+        <label><input type="checkbox" name="facility[]" value="LIBRARY">도서관</label>
+        <label><input type="checkbox" name="facility[]" value="ACADEMY">학원</label>
+        <label><input type="checkbox" name="facility[]" value="CONVENIENCE_STORE">편의점</label>
+        <label><input type="checkbox" name="facility[]" value="DEPARTMENT_STORE">백화점</label>
+        <label><input type="checkbox" name="facility[]" value="WAREHOUSE_STORE">창고형 매장</abel>
+        <label><input type="checkbox" name="facility[]" value="PARK">공원</label>
+        <label><input type="checkbox" name="facility[]" value="GOLF_PRACTICE_RANGE">골프 연습장</abel>
+        <label><input type="checkbox" name="facility[]" value="GYM">헬스</label>
 
         <!-- 교통수단 입력 필드 (반복 가능) -->
         <h2>교통수단</h2>
-        <div th:each="transportation, transportStatus : ${building.transportations}">
-            <input type="text" th:field="*{transportations[__${transportStatus.index}__].name}" required>
-            <!-- 추가 교통수단을 삭제할 수 있는 버튼 -->
-            <button type="button" th:if="${!transportStatus.first}" th:onclick="'removeTransportation(' + ${transportStatus.index} + ')'">Remove</button>
-        </div>
-        <button type="button" onclick="addTransportation()">Add Transportation</button>
+        <label><input type="checkbox" name="transportation[]" value="SUBWAY">지하철</label>
+        <label><input type="checkbox" name="transportation[]" value="BUS">버스</label>
+        <label><input type="checkbox" name="transportation[]" value="HIGHWAY">고속도로</label> 
 
         <input type="submit" value="Save Building">
     </form>
@@ -102,38 +98,6 @@
                 });
             });
         });
-
-
-        // JavaScript를 사용하여 반복 가능한 입력 필드 추가/제거 로직을 구현할 수 있습니다.
-        function addSchoolDistrict() {
-            var newSchoolDistrict = '<input type="text" name="schoolDistricts[].name" required>';
-            document.getElementById("schoolDistricts").innerHTML += newSchoolDistrict;
-        }
-
-        function removeSchoolDistrict(index) {
-            var schoolDistrict = document.getElementsByName("schoolDistricts[].name")[index];
-            schoolDistrict.remove();
-        }
-
-        function addFacility() {
-            var newFacility = '<input type="text" name="facilities[].name" required>';
-            document.getElementById("facilities").innerHTML += newFacility;
-        }
-
-        function removeFacility(index) {
-            var facility = document.getElementsByName("facilities[].name")[index];
-            facility.remove();
-        }
-
-        function addTransportation() {
-            var newTransportation = '<input type="text" name="transportations[].name" required>';
-            document.getElementById("transportations").innerHTML += newTransportation;
-        }
-
-        function removeTransportation(index) {
-            var transportation = document.getElementsByName("transportations[].name")[index];
-            transportation.remove();
-        }
     </script>
 </th:block>
 </html>
