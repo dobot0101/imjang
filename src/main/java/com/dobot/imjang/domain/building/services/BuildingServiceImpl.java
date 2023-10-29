@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.dobot.imjang.domain.building.dtos.BuildingCreateOrUpdateRequestDto;
@@ -18,13 +20,17 @@ import com.dobot.imjang.domain.building.enums.TransportationType;
 import com.dobot.imjang.domain.building.repositories.BuildingRepository;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
+import com.dobot.imjang.domain.member.entities.Member;
+import com.dobot.imjang.domain.member.respositories.MemberRepository;
 
 @Service
 public class BuildingServiceImpl implements BuildingService {
     private final BuildingRepository buildingRepository;
+    private final MemberRepository memberRepository;
 
-    public BuildingServiceImpl(BuildingRepository buildingRepository) {
+    public BuildingServiceImpl(BuildingRepository buildingRepository, MemberRepository memberRepository) {
         this.buildingRepository = buildingRepository;
+        this.memberRepository = memberRepository;
     }
 
     public List<Building> getAllBuildings() {
@@ -39,23 +45,26 @@ public class BuildingServiceImpl implements BuildingService {
         return optional.get();
     }
 
-    public Building createBuilding(BuildingCreateOrUpdateRequestDto buildingRequest) {
-        validBuildingRequest(buildingRequest);
+    public Building createBuilding(BuildingCreateOrUpdateRequestDto dto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = this.memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
+
+        isDuplicatedLocation(dto);
         Building building = new Building();
         building.setId(UUID.randomUUID());
-        building.setLongitude(buildingRequest.getLongitude());
-        building.setParkingSpace(buildingRequest.getParkingSpace());
-        setBuildingInformation(buildingRequest, building);
+        building.setLongitude(dto.getLongitude());
+        building.setLatitude(dto.getLatitude());
+        building.setMember(member);
+
+        setBuildingInformation(dto, building);
+
         return buildingRepository.save(building);
     }
 
-    private void validBuildingRequest(BuildingCreateOrUpdateRequestDto buildingRequest) {
-        isDuplicatedLocation(buildingRequest);
-    }
-
-    private void isDuplicatedLocation(BuildingCreateOrUpdateRequestDto buildingRequest) {
-        double latitude = buildingRequest.getLatitude();
-        double longitude = buildingRequest.getLongitude();
+    private void isDuplicatedLocation(BuildingCreateOrUpdateRequestDto dto) {
+        double latitude = dto.getLatitude();
+        double longitude = dto.getLongitude();
 
         List<Building> existingBuildings = this.buildingRepository.findByLatitudeAndLongitude(latitude, longitude);
 
@@ -81,15 +90,15 @@ public class BuildingServiceImpl implements BuildingService {
         buildingRepository.deleteById(id);
     }
 
-    private Building setBuildingInformation(BuildingCreateOrUpdateRequestDto buildingRequest, Building building) {
-        building.setAddress(buildingRequest.getAddress());
-        building.setName(buildingRequest.getName());
-        building.setEntranceStructure(buildingRequest.getEntranceStructure());
-        building.setElevatorStatus(buildingRequest.getElevatorStatus());
-        building.setLatitude(buildingRequest.getLatitude());
+    private Building setBuildingInformation(BuildingCreateOrUpdateRequestDto dto, Building building) {
+        building.setAddress(dto.getAddress());
+        building.setName(dto.getName());
+        building.setEntranceStructure(dto.getEntranceStructure());
+        building.setElevatorStatus(dto.getElevatorStatus());
+        building.setParkingSpace(dto.getParkingSpace());
 
         // 학군
-        List<SchoolType> schoolTypes = buildingRequest.getSchoolTypes();
+        List<SchoolType> schoolTypes = dto.getSchoolTypes();
         List<SchoolDistrict> schoolDistricts = Optional.ofNullable(schoolTypes)
                 .map(types -> types.stream()
                         .map(schoolType -> {
@@ -103,7 +112,7 @@ public class BuildingServiceImpl implements BuildingService {
         building.setSchoolDistricts(schoolDistricts);
 
         // 편의시설
-        List<FacilityType> facilityTypes = buildingRequest.getFacilityTypes();
+        List<FacilityType> facilityTypes = dto.getFacilityTypes();
         List<Facility> facilities = Optional.ofNullable(facilityTypes).map(types -> types.stream().map(facilityType -> {
             Facility facility = new Facility();
             facility.setId(UUID.randomUUID());
@@ -114,7 +123,7 @@ public class BuildingServiceImpl implements BuildingService {
         building.setFacilities(facilities);
 
         // 교통수단
-        List<TransportationType> transportationTypes = buildingRequest.getTransportationTypes();
+        List<TransportationType> transportationTypes = dto.getTransportationTypes();
         List<Transportation> transportations = Optional.ofNullable(transportationTypes)
                 .map(types -> types.stream().map(transportationType -> {
                     Transportation transportation = new Transportation();
@@ -125,5 +134,10 @@ public class BuildingServiceImpl implements BuildingService {
         building.setTransportations(transportations);
 
         return building;
+    }
+
+    @Override
+    public List<Building> getBuildingsByMember(Member member) {
+        return buildingRepository.findByMember(member);
     }
 }

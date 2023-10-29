@@ -9,5 +9,4 @@ import com.dobot.imjang.domain.building.entities.Building;
 
 @Repository
 public interface JpaBuildingRepository extends JpaRepository<Building, UUID>, BuildingRepository {
-
 }

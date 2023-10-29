@@ -5,31 +5,47 @@
   layout:decorate="layout/default_layout"
 >
   <th:block layout:fragment="content">
-    <h2>로그인</h2>
-    <form
-      id="loginForm"
-      th:action="@{/auth/login}"
-      method="post"
-      th:object="${loginRequestDto}"
-    >
-      <label for="email">이메일:</label>
-      <input type="text" id="email" name="email" th:field="*{email}" required />
-      <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-      <br />
-      <label for="password">비밀번호:</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        th:field="*{password}"
-        required
-      />
-      <span
-        th:if="${#fields.hasErrors('password')}"
-        th:errors="*{password}"
-      ></span>
-      <br />
-      <button type="submit">로그인</button>
-    </form>
+    <div class="container">
+      <div class="text-center">로그인</div>
+      <form
+        id="loginForm"
+        th:action="@{/auth/login}"
+        method="post"
+        th:object="${loginRequestDto}"
+      >
+        <label for="email">이메일:</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          th:field="*{email}"
+          required
+        />
+        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        <br />
+        <label for="password">비밀번호:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          th:field="*{password}"
+          required
+        />
+        <span
+          th:if="${#fields.hasErrors('password')}"
+          th:errors="*{password}"
+        ></span>
+        <br />
+        <button type="submit">로그인</button>
+        <button type="button" id="signUpButton">회원가입</button>
+      </form>
+    </div>
+    <script>
+      $("#signUpButton").click(function () {
+        event.preventDefault();
+        console.log('signUpButton')
+        window.location.href = "/member/signup";
+      });
+    </script>
   </th:block>
 </html>

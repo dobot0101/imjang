@@ -5,9 +5,12 @@ import java.util.UUID;
 
 import com.dobot.imjang.domain.building.dtos.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.entities.Building;
+import com.dobot.imjang.domain.member.entities.Member;
 
 public interface BuildingService {
     public List<Building> getAllBuildings();
+
+    public List<Building> getBuildingsByMember(Member member);
 
     public Building getBuildingById(UUID id);
 

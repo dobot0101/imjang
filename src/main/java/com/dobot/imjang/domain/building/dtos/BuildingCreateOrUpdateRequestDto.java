@@ -10,7 +10,6 @@ import com.dobot.imjang.domain.building.enums.FacilityType;
 import com.dobot.imjang.domain.building.enums.ParkingSpace;
 import com.dobot.imjang.domain.building.enums.SchoolType;
 import com.dobot.imjang.domain.building.enums.TransportationType;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,6 +26,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor()
 public class BuildingCreateOrUpdateRequestDto {
+
+  // 좌표(위도)
+  @NotNull(message = "위도를 입력해주세요")
+  private double latitude;
+
+  // 좌표(경도)
+  @NotNull(message = "경도를 입력해주세요")
+  private double longitude;
 
   // 건물(아파트, 빌라, 오피스텔 등)
   @NotBlank(message = "이름을 입력해주세요")
@@ -58,16 +65,7 @@ public class BuildingCreateOrUpdateRequestDto {
   @Enumerated(EnumType.STRING)
   private List<FacilityType> facilityTypes;
 
-  // 좌표(위도)
-  @NotNull(message = "위도를 입력해주세요")
-  private double latitude;
-
-  // 좌표(경도)
-  @NotNull(message = "경도를 입력해주세요")
-  private double longitude;
-
   // 교통수단
   @Enumerated(EnumType.STRING)
   private List<TransportationType> transportationTypes;
-
 }

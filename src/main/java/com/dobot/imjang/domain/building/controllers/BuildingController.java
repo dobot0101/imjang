@@ -52,7 +52,7 @@ public class BuildingController {
 
   @PutMapping("/{id}")
   public ResponseEntity<Map<String, String>> updateBuilding(@PathVariable("id") UUID id,
-      @RequestBody @Validated BuildingCreateOrUpdateRequestDto bulidingCreateOrUpdateDto) {
+      @RequestBody @Valid BuildingCreateOrUpdateRequestDto bulidingCreateOrUpdateDto) {
     Building building = buildingService.updateBuilding(id, bulidingCreateOrUpdateDto);
     Map<String, String> response = new HashMap<String, String>();
     response.put("updatedBuildingId", building.getId().toString());
@@ -62,10 +62,5 @@ public class BuildingController {
   @DeleteMapping("/{id}")
   public void deleteBuilding(@PathVariable("id") UUID id) {
     buildingService.deleteBuilding(id);
-  }
-
-  @GetMapping("/register")
-  public String showBuildingRegisterForm() {
-    return "create-building";
   }
 }

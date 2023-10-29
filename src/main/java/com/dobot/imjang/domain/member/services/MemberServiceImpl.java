@@ -38,4 +38,10 @@ public class MemberServiceImpl implements MemberService {
     return this.memberRepository.findById(id)
         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND, "회원을 찾을 수 없습니다. 아이디: " + id));
   }
+
+  @Override
+  public Member getMemberByEmail(String email) {
+    return this.memberRepository.findByEmail(email)
+        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND, "회원을 찾을 수 없습니다. 이메일: " + email));
+  }
 }

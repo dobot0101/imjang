@@ -84,22 +84,46 @@
                   throw new Error(`좌표 값이 없습니다.`);
                 }
 
+                let url = `/building/register?lat=${_lat}&lng=${_lng}`;
+
                 // Reverse Geocoding을 사용하여 좌표를 주소로 변환
-                naver.maps.Service.reverseGeocode({
-                  location: new naver.maps.LatLng(_lat, _lng),
-                  callback: function (status, response) {
+                naver.maps.Service.reverseGeocode(
+                  {
+                    coords: new naver.maps.LatLng(_lat, _lng),
+                    orders: "roadaddr",
+                  },
+                  function (status, response) {
                     if (status === naver.maps.Service.Status.OK) {
-                      console.log("response data: ", response);
-                      var result = response.v2,
+                      const result = response.v2,
                         address = result.address,
                         items = result.results;
-                      console.log("목록: " + items);
-                      console.log("주소: " + address);
-                    }
-                  },
-                });
 
-                // window.location.href = `/building/register?lat=${_lat}&lng=${_lng}`;
+                      if (items.length > 0) {
+                        const buildingData = Object.values(items[0].land).find(
+                          (item) => item.type === "building"
+                        );
+                        if (buildingData) {
+                          if (buildingData.value) {
+                            url += `&buildingName=${encodeURIComponent(
+                              buildingData.value
+                            )}`;
+                          }
+                        }
+                      }
+
+                      if (address && address.roadAddress) {
+                        if (address.roadAddress) {
+                          url += `&address=${encodeURIComponent(
+                            address.roadAddress
+                          )}`;
+                        }
+                      }
+                    }
+
+                    console.log({ url });
+                    window.location.href = url;
+                  }
+                );
               });
           }
 

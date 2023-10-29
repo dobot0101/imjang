@@ -5,99 +5,213 @@
     layout:decorate="layout/default_layout"
 >
 <th:block layout:fragment="content">
-    <h1>Create Building</h1>
-    <form action="/saveBuilding" method="post">
-        <!-- 위도 입력 필드 -->
-        <label for="latitude">위도:</label>
-        <input type="hidden" id="latitude" name="latitude" th:value="${latitude}" required><br>
 
-        <!-- 경도 입력 필드 -->
-        <label for="longitude">경도:</label>
-        <input type="hidden" id="longitude" name="longitude" th:value="${longitude}" required><br>
+    <div class="container">
+        <h1 class="text-center">건물 등록</h1>
+        <form method="post" id="buildingCreateForm">
+            <!-- 위도 -->
+            <input type="hidden" id="latitude" name="latitude" th:value="${latitude}" required class="form-control">
 
-        <!-- 건물 이름 입력 필드 -->
-        <label for="name">건물 이름:</label>
-        <input type="text" id="name" name="name" required><br>
+            <!-- 경도 -->
+            <input type="hidden" id="longitude" name="longitude" th:value="${longitude}" required class="form-control">
 
-        <!-- 건물 주소 입력 필드 -->
-        <label for="address">건물 주소:</label>
-        <input type="text" id="address" name="address" required><br>
+            <!-- 건물 이름 -->
+            <div class="form-group">
+                <label for="name">건물 이름:</label>
+                <input type="text" id="name" name="name" th:value="${buildingName}" required class="form-control">
+            </div>
 
-        <!-- 엘리베이터 상태 선택 -->
-        <label for="elevatorStatus">엘리베이터:</label>
-        <label><input type="radio" name="elevatorStatus" value="HAS_ELEVATOR"/>있음</label>
-        <label><input type="radio" name="elevatorStatus" value="NO_ELEVATOR"/>없음</label>
-        <br>
+            <!-- 건물 주소 -->
+            <div class="form-group">
+                <label for="address">건물 주소:</label>
+                <input type="text" id="address" name="address" th:value="${address}" required class="form-control">
+            </div>
 
-        <!-- 현관 구조 선택 -->
-        <label for="entranceStructure">현관 구조:</label>
-        <label><input type="radio" name="entranceStructure" value="STAIRS"/>계단식</label>
-        <label><input type="radio" name="entranceStructure" value="CORRIDOR"/>복도식</label>
-        <br>
+            <!-- 엘리베이터 유무 -->
+            <div class="form-group">
+                <label>엘리베이터 유무:</label>
+                <div class="form-check">
+                    <input type="radio" id="elevatorHas" name="elevatorStatus" value="HAS_ELEVATOR" class="form-check-input" checked>
+                    <label for="elevatorHas" class="form-check-label">있음</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="elevatorNo" name="elevatorStatus" value="NO_ELEVATOR" class="form-check-input">
+                    <label for="elevatorNo" class="form-check-label">없음</label>
+                </div>
+            </div>
 
-        <!-- 주차 공간 선택 -->
-        <label for="parkingSpace">주차 공간:</label>
-        <label><input type="radio" name="parkingSpace" value="PLENTY"/>많음</label>
-        <label><input type="radio" name="parkingSpace" value="AVERAGE"/>보통</label>
-        <label><input type="radio" name="parkingSpace" value="LIMITED"/>적음</label>
-        <br>
+            <!-- 현관 구조 -->
+            <div class="form-group">
+                <label>현관 구조:</label>
+                <div class="form-check">
+                    <input type="radio" id="entranceStairs" name="entranceStructure" value="STAIRS" class="form-check-input" checked>
+                    <label for="entranceStairs" class="form-check-label">계단식</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="entranceCorridor" name="entranceStructure" value="CORRIDOR" class="form-check-input">
+                    <label for="entranceCorridor" class="form-check-label">복도식</label>
+                </div>
+            </div>
 
-        <!-- 학군 입력 필드 (반복 가능) -->
-        <h2>학군</h2>
-        <label><input type="checkbox" name="schoolDistrict[]" value="ELEMENTARY_SCHOOL">초등학교</label>
-        <label><input type="checkbox" name="schoolDistrict[]" value="MIDDLE_SCHOOL">중학교</label>
-        <label><input type="checkbox" name="schoolDistrict[]" value="HIGH_SCHOOL">고등학교</label>
-        <label><input type="checkbox" name="schoolDistrict[]" value="UNIVERSITY">대학교</label>
+            <!-- 주차 공간 -->
+            <div class="form-group">
+                <label>주차 공간:</label>
+                <div class="form-check">
+                    <input type="radio" id="parkingPlenty" name="parkingSpace" value="PLENTY" class="form-check-input" checked>
+                    <label for="parkingPlenty" class="form-check-label">많음</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="parkingAverage" name="parkingSpace" value="AVERAGE" class="form-check-input">
+                    <label for="parkingAverage" class="form-check-label">보통</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="parkingLimited" name="parkingSpace" value="LIMITED" class="form-check-input">
+                    <label for="parkingLimited" class="form-check-label">적음</label>
+                </div>
+            </div>
 
-        <!-- 주변 시설 입력 필드 (반복 가능) -->
-        <h2>주변 시설</h2>
-        <label><input type="checkbox" name="facility[]" value="RESTAURANT">식당</label>
-        <label><input type="checkbox" name="facility[]" value="SUPERMARKET">마트</label>
-        <label><input type="checkbox" name="facility[]" value="HOSPITAL">병원</label>
-        <label><input type="checkbox" name="facility[]" value="LIBRARY">도서관</label>
-        <label><input type="checkbox" name="facility[]" value="ACADEMY">학원</label>
-        <label><input type="checkbox" name="facility[]" value="CONVENIENCE_STORE">편의점</label>
-        <label><input type="checkbox" name="facility[]" value="DEPARTMENT_STORE">백화점</label>
-        <label><input type="checkbox" name="facility[]" value="WAREHOUSE_STORE">창고형 매장</abel>
-        <label><input type="checkbox" name="facility[]" value="PARK">공원</label>
-        <label><input type="checkbox" name="facility[]" value="GOLF_PRACTICE_RANGE">골프 연습장</abel>
-        <label><input type="checkbox" name="facility[]" value="GYM">헬스</label>
+            <!-- 학군 -->
+            <div class="form-group">
+                <label>학군</label>
+                <div class="form-check">
+                    <input type="checkbox" id="schoolElementary" name="schoolTypes" value="ELEMENTARY_SCHOOL" class="form-check-input">
+                    <label for="schoolElementary" class="form-check-label">초등학교</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="schoolMiddle" name="schoolTypes" value="MIDDLE_SCHOOL" class="form-check-input">
+                    <label for="schoolMiddle" class="form-check-label">중학교</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="schoolHigh" name="schoolTypes" value="HIGH_SCHOOL" class="form-check-input">
+                    <label for="schoolHigh" class="form-check-label">고등학교</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="schoolUniversity" name="schoolTypes" value="UNIVERSITY" class="form-check-input">
+                    <label for="schoolUniversity" class="form-check-label">대학교</label>
+                </div>
+            </div>
+            
 
-        <!-- 교통수단 입력 필드 (반복 가능) -->
-        <h2>교통수단</h2>
-        <label><input type="checkbox" name="transportation[]" value="SUBWAY">지하철</label>
-        <label><input type="checkbox" name="transportation[]" value="BUS">버스</label>
-        <label><input type="checkbox" name="transportation[]" value="HIGHWAY">고속도로</label> 
+            <!-- 주변 시설 -->
+            <div class="form-group">
+                <label>주변 시설</label>  
+                <div class="form-check">
+                    <input type="checkbox" id="facilityRestaurant" name="facilityTypes" value="RESTAURANT" class="form-check-input">
+                    <label for="facilityRestaurant" class="form-check-label">식당</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="facilitySupermarket" name="facilityTypes" value="SUPERMARKET" class="form-check-input">
+                    <label for="facilitySupermarket" class="form-check-label">마트</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="facilityHospital" name="facilityTypes" value="HOSPITAL" class="form-check-input">
+                    <label for="facilityHospital" class="form-check-label">병원</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="facilityLibrary" name="facilityTypes" value="LIBRARY" class="form-check-input">
+                    <label for="facilityLibrary" class="form-check-label">도서관</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="facilityAcademy" name="facilityTypes" value="ACADEMY" class="form-check-input">
+                    <label for="facilityAcademy">학원</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="facilityConvenienceStore" name="facilityTypes" value="CONVENIENCE_STORE" class="form-check-input">
+                    <label for="facilityConvenienceStore">편의점</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="facilityDepartmentStore" name="facilityTypes" value="DEPARTMENT_STORE" class="form-check-input">
+                    <label for="facilityDepartmentStore">백화점</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="facilityWarehouseStore" name="facilityTypes" value="WAREHOUSE_STORE" class="form-check-input">
+                    <label for="facilityWarehouseStore">창고형 매장</abel>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="facilityPark" name="facilityTypes" value="PARK" class="form-check-input">
+                    <label for="facilityPark">공원</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="facilityGolfPracticeRange" name="facilityTypes" value="GOLF_PRACTICE_RANGE" class="form-check-input">
+                    <label for="facilityGolfPracticeRange">골프 연습장</abel>
+                    </div>
+                <div class="form-check">
+                    <input type="checkbox" id="facilityGym" name="facilityTypes" value="GYM" class="form-check-input">
+                    <label for="facilityGym">헬스</label>
+                </div>
+            </div>
+            
+            <!-- 교통수단 -->
+            <div class="form-group">
+                <label>교통수단</label>
+                <div class="form-check">
+                    <input type="checkbox" id="transportationSubway" name="transportationTypes" value="SUBWAY" class="form-check-input">
+                    <label for="transportationSubway" class="form-check-label">지하철</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="transportationBus" name="transportationTypes" value="BUS" class="form-check-input">
+                    <label for="transportationBus" class="form-check-label">버스</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="transportationHighway" name="transportationTypes" value="HIGHWAY" class="form-check-input">
+                    <label for="transportationHighway" class="form-check-label">고속도로</label>
+                </div>
+            </div>
 
-        <input type="submit" value="Save Building">
-    </form>
+            <button type="submit" id="saveButton" class="btn btn-primary">저장</button>
+        </form>
+    </div>
+
+    
 
     <script>
-        $(document).ready(function() {
-            // 폼 제출
-            $("#buildingForm").submit(function(event) {
-                event.preventDefault(); // 기본 폼 제출 방지
+        $('#saveButton').click(function () {
+            event.preventDefault();
 
-                // 폼 데이터 수집
-                var formData = $("#buildingForm").serialize();
+            const formDataArray = $("#buildingCreateForm").serializeArray();
+            const data = {};
+            for (const {name,value} of formDataArray) {
+                data[name]=value;
+            }
 
-                // Building 데이터 저장 요청
-                $.ajax({
-                    type: "POST",
-                    url: "/saveBuilding",
-                    data: formData,
-                    success: function(response) {
-                        // 성공 처리 로직
-                        console.log("Building saved successfully.");
-                        // Redirect to Building detail page or perform other actions as needed
-                    },
-                    error: function() {
-                        // 오류 처리 로직
-                        console.log("Error saving Building.");
-                    }
-                });
+            const schoolTypes = [];
+            document.querySelectorAll('input[type=checkbox][name=schoolTypes]:checked').forEach(node => {
+                schoolTypes.push(node.value);
+            })
+            if (schoolTypes.length > 0) {
+                data['schoolTypes'] = schoolTypes;
+            }
+
+            const facilityTypes = [];
+            document.querySelectorAll('input[type=checkbox][name=facilityTypes]:checked').forEach(node => {
+                facilityTypes.push(node.value);
+            })
+            if (facilityTypes.length > 0) {
+                data['facilityTypes'] = facilityTypes;
+            }
+
+            const transportationTypes = [];
+            document.querySelectorAll('input[type=checkbox][name=transportationTypes]:checked').forEach(node => {
+                transportationTypes.push(node.value);
+            })
+            if (transportationTypes.length > 0) {
+                data['transportationTypes'] = transportationTypes;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/building",
+                contentType: 'application/json; charset=UTF-8',
+                dataType:'json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    window.location.href=`/building/detail/${response.savedBuildingId}`
+                },
+                error: function(data) {
+                    console.log("저장 실패", data);
+                }
             });
-        });
+        })
     </script>
 </th:block>
 </html>
