@@ -22,19 +22,21 @@
       });
 
       function initMap() {
-        map = new naver.maps.Map("map", {
-          center: new naver.maps.LatLng(37.5665, 126.978),
-          zoom: 20,
-        });
-
         if ("geolocation" in navigator) {
-          navigator.geolocation.getCurrentPosition(
-            function (position) {
+          new Promise(function (resolve, reject) {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          })
+            .then((position) => {
               latitude = position.coords.latitude;
               longitude = position.coords.longitude;
-              map.setCenter(new naver.maps.LatLng(latitude, longitude));
-            },
-            function (error) {
+              map = new naver.maps.Map("map", {
+                center: new naver.maps.LatLng(latitude, longitude),
+                zoom: 15,
+              });
+              initMapClickEventHandler(map);
+              initSavedMarkers();
+            })
+            .catch((error) => {
               switch (error.code) {
                 case error.PERMISSION_DENIED:
                   console.error("위치 권한이 거부되었습니다.");
@@ -49,19 +51,24 @@
                   console.error("알 수 없는 오류가 발생했습니다.");
                   break;
               }
-            }
-          );
+            });
         } else {
-          console.error("Geolocation을 지원하지 않는 브라우저입니다.");
+          console.log("Geolocation을 지원하지 않는 브라우저입니다.");
+          map = new naver.maps.Map("map", {
+            center: new naver.maps.LatLng(37.5665, 126.978),
+            zoom: 15,
+          });
+          initMapClickEventHandler(map);
+          initSavedMarkers();
         }
+      }
 
+      function initMapClickEventHandler(map) {
         naver.maps.Event.addListener(map, "click", function (e) {
           addMarker(e.coord);
         });
-
-        // 저장돼있는 마커 표시
-        initSavedMarkers();
       }
+
       function initSavedMarkers() {
         $.ajax({
           type: "GET",
