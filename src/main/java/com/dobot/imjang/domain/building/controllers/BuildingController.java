@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,7 @@ import com.dobot.imjang.domain.building.services.BuildingService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/building")
+@RequestMapping("/api/buildings")
 public class BuildingController {
   private final BuildingService buildingService;
 
@@ -32,8 +31,11 @@ public class BuildingController {
   }
 
   @GetMapping("")
-  public List<Building> getAllBuildings() {
-    return buildingService.getAllBuildings();
+  public ResponseEntity<Map<String, Object>> getAllBuildings() {
+    List<Building> buildings = buildingService.getAllBuildings();
+    Map<String, Object> map = new HashMap<>();
+    map.put("buildings", buildings);
+    return ResponseEntity.ok(map);
   }
 
   @GetMapping("/{id}")
@@ -55,12 +57,15 @@ public class BuildingController {
       @RequestBody @Valid BuildingCreateOrUpdateRequestDto bulidingCreateOrUpdateDto) {
     Building building = buildingService.updateBuilding(id, bulidingCreateOrUpdateDto);
     Map<String, String> response = new HashMap<String, String>();
-    response.put("updatedBuildingId", building.getId().toString());
+    response.put("savedBuildingId", building.getId().toString());
     return ResponseEntity.ok(response);
   }
 
   @DeleteMapping("/{id}")
-  public void deleteBuilding(@PathVariable("id") UUID id) {
+  public ResponseEntity<Map<String, String>> deleteBuilding(@PathVariable("id") UUID id) {
     buildingService.deleteBuilding(id);
+    Map<String, String> response = new HashMap<>();
+    response.put("result", "success");
+    return ResponseEntity.ok(response);
   }
 }

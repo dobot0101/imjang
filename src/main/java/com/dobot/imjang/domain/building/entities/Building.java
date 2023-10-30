@@ -2,6 +2,7 @@ package com.dobot.imjang.domain.building.entities;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.ArrayList;
 
 import com.dobot.imjang.domain.building.enums.ElevatorStatus;
 import com.dobot.imjang.domain.building.enums.EntranceStructure;
@@ -33,7 +34,7 @@ import lombok.Setter;
 })
 public class Building extends BaseTime {
   @Id
-  UUID id;
+  private UUID id;
 
   // 좌표(위도)
   @Column(nullable = false)
@@ -45,43 +46,43 @@ public class Building extends BaseTime {
 
   // 건물 이름 (예: 아파트 단지 이름)
   @Column(nullable = false, length = 20)
-  String name;
+  private String name;
 
   // 건물 주소
   @Column(nullable = false, length = 100)
-  String address;
+  private String address;
 
   // 엘리베이터(있음, 없음)
   @Column()
   @Enumerated(EnumType.STRING)
-  ElevatorStatus elevatorStatus;
+  private ElevatorStatus elevatorStatus;
 
   // 현관구조(계단식, 복도식)
   @Column()
   @Enumerated(EnumType.STRING)
-  EntranceStructure entranceStructure;
+  private EntranceStructure entranceStructure;
 
   // 주차공간(많음, 적음, 보통)
   @Column()
   @Enumerated(EnumType.STRING)
-  ParkingSpace parkingSpace;
+  private ParkingSpace parkingSpace;
 
   // 학군
   @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  List<SchoolDistrict> schoolDistricts;
+  private List<SchoolDistrict> schoolDistricts = new ArrayList<>();
 
   // 주변시설
   @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  List<Facility> facilities;
+  private List<Facility> facilities = new ArrayList<>();
 
   // 교통수단
   @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  List<Transportation> transportations;
+  private List<Transportation> transportations = new ArrayList<>();
 
   @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.REMOVE)
-  List<Unit> units;
+  private List<Unit> units = new ArrayList<>();
 
   @ManyToOne()
   @JoinColumn(name = "member_id")
-  Member member;
+  private Member member;
 }

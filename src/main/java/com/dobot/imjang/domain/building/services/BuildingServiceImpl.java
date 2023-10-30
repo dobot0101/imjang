@@ -3,8 +3,10 @@ package com.dobot.imjang.domain.building.services;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,23 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     public List<Building> getAllBuildings() {
-        return buildingRepository.findAll();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+
+            boolean hasAdminRole = authentication.getAuthorities().stream()
+                    .anyMatch(authority -> authority.getAuthority().equals("ADMIN"));
+            if (hasAdminRole) {
+                return buildingRepository.findAll();
+            } else {
+                String email = authentication.getName();
+                Member member = memberRepository.findByEmail(email)
+                        .orElseThrow(
+                                () -> new CustomException(ErrorCode.USER_NOT_FOUND, "회원을 찾을 수 없습니다. 이메일: " + email));
+                return buildingRepository.findByMember(member);
+            }
+        } else {
+            return buildingRepository.findAll();
+        }
     }
 
     public Building getBuildingById(UUID id) {
@@ -75,12 +93,9 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     public Building updateBuilding(UUID id, BuildingCreateOrUpdateRequestDto buildingRequest) {
-        Optional<Building> optional = buildingRepository.findById(id);
-        if (!optional.isPresent()) {
-            throw new CustomException(ErrorCode.BUILDING_NOT_FOUND);
-        }
+        Building building = buildingRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
 
-        Building building = optional.get();
         this.setBuildingInformation(buildingRequest, building);
 
         return buildingRepository.save(building);
@@ -99,39 +114,48 @@ public class BuildingServiceImpl implements BuildingService {
 
         // 학군
         List<SchoolType> schoolTypes = dto.getSchoolTypes();
-        List<SchoolDistrict> schoolDistricts = Optional.ofNullable(schoolTypes)
+        List<SchoolDistrict> newSchoolDistricts = Optional.ofNullable(schoolTypes)
                 .map(types -> types.stream()
                         .map(schoolType -> {
                             SchoolDistrict schoolDistrict = new SchoolDistrict();
                             schoolDistrict.setId(UUID.randomUUID());
                             schoolDistrict.setSchoolType(schoolType);
+                            schoolDistrict.setBuilding(building);
                             return schoolDistrict;
                         })
                         .collect(Collectors.toList()))
-                .orElse(null);
-        building.setSchoolDistricts(schoolDistricts);
+                .orElse(new ArrayList<>());
+        List<SchoolDistrict> schoolDistricts = building.getSchoolDistricts();
+        schoolDistricts.clear();
+        schoolDistricts.addAll(newSchoolDistricts);
 
         // 편의시설
         List<FacilityType> facilityTypes = dto.getFacilityTypes();
-        List<Facility> facilities = Optional.ofNullable(facilityTypes).map(types -> types.stream().map(facilityType -> {
-            Facility facility = new Facility();
-            facility.setId(UUID.randomUUID());
-            facility.setBuilding(building);
-            facility.setFacilityType(facilityType);
-            return facility;
-        }).collect(Collectors.toList())).orElse(null);
-        building.setFacilities(facilities);
+        List<Facility> newFacilities = Optional.ofNullable(facilityTypes)
+                .map(types -> types.stream().map(facilityType -> {
+                    Facility facility = new Facility();
+                    facility.setId(UUID.randomUUID());
+                    facility.setBuilding(building);
+                    facility.setFacilityType(facilityType);
+                    return facility;
+                }).collect(Collectors.toList())).orElse(new ArrayList<>());
+        List<Facility> facilities = building.getFacilities();
+        facilities.clear();
+        facilities.addAll(newFacilities);
 
         // 교통수단
         List<TransportationType> transportationTypes = dto.getTransportationTypes();
-        List<Transportation> transportations = Optional.ofNullable(transportationTypes)
+        List<Transportation> newTransportations = Optional.ofNullable(transportationTypes)
                 .map(types -> types.stream().map(transportationType -> {
                     Transportation transportation = new Transportation();
                     transportation.setId(UUID.randomUUID());
                     transportation.setTransportationType(transportationType);
+                    transportation.setBuilding(building);
                     return transportation;
-                }).collect(Collectors.toList())).orElse(null);
-        building.setTransportations(transportations);
+                }).collect(Collectors.toList())).orElse(new ArrayList<>());
+        List<Transportation> transportations = building.getTransportations();
+        transportations.clear();
+        transportations.addAll(newTransportations);
 
         return building;
     }
