@@ -5,23 +5,31 @@ import java.util.UUID;
 import com.dobot.imjang.domain.common.entities.BaseTime;
 import com.dobot.imjang.domain.unit.enums.TransactionType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 
 @Entity
-@Setter
-public class UnitTransactionType extends BaseTime {
+@AllArgsConstructor
+public class UnitTransaction extends BaseTime {
   @Id
-  UUID id;
+  private UUID id;
+
+  // 거래 가격
+  @Column(nullable = false)
+  private Integer price;
+
+  // 월세의 경우에만 사용, 월세 보증금
+  @Column(nullable = false)
+  private Integer deposit;
 
   @ManyToOne
-  Unit unit;
+  private Unit unit;
 
   @Enumerated(EnumType.STRING)
-  TransactionType transactionType;
-
+  private TransactionType transactionType;
 }

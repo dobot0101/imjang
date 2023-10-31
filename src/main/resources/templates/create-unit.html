@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/default_layout}"
+>
+<th:block layout:fragment="content">
+    <div class="container">
+        <h1 class="text-center">세대정보 등록</h1>
+        <form action="/save-unit" method="post">
+          <input type="hidden" name="buildingId" th:value="${buildingId}">
+
+          <label for="buildingNumber">동:</label>
+          <input type="text" id="buildingNumber" name="buildingNumber"><br>
+  
+          <label for="roomNumber">호:</label>
+          <input type="text" id="roomNumber" name="roomNumber"><br>
+  
+          <label for="area">면적:</label>
+          <input type="text" id="area" name="area"><br>
+  
+          <label for="memo">메모:</label>
+          <textarea id="memo" name="memo"></textarea><br>
+  
+          <label for="transactionPrice">거래 가격:</label>
+          <input type="text" id="transactionPrice" name="transactionPrice"><br>
+  
+          <label for="deposit">월세 보증금(단위: 만원):</label>
+          <input type="text" id="deposit" name="deposit"><br>
+  
+          <label>집 방향:</label><br>
+          <input type="radio" id="south" name="direction" value="SOUTH">
+          <label for="south">남향</label><br>
+          <input type="radio" id="southeast" name="direction" value="SOUTHEAST">
+          <label for="southeast">남동향</label><br>
+          <input type="radio" id="southwest" name="direction" value="SOUTHWEST">
+          <label for="southwest">남서향</label><br>
+          <input type="radio" id="east" name="direction" value="EAST">
+          <label for="east">동향</label><br>
+          <input type="radio" id="west" name="direction" value="WEST">
+          <label for="west">서향</label><br>
+          <input type="radio" id="north" name="direction" value="NORTH">
+          <label for="north">북향</label><br>
+
+          <label>전망:</label><br>
+          <input type="radio" id="good" name="viewQuality" value="GOOD">
+          <label for="good">좋음</label><br>
+          <input type="radio" id="average" name="viewQuality" value="AVERAGE">
+          <label for="average">보통</label><br>
+          <input type="radio" id="poor" name="viewQuality" value="POOR">
+          <label for="poor">나쁨</label><br>
+
+          <label>통풍:</label><br>
+          <input type="radio" id="goodVentilation" name="ventilation" value="GOOD">
+          <label for="goodVentilation">좋음</label><br>
+          <input type="radio" id="poorVentilation" name="ventilation" value="POOR">
+          <label for="poorVentilation">나쁨</label><br>
+
+          <label>수압:</label><br>
+          <input type="radio" id="goodWaterPressure" name="waterPressure" value="GOOD">
+          <label for="goodWaterPressure">좋음</label><br>
+          <input type="radio" id="poorWaterPressure" name="waterPressure" value="POOR">
+          <label for="poorWaterPressure">나쁨</label><br>
+
+          <label>소음:</label><br>
+          <input type="radio" id="noneNoiseLevel" name="noiseLevel" value="NONE">
+          <label for="noneNoiseLevel">없음</label><br>
+          <input type="radio" id="moderateNoiseLevel" name="noiseLevel" value="MODERATE">
+          <label for="moderateNoiseLevel">보통</label><br>
+          <input type="radio" id="highNoiseLevel" name="noiseLevel" value="HIGH">
+          <label for="highNoiseLevel">심함</label><br>
+
+          <label>결로/곰팡이:</label><br>
+          <input type="radio" id="noneCondensationMoldLevel" name="condensationMoldLevel" value="NONE">
+          <label for="noneCondensationMoldLevel">없음</label><br>
+          <input type="radio" id="moderateCondensationMoldLevel" name="condensationMoldLevel" value="MODERATE">
+          <label for="moderateCondensationMoldLevel">보통</label><br>
+          <input type="radio" id="severeCondensationMoldLevel" name="condensationMoldLevel" value="SEVERE">
+          <label for="severeCondensationMoldLevel">심함</label><br>
+
+          <label>누수:</label><br>
+          <input type="radio" id="noneLeakStatus" name="leakStatus" value="NONE">
+          <label for="noneLeakStatus">없음</label><br>
+          <input type="radio" id="presentLeakStatus" name="leakStatus" value="PRESENT">
+          <label for="presentLeakStatus">있음</label><br>
+
+          <!-- 이미지 및 거래 유형 등 다른 관련 정보에 대한 입력 필드를 추가할 수 있습니다 -->
+  
+          <input type="submit" value="저장">
+      </form>
+    </div>
+
+    
+
+    <script>
+        $('#saveButton').click(function () {
+            event.preventDefault();
+
+            const formDataArray = $("#unitCreateForm").serializeArray();
+            const data = {};
+            for (const {name,value} of formDataArray) {
+                data[name]=value;
+            }
+
+            const schoolTypes = [];
+            document.querySelectorAll('input[type=checkbox][name=schoolTypes]:checked').forEach(node => {
+                schoolTypes.push(node.value);
+            })
+            if (schoolTypes.length > 0) {
+                data['schoolTypes'] = schoolTypes;
+            }
+
+            const facilityTypes = [];
+            document.querySelectorAll('input[type=checkbox][name=facilityTypes]:checked').forEach(node => {
+                facilityTypes.push(node.value);
+            })
+            if (facilityTypes.length > 0) {
+                data['facilityTypes'] = facilityTypes;
+            }
+
+            const transportationTypes = [];
+            document.querySelectorAll('input[type=checkbox][name=transportationTypes]:checked').forEach(node => {
+                transportationTypes.push(node.value);
+            })
+            if (transportationTypes.length > 0) {
+                data['transportationTypes'] = transportationTypes;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/buildings",
+                contentType: 'application/json; charset=UTF-8',
+                dataType:'json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    window.location.href=`/building/read/${response.savedBuildingId}`
+                },
+                error: function(data) {
+                    console.log("저장 실패", data);
+                }
+            });
+        })
+
+        $('#cancelButton').click(function () {
+            event.preventDefault();
+            window.location.href = '/';
+        });
+    </script>
+</th:block>
+</html>

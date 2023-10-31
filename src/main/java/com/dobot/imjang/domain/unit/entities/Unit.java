@@ -1,5 +1,6 @@
 package com.dobot.imjang.domain.unit.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,12 +50,6 @@ public class Unit extends BaseTime {
   // 메모
   String memo;
 
-  // 거래 가격
-  Double transactionPrice;
-
-  // 월세의 경우에만 사용, 월세 보증금
-  Double deposit;
-
   // 집 방향(남향, 남동향, 남서향, 동향, 서향, 북향)
   @Enumerated(EnumType.STRING)
   Direction direction;
@@ -88,9 +83,9 @@ public class Unit extends BaseTime {
   Building building;
 
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-  List<UnitImage> images;
+  List<UnitImage> images = new ArrayList<>();
 
-  // 매매, 전세, 월세
+  // 거래 정보
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-  List<UnitTransactionType> transactionTypes;
+  List<UnitTransaction> transactions = new ArrayList<>();
 }

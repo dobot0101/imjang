@@ -3,17 +3,17 @@ package com.dobot.imjang.domain.unit.services;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.dobot.imjang.domain.building.entities.Building;
 import com.dobot.imjang.domain.building.repositories.BuildingRepository;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
-import com.dobot.imjang.domain.unit.dtos.UnitRequest;
+import com.dobot.imjang.domain.unit.dtos.UnitCreateOrUpdateDto;
 import com.dobot.imjang.domain.unit.entities.Unit;
 import com.dobot.imjang.domain.unit.entities.UnitImage;
-import com.dobot.imjang.domain.unit.entities.UnitTransactionType;
-import com.dobot.imjang.domain.unit.enums.TransactionType;
+import com.dobot.imjang.domain.unit.entities.UnitTransaction;
 import com.dobot.imjang.domain.unit.repositories.UnitRepository;
 
 public class UnitServiceImpl implements UnitService {
@@ -29,18 +29,21 @@ public class UnitServiceImpl implements UnitService {
     return this.unitRepository.findAll();
   }
 
-  public Unit createUnit(UnitRequest unitRequest) {
-    Optional<Building> optional = this.buildingRepository.findById(unitRequest.getBuidlingId());
-    if (optional.isEmpty()) {
-      throw new CustomException(ErrorCode.BUILDING_NOT_FOUND);
+  public Unit createUnit(UnitCreateOrUpdateDto dto) {
+    Building building = this.buildingRepository.findById(UUID.fromString(dto.getBuidlingId()))
+        .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
+
+    String email = building.getMember().getEmail();
+    if (!SecurityContextHolder.getContext().getAuthentication().getName().equals(email)) {
+      throw new CustomException(ErrorCode.PERMISSION_DENIED);
     }
 
     Unit unit = new Unit();
-    unit = addUnitProperties(unitRequest, unit);
+    unit = addUnitProperties(dto, unit);
     return this.unitRepository.save(unit);
   }
 
-  public Unit updateUnit(UUID id, UnitRequest unitRequest) {
+  public Unit updateUnit(UUID id, UnitCreateOrUpdateDto unitRequest) {
     Optional<Unit> optional = this.unitRepository.findById(id);
     if (optional.isEmpty()) {
       throw new CustomException(ErrorCode.UNIT_NOT_FOUND);
@@ -51,48 +54,36 @@ public class UnitServiceImpl implements UnitService {
     return this.unitRepository.save(updatingUnit);
   }
 
-  private List<UnitImage> getUnitImages(List<String> imageUrls) {
-    List<UnitImage> unitImages = imageUrls.stream().map(imageUrl -> {
-      UnitImage image = new UnitImage();
-      image.setImageUrl(imageUrl);
-      return image;
-    }).collect(Collectors.toList());
-
-    return unitImages;
-  }
-
   public void deleteUnit(UUID id) {
     this.unitRepository.deleteById(id);
   }
 
-  private Unit addUnitProperties(UnitRequest unitRequest, Unit unit) {
-    unit.setArea(unitRequest.getArea());
-    unit.setBuildingNumber(unitRequest.getBuildingNumber());
-    unit.setCondensationMoldLevel(unitRequest.getCondensationMoldLevel());
-    unit.setDeposit(unitRequest.getDeposit());
-    unit.setDirection(unitRequest.getDirection());
-    unit.setLeakStatus(unitRequest.getLeakStatus());
-    unit.setMemo(unitRequest.getMemo());
-    unit.setNoiseLevel(unitRequest.getNoiseLevel());
-    unit.setRoomNumber(unitRequest.getRoomNumber());
-    unit.setTransactionPrice(unitRequest.getTransactionPrice());
-    unit.setVentilation(unitRequest.getVentilation());
-    unit.setViewQuality(unitRequest.getViewQuality());
-    unit.setWaterPressure(unitRequest.getWaterPressure());
+  private Unit addUnitProperties(UnitCreateOrUpdateDto dto, Unit unit) {
+    Building building = buildingRepository.findById(UUID.fromString(dto.getBuidlingId())).orElseThrow(
+        () -> new CustomException(ErrorCode.BUILDING_NOT_FOUND, "건물 정보가 존재하지 않습니다. 건물 아이디: " + dto.getBuidlingId()));
+    unit.setBuilding(building);
 
-    List<TransactionType> transactionTypes = unitRequest.getTransactionTypes();
-    List<UnitTransactionType> unitTransactionTypes = transactionTypes.stream().map(t -> {
-      UnitTransactionType unitTransactionType = new UnitTransactionType();
-      unitTransactionType.setId(UUID.randomUUID());
-      unitTransactionType.setTransactionType(t);
-      return unitTransactionType;
-    }).collect(Collectors.toList());
-    unit.setTransactionTypes(unitTransactionTypes);
+    unit.setArea(dto.getArea());
+    unit.setBuildingNumber(dto.getBuildingNumber());
+    unit.setCondensationMoldLevel(dto.getCondensationMoldLevel());
+    unit.setDirection(dto.getDirection());
+    unit.setLeakStatus(dto.getLeakStatus());
+    unit.setMemo(dto.getMemo());
+    unit.setNoiseLevel(dto.getNoiseLevel());
+    unit.setRoomNumber(dto.getRoomNumber());
+    unit.setVentilation(dto.getVentilation());
+    unit.setViewQuality(dto.getViewQuality());
+    unit.setWaterPressure(dto.getWaterPressure());
 
-    List<UnitImage> unitImages = getUnitImages(unitRequest.getImageUrls());
-    if (unitImages.size() > 0) {
-      unit.setImages(unitImages);
-    }
+    List<UnitTransaction> unitTransactions = dto.getUnitTransactionDtos().stream().map(
+        unitTransactionDto -> new UnitTransaction(UUID.randomUUID(), unitTransactionDto.getPrice(),
+            unitTransactionDto.getDeposit(), unit, unitTransactionDto.getTransactionType()))
+        .toList();
+    unit.setTransactions(unitTransactions);
+
+    List<UnitImage> unitImages = dto.getImageUrls().stream()
+        .map(imageUrl -> new UnitImage(UUID.randomUUID(), imageUrl, unit)).toList();
+    unit.setImages(unitImages);
 
     return unit;
   }

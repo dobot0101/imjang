@@ -7,7 +7,6 @@ import com.dobot.imjang.domain.unit.enums.CondensationMoldLevel;
 import com.dobot.imjang.domain.unit.enums.Direction;
 import com.dobot.imjang.domain.unit.enums.LeakStatus;
 import com.dobot.imjang.domain.unit.enums.NoiseLevel;
-import com.dobot.imjang.domain.unit.enums.TransactionType;
 import com.dobot.imjang.domain.unit.enums.Ventilation;
 import com.dobot.imjang.domain.unit.enums.ViewQuality;
 import com.dobot.imjang.domain.unit.enums.WaterPressure;
@@ -23,9 +22,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UnitRequest {
+public class UnitCreateOrUpdateDto {
   @NotBlank
-  UUID buidlingId;
+  String buidlingId;
   // 동
   @NotBlank
   String buildingNumber;
@@ -41,17 +40,10 @@ public class UnitRequest {
   @Max(value = 100)
   String memo;
 
-  // 매매, 전세, 월세
-  @NotNull(message = "계약방식을 1개 이상 선택해주세요")
-  @Size(min = 1)
-  @Enumerated(EnumType.STRING)
-  List<TransactionType> transactionTypes;
-
-  // 가격
-  Double transactionPrice;
-
-  // 월세의 경우에만 사용, 월세 보증금
-  Double deposit;
+  // 거래 정보(계약 유형, 금액, 융자금 등)
+  @NotNull
+  @Size(max = 1, message = "거래 정보를 1개 이상 입력해주세요.")
+  List<UnitTransactionDto> unitTransactionDtos;
 
   // 집 방향(ex: 남향 등)
   @Enumerated(EnumType.STRING)

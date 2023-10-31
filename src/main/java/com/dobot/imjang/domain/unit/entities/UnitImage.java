@@ -8,10 +8,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 
-@Setter
 @Entity
+@AllArgsConstructor
 public class UnitImage extends BaseTime {
   @Id
   UUID id;
