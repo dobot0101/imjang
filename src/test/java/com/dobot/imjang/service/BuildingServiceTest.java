@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.dobot.imjang.domain.building.dtos.BuildingCreateOrUpdateRequestDto;
-import com.dobot.imjang.domain.building.entities.Building;
-import com.dobot.imjang.domain.building.services.BuildingService;
+import com.dobot.imjang.domain.building.dto.BuildingCreateOrUpdateRequestDto;
+import com.dobot.imjang.domain.building.entity.Building;
+import com.dobot.imjang.domain.building.service.BuildingService;
 import com.dobot.imjang.domain.common.exception.CustomException;
 
 import jakarta.transaction.Transactional;

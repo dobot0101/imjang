@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.dobot.imjang.domain.member.entities.Member;
-import com.dobot.imjang.domain.member.respositories.MemberRepository;
+import com.dobot.imjang.domain.member.entity.Member;
+import com.dobot.imjang.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
