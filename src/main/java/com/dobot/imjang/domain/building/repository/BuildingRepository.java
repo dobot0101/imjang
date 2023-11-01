@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.dobot.imjang.domain.building.entity.Building;
-import com.dobot.imjang.domain.member.entity.Member;
 
 public interface BuildingRepository {
   Building save(Building home);
@@ -18,5 +17,5 @@ public interface BuildingRepository {
 
   List<Building> findByLatitudeAndLongitude(double latitude, double longitude);
 
-  List<Building> findByMember(Member member);
+  List<Building> findByMemberId(UUID memberId);
 }

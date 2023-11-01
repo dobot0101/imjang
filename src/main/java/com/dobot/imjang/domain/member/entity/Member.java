@@ -53,4 +53,7 @@ public class Member extends BaseTime {
 
   @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)
   List<Building> buildings;
+
+  @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)
+  List<Building> units;
 }

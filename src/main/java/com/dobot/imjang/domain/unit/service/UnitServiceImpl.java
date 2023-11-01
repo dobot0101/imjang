@@ -1,10 +1,7 @@
 package com.dobot.imjang.domain.unit.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.dobot.imjang.domain.building.entity.Building;
 import com.dobot.imjang.domain.building.repository.BuildingRepository;
@@ -33,23 +30,16 @@ public class UnitServiceImpl implements UnitService {
     Building building = this.buildingRepository.findById(UUID.fromString(dto.getBuidlingId()))
         .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
 
-    String email = building.getMember().getEmail();
-    if (!SecurityContextHolder.getContext().getAuthentication().getName().equals(email)) {
-      throw new CustomException(ErrorCode.PERMISSION_DENIED);
-    }
-
     Unit unit = new Unit();
+    unit.setBuilding(building);
+    unit.setMember(building.getMember());
     unit = addUnitProperties(dto, unit);
+
     return this.unitRepository.save(unit);
   }
 
   public Unit updateUnit(UUID id, UnitCreateOrUpdateDto unitRequest) {
-    Optional<Unit> optional = this.unitRepository.findById(id);
-    if (optional.isEmpty()) {
-      throw new CustomException(ErrorCode.UNIT_NOT_FOUND);
-    }
-
-    Unit unit = optional.get();
+    Unit unit = this.unitRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.UNIT_NOT_FOUND));
     Unit updatingUnit = this.addUnitProperties(unitRequest, unit);
     return this.unitRepository.save(updatingUnit);
   }
@@ -58,11 +48,13 @@ public class UnitServiceImpl implements UnitService {
     this.unitRepository.deleteById(id);
   }
 
-  private Unit addUnitProperties(UnitCreateOrUpdateDto dto, Unit unit) {
-    Building building = buildingRepository.findById(UUID.fromString(dto.getBuidlingId())).orElseThrow(
-        () -> new CustomException(ErrorCode.BUILDING_NOT_FOUND, "건물 정보가 존재하지 않습니다. 건물 아이디: " + dto.getBuidlingId()));
-    unit.setBuilding(building);
+  @Override
+  public Unit getUnitById(UUID id) {
+    Unit unit = unitRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.UNIT_NOT_FOUND));
+    return unit;
+  }
 
+  private Unit addUnitProperties(UnitCreateOrUpdateDto dto, Unit unit) {
     unit.setArea(dto.getArea());
     unit.setBuildingNumber(dto.getBuildingNumber());
     unit.setCondensationMoldLevel(dto.getCondensationMoldLevel());

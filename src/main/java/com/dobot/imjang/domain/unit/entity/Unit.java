@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.dobot.imjang.domain.building.entity.Building;
 import com.dobot.imjang.domain.common.entities.BaseTime;
+import com.dobot.imjang.domain.member.entity.Member;
 import com.dobot.imjang.domain.unit.enums.CondensationMoldLevel;
 import com.dobot.imjang.domain.unit.enums.Direction;
 import com.dobot.imjang.domain.unit.enums.LeakStatus;
@@ -88,4 +89,8 @@ public class Unit extends BaseTime {
   // 거래 정보
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   List<UnitTransaction> transactions = new ArrayList<>();
+
+  @ManyToOne()
+  @JoinColumn(name = "member_id")
+  private Member member;
 }

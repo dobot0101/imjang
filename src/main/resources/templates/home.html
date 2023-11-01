@@ -122,7 +122,7 @@
 
           $("#detailButton").click(function () {
             const id = $(this).val();
-            window.location.href = `/building/read/${id}`;
+            window.location.href = `/buildings/read/${id}`;
           });
 
           // "마커 삭제" 버튼 클릭 시 마커 삭제
@@ -159,7 +159,7 @@
           throw new Error(`좌표 값이 없습니다.`);
         }
 
-        let url = `/building/register?lat=${_lat}&lng=${_lng}`;
+        let url = `/buildings/register?lat=${_lat}&lng=${_lng}`;
 
         // Reverse Geocoding을 사용하여 좌표를 주소로 변환
         naver.maps.Service.reverseGeocode(

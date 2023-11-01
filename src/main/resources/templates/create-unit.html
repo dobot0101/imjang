@@ -133,7 +133,7 @@
                 dataType:'json',
                 data: JSON.stringify(data),
                 success: function(response) {
-                    window.location.href=`/building/read/${response.savedBuildingId}`
+                    window.location.href=`/buildings/read/${response.savedBuildingId}`
                 },
                 error: function(data) {
                     console.log("저장 실패", data);

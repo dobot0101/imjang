@@ -9,6 +9,8 @@ import com.dobot.imjang.domain.unit.entity.Unit;
 public interface UnitService {
   public List<Unit> getAllUnits();
 
+  public Unit getUnitById(UUID id);
+
   public Unit createUnit(UnitCreateOrUpdateDto unitRequest);
 
   public Unit updateUnit(UUID id, UnitCreateOrUpdateDto unitRequest);

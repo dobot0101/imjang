@@ -1,12 +1,11 @@
 package com.dobot.imjang.domain.building.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -36,43 +35,25 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     public List<Building> getAllBuildings() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-
-            boolean hasAdminRole = authentication.getAuthorities().stream()
-                    .anyMatch(authority -> authority.getAuthority().equals("ADMIN"));
-            if (hasAdminRole) {
-                return buildingRepository.findAll();
-            } else {
-                String email = authentication.getName();
-                Member member = memberRepository.findByEmail(email)
-                        .orElseThrow(
-                                () -> new CustomException(ErrorCode.USER_NOT_FOUND, "회원을 찾을 수 없습니다. 이메일: " + email));
-                return buildingRepository.findByMember(member);
-            }
-        } else {
-            return buildingRepository.findAll();
-        }
+        return buildingRepository.findAll();
     }
 
     public Building getBuildingById(UUID id) {
-        Optional<Building> optional = buildingRepository.findById(id);
-        if (!optional.isPresent()) {
-            throw new CustomException(ErrorCode.BUILDING_NOT_FOUND);
-        }
-        return optional.get();
+        Building building = buildingRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
+        return building;
     }
 
     public Building createBuilding(BuildingCreateOrUpdateRequestDto dto) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member member = this.memberRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
-
         isDuplicatedLocation(dto);
         Building building = new Building();
         building.setId(UUID.randomUUID());
         building.setLongitude(dto.getLongitude());
         building.setLatitude(dto.getLatitude());
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = this.memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
         building.setMember(member);
 
         setBuildingInformation(dto, building);
@@ -92,11 +73,11 @@ public class BuildingServiceImpl implements BuildingService {
         }
     }
 
-    public Building updateBuilding(UUID id, BuildingCreateOrUpdateRequestDto buildingRequest) {
+    public Building updateBuilding(UUID id, BuildingCreateOrUpdateRequestDto dto) {
         Building building = buildingRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
 
-        this.setBuildingInformation(buildingRequest, building);
+        this.setBuildingInformation(dto, building);
 
         return buildingRepository.save(building);
     }
@@ -161,7 +142,7 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     @Override
-    public List<Building> getBuildingsByMember(Member member) {
-        return buildingRepository.findByMember(member);
+    public List<Building> getBuildingsByMemberId(UUID memberId) {
+        return buildingRepository.findByMemberId(memberId);
     }
 }
