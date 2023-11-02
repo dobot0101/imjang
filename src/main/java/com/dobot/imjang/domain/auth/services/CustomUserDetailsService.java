@@ -30,6 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     // .build();
 
     UserDetails userDetails = new CustomUserDetails(member.getId(), member.getName(), member.getPassword(),
+        member.getEmail(),
         Collections.singleton(new SimpleGrantedAuthority(member.getRole().name())));
 
     return userDetails;

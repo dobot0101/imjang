@@ -3,6 +3,8 @@ package com.dobot.imjang.domain.unit.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
 import com.dobot.imjang.domain.building.entity.Building;
 import com.dobot.imjang.domain.building.repository.BuildingRepository;
 import com.dobot.imjang.domain.common.exception.CustomException;
@@ -12,6 +14,7 @@ import com.dobot.imjang.domain.unit.entity.Unit;
 import com.dobot.imjang.domain.unit.entity.UnitImage;
 import com.dobot.imjang.domain.unit.repository.UnitRepository;
 
+@Service
 public class UnitServiceImpl implements UnitService {
   private final UnitRepository unitRepository;
   private final BuildingRepository buildingRepository;

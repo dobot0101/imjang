@@ -6,10 +6,12 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.dobot.imjang.domain.auth.entity.CustomUserDetails;
 import com.dobot.imjang.domain.building.dto.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.entity.Building;
 import com.dobot.imjang.domain.building.entity.Facility;
@@ -51,9 +53,12 @@ public class BuildingServiceImpl implements BuildingService {
         building.setLongitude(dto.getLongitude());
         building.setLatitude(dto.getLatitude());
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member member = this.memberRepository.findByEmail(email)
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        Member member = memberRepository.findById(customUserDetails.getId())
                 .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
+
         building.setMember(member);
 
         setBuildingInformation(dto, building);

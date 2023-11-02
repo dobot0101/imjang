@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -27,8 +28,8 @@ public class UnitViewController {
     this.unitService = unitService;
   }
 
-  @GetMapping("/new/${buildingId}")
-  public String showUnitCreateForm(Model model, @RequestParam("bulidingId") String buildingId) {
+  @GetMapping("/new/{buildingId}")
+  public String showUnitCreateForm(Model model, @PathVariable("bulidingId") String buildingId) {
     // Building 정보의 주인과 Unit을 등록하는 유저가 같지 않으면 권한 에러를 발생시킨다.
     String email = SecurityContextHolder.getContext().getAuthentication().getName();
     Building building = this.buildingService.getBuildingById(UUID.fromString(buildingId));
@@ -38,14 +39,14 @@ public class UnitViewController {
     return "create-unit";
   }
 
-  @GetMapping("/${unitId}")
+  @GetMapping("/{unitId}")
   public String showUnitReadForm(Model model, @RequestParam("unitId") String unitId) {
     Unit unit = unitService.getUnitById(UUID.fromString(unitId));
     model.addAttribute("unit", unit);
     return "read-unit";
   }
 
-  @GetMapping("/${unitId}/edit")
+  @GetMapping("/{unitId}/edit")
   public String showUnitUpdateForm(Model model, @RequestParam("unitId") String unitId) {
     Unit unit = unitService.getUnitById(UUID.fromString(unitId));
     model.addAttribute("unit", unit);
