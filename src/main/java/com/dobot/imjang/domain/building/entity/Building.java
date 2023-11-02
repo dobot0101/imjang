@@ -45,11 +45,11 @@ public class Building extends BaseTime {
   private double longitude;
 
   // 건물 이름 (예: 아파트 단지 이름)
-  @Column(nullable = false, length = 20)
+  @Column(nullable = false, length = 100)
   private String name;
 
   // 건물 주소
-  @Column(nullable = false, length = 100)
+  @Column(nullable = false, length = 200)
   private String address;
 
   // 엘리베이터(있음, 없음)

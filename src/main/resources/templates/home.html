@@ -167,7 +167,7 @@
           throw new Error(`좌표 값이 없습니다.`);
         }
 
-        let url = `/buildings/register?lat=${_lat}&lng=${_lng}`;
+        let url = `/buildings/register?latitude=${_lat}&longitude=${_lng}`;
 
         // Reverse Geocoding을 사용하여 좌표를 주소로 변환
         naver.maps.Service.reverseGeocode(

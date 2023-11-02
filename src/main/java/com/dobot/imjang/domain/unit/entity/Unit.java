@@ -54,7 +54,6 @@ public class Unit extends BaseTime {
   String memo;
 
   // 융자금
-  @Column(nullable = false)
   private Integer deposit;
 
   // 월세가

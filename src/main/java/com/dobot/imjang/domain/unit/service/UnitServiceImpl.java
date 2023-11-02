@@ -29,10 +29,11 @@ public class UnitServiceImpl implements UnitService {
   }
 
   public Unit createUnit(UnitCreateOrUpdateDto dto) {
-    Building building = this.buildingRepository.findById(UUID.fromString(dto.getBuidlingId()))
+    Building building = this.buildingRepository.findById(UUID.fromString(dto.getBuildingId()))
         .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
 
     Unit unit = new Unit();
+    unit.setId(UUID.randomUUID());
     unit.setBuilding(building);
     unit.setMember(building.getMember());
     unit = addUnitProperties(dto, unit);
@@ -40,9 +41,9 @@ public class UnitServiceImpl implements UnitService {
     return this.unitRepository.save(unit);
   }
 
-  public Unit updateUnit(UUID id, UnitCreateOrUpdateDto unitRequest) {
+  public Unit updateUnit(UUID id, UnitCreateOrUpdateDto dto) {
     Unit unit = this.unitRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.UNIT_NOT_FOUND));
-    Unit updatingUnit = this.addUnitProperties(unitRequest, unit);
+    Unit updatingUnit = this.addUnitProperties(dto, unit);
     return this.unitRepository.save(updatingUnit);
   }
 
@@ -71,6 +72,7 @@ public class UnitServiceImpl implements UnitService {
     unit.setMonthlyPrice(dto.getMonthlyPrice());
     unit.setJeonsePrice(dto.getJeonsePrice());
     unit.setSalePrice(dto.getSalePrice());
+    unit.setDeposit(dto.getDeposit());
 
     List<UnitImage> unitImages = dto.getImageUrls().stream()
         .map(imageUrl -> new UnitImage(UUID.randomUUID(), imageUrl, unit)).toList();

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dobot.imjang.domain.auth.entity.CustomUserDetails;
+import com.dobot.imjang.domain.building.dto.BuildingRegisterPageRequestDto;
 import com.dobot.imjang.domain.building.entity.Building;
 import com.dobot.imjang.domain.building.service.BuildingService;
 import com.dobot.imjang.domain.permission.PermissionChecker;
@@ -39,13 +39,16 @@ public class BuildingViewController {
   }
 
   @GetMapping("/buildings/register")
-  public String showBuildingRegisterPage(Model model, @RequestParam("lat") double latitude,
-      @RequestParam("lng") double longitude, @RequestParam("address") String address,
-      @RequestParam("buildingName") String buildingName) {
-    model.addAttribute("latitude", latitude);
-    model.addAttribute("longitude", longitude);
+  public String showBuildingRegisterPage(Model model, BuildingRegisterPageRequestDto dto) {
+    model.addAttribute("latitude", dto.getLatitude());
+    model.addAttribute("longitude", dto.getLongitude());
+
+    String address = dto.getAddress();
     model.addAttribute("address", address == null ? "" : address);
+
+    String buildingName = dto.getBuildingName();
     model.addAttribute("buildingName", buildingName == null ? "" : buildingName);
+
     return "create-building";
   }
 
@@ -88,6 +91,6 @@ public class BuildingViewController {
         .toList();
     model.addAttribute("facilityTypes", facilityTypes);
 
-    return "modify-building";
+    return "update-building";
   }
 }

@@ -160,27 +160,28 @@
 
             <button type="button" id="deleteButton" class="btn btn-danger">삭제</button>
             <button type="button" id="moveToHomeButton" class="btn btn-secondary">홈으로</button>
-            <button type="button" id="modifyButton" class="btn btn-primary">수정</button>
+            <button type="button" id="updateButton" class="btn btn-primary">수정</button>
+            <button type="button" id="moveToUnitCreateButton" class="btn btn-primary">세대정보 등록</button>
         </form>
     </div>
 
     
-
+    <script th:src="@{/js/util.js}"></script>
     <script>
         $(document).ready(() => {
             disableOrMakeReadonlyAllInputs();
         });
 
-        $('#modifyButton').click(function () {
+        $('#updateButton').click(() => {
             const id = $('#buildingId').val();
             window.location.href=`/buildings/modify/${id}`;
         });
 
-        $('#moveToHomeButton').click(function () {
+        $('#moveToHomeButton').click(() => {
             window.location.href = '/';
         });
 
-        $('#deleteButton').click(function () {
+        $('#deleteButton').click(() => {
             const id = $('#buildingId').val();
             $.ajax({
                 type: "DELETE",
@@ -191,6 +192,14 @@
                     console.log('건물정보 삭제 실패');
                 }
             })
+        });
+
+        $('#moveToUnitCreateButton').click(() => {
+            const buildingId = $('#buildingId').val();
+            if (!buildingId) {
+                return false;
+            }
+            window.location.href='/units/new/' + buildingId;
         });
     </script>
 </th:block>

@@ -7,8 +7,8 @@
 <th:block layout:fragment="content">
     <div class="container">
         <h1 class="text-center">세대정보 수정</h1>
-        <form action="/save-unit" method="post" id="unitUpdateForm">
-            <input type="hidden" name="buildingId" th:value="${buildingId}">
+        <form id="unitUpdateForm">
+            <input type="hidden" name="unitId" id="unitId" th:value="${unit.id}">
 
             <label for="buildingNumber">동:</label>
             <input type="text" id="buildingNumber" name="buildingNumber" th:value="${unit.buildingNumber}"><br>
@@ -20,7 +20,7 @@
             <input type="text" id="area" name="area" th:value="${unit.area}"><br>
     
             <label for="memo">메모:</label>
-            <textarea id="memo" name="memo" maxlength="500" th:value="${unit.memo}"></textarea><br>
+            <textarea id="memo" name="memo" maxlength="500" th:text="${unit.memo}"></textarea><br>
     
             <label for="transactionPrice">월세 가격(단위: 만원):</label>
             <input type="text" id="monthlyPrice" name="monthlyPrice" maxlength="6" th:value="${unit.monthlyPrice}"><br>
@@ -91,7 +91,7 @@
             <label for="presentLeakStatus">있음</label><br>
 
             <button type="button" id="cancelButton">취소</button>
-            <button type="submit" id="saveButton">저장</button>
+            <button type="button" id="saveButton">저장</button>
         </form>
     </div>
 
@@ -99,7 +99,10 @@
 
     <script>
         $('#saveButton').click(function () {
-            event.preventDefault();
+            const unitId = $('#unitId').val();
+            if (!unitId) {
+                return false;
+            }
 
             const formDataArr = $("#unitUpdateForm").serializeArray();
             const data = {};
@@ -110,12 +113,12 @@
 
             $.ajax({
                 type: "PUT",
-                url: "/api/units/" + $('#unitId').val(),
+                url: "/api/units/" + unitId,
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json',
                 data: JSON.stringify(data),
                 success: function(response) {
-                    window.location.href=`/units/${response.updatedUnitId}`
+                    window.location.href=`/units/${response.savedUnitId}`
                 },
                 error: function(data) {
                     console.log("저장 실패", data);

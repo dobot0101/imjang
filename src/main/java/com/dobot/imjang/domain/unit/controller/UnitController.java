@@ -38,7 +38,7 @@ public class UnitController {
   @PostMapping("")
   public ResponseEntity<Map<String, String>> createUnit(
       @RequestBody @Valid UnitCreateOrUpdateDto dto) {
-    Building building = buildingService.getBuildingById(UUID.fromString(dto.getBuidlingId()));
+    Building building = buildingService.getBuildingById(UUID.fromString(dto.getBuildingId()));
     permissionChecker.checkPermission(building.getMember().getId());
 
     Unit unit = unitService.createUnit(dto);
