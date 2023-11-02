@@ -10,7 +10,6 @@ import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.unit.dto.UnitCreateOrUpdateDto;
 import com.dobot.imjang.domain.unit.entity.Unit;
 import com.dobot.imjang.domain.unit.entity.UnitImage;
-import com.dobot.imjang.domain.unit.entity.UnitTransaction;
 import com.dobot.imjang.domain.unit.repository.UnitRepository;
 
 public class UnitServiceImpl implements UnitService {
@@ -66,12 +65,9 @@ public class UnitServiceImpl implements UnitService {
     unit.setVentilation(dto.getVentilation());
     unit.setViewQuality(dto.getViewQuality());
     unit.setWaterPressure(dto.getWaterPressure());
-
-    List<UnitTransaction> unitTransactions = dto.getUnitTransactionDtos().stream().map(
-        unitTransactionDto -> new UnitTransaction(UUID.randomUUID(), unitTransactionDto.getPrice(),
-            unitTransactionDto.getDeposit(), unit, unitTransactionDto.getTransactionType()))
-        .toList();
-    unit.setTransactions(unitTransactions);
+    unit.setMonthlyPrice(dto.getMonthlyPrice());
+    unit.setJeonsePrice(dto.getJeonsePrice());
+    unit.setSalePrice(dto.getSalePrice());
 
     List<UnitImage> unitImages = dto.getImageUrls().stream()
         .map(imageUrl -> new UnitImage(UUID.randomUUID(), imageUrl, unit)).toList();

@@ -23,54 +23,59 @@ import lombok.Setter;
 @Setter
 public class UnitCreateOrUpdateDto {
   @NotBlank
-  String buidlingId;
+  private String buidlingId;
   // 동
   @NotBlank
-  String buildingNumber;
+  private String buildingNumber;
 
   // 호
   @NotBlank
-  String roomNumber;
+  private String roomNumber;
 
   // 면적
-  Double area;
+  private Double area;
 
   // 메모
   @Max(value = 100)
-  String memo;
+  private String memo;
+
+  private Integer monthlyPrice;
+  private Integer jeonsePrice;
+  private Integer salePrice;
 
   // 거래 정보(계약 유형, 금액, 융자금 등)
   @NotNull
   @Size(max = 1, message = "거래 정보를 1개 이상 입력해주세요.")
-  List<UnitTransactionDto> unitTransactionDtos;
+  private List<UnitTransactionDto> unitTransactionDtos;
 
   // 집 방향(ex: 남향 등)
   @Enumerated(EnumType.STRING)
-  Direction direction;
+  private Direction direction;
 
   // 뷰(전망)
   @Enumerated(EnumType.STRING)
-  ViewQuality viewQuality;
+  private ViewQuality viewQuality;
 
   // 통풍
   @Enumerated(EnumType.STRING)
-  Ventilation ventilation;
+  private Ventilation ventilation;
 
   // 수압
   @Enumerated(EnumType.STRING)
-  WaterPressure waterPressure;
+  private WaterPressure waterPressure;
 
   // 소음
   @Enumerated(EnumType.STRING)
-  NoiseLevel noiseLevel;
+  private NoiseLevel noiseLevel;
 
   // 결로, 곰팡이
   @Enumerated(EnumType.STRING)
-  CondensationMoldLevel condensationMoldLevel;
+  private CondensationMoldLevel condensationMoldLevel;
 
   // 누수
   @Enumerated(EnumType.STRING)
-  LeakStatus leakStatus;
+  private LeakStatus leakStatus;
 
-  List<String> imageUrls;
+  // 첨부 이미지 url
+  private List<String> imageUrls;
 }

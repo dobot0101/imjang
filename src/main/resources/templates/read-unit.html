@@ -6,9 +6,10 @@
 >
 <th:block layout:fragment="content">
     <div class="container">
-        <h1 class="text-center">세대정보 등록</h1>
+        <h1 class="text-center">세대정보 상세</h1>
         <form action="/save-unit" method="post" id="unitCreateForm">
-            <input type="hidden" name="buildingId" th:value="${buildingId}">
+
+            <input type="hidden" name="unitId" id="unitId" th:value="${unitId}">
 
             <label for="buildingNumber">동:</label>
             <input type="text" id="buildingNumber" name="buildingNumber"><br>
@@ -90,43 +91,43 @@
             <input type="radio" id="presentLeakStatus" name="leakStatus" value="PRESENT">
             <label for="presentLeakStatus">있음</label><br>
 
+            <!-- 첨부 이미지 표시 예정 -->
+
             <button type="button" id="cancelButton">취소</button>
-            <button type="submit" id="saveButton">저장</button>
+            <button type="button" id="deleteButton">삭제</button>
+            <button type="button" id="modifyButton">수정</button>
         </form>
     </div>
 
     
 
     <script>
-        $('#saveButton').click(function () {
-            event.preventDefault();
-
-            const formDataArr = $("#unitCreateForm").serializeArray();
-            const data = {};
-
-            for (const {name,value} of formDataArr) {
-                data[name] = value;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "/api/units",
-                contentType: 'application/json; charset=UTF-8',
-                dataType: 'json',
-                data: JSON.stringify(data),
-                success: function(response) {
-                    window.location.href=`/units/${response.createdUnitId}`
-                },
-                error: function(data) {
-                    console.log("저장 실패", data);
-                }
-            });
+        document.addEventListener('DOMContentLoaded', (event) => {
+            disableOrMakeReadonlyAllInputs();
         })
 
         $('#cancelButton').click(function () {
             event.preventDefault();
-            // window.location.href = '/';
             history.back();
+        });
+
+        $('#modifyButton').click(function () {
+            event.preventDefault();
+            const unitId= $('#unitId').val();
+            window.location= `/units/${unitId}/edit`;
+        });
+
+        $('#deleteButton').click(function () {
+            const unitId = $('#unitId').val();
+            $.ajax({
+                type: "DELETE",
+                url: `/api/units/${unitId}`,
+                success: function(data){
+                    window.location.href = '/';
+                },error: function(data) {
+                    console.log('건물정보 삭제 실패');
+                }
+            })
         });
     </script>
 </th:block>

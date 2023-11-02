@@ -16,6 +16,7 @@ import com.dobot.imjang.domain.unit.enums.ViewQuality;
 import com.dobot.imjang.domain.unit.enums.WaterPressure;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -49,7 +50,21 @@ public class Unit extends BaseTime {
   Double area;
 
   // 메모
+  @Column(columnDefinition = "TEXT")
   String memo;
+
+  // 융자금
+  @Column(nullable = false)
+  private Integer deposit;
+
+  // 월세가
+  private Integer monthlyPrice;
+
+  // 전세가
+  private Integer jeonsePrice;
+
+  // 매매가
+  private Integer salePrice;
 
   // 집 방향(남향, 남동향, 남서향, 동향, 서향, 북향)
   @Enumerated(EnumType.STRING)
@@ -85,10 +100,6 @@ public class Unit extends BaseTime {
 
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   List<UnitImage> images = new ArrayList<>();
-
-  // 거래 정보
-  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-  List<UnitTransaction> transactions = new ArrayList<>();
 
   @ManyToOne()
   @JoinColumn(name = "member_id")
