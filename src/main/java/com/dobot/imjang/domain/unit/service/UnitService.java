@@ -11,9 +11,9 @@ public interface UnitService {
 
   public Unit getUnitById(UUID id);
 
-  public Unit createUnit(UnitCreateOrUpdateDto unitRequest);
+  public Unit createUnit(UnitCreateOrUpdateDto unitCreateOrUpdateDto, UUID buildingId);
 
-  public Unit updateUnit(UUID id, UnitCreateOrUpdateDto unitRequest);
+  public Unit updateUnit(UUID id, UnitCreateOrUpdateDto unitCreateOrUpdateDto);
 
-  public void deleteUnit(UUID id);
+  public void deleteUnitById(UUID id);
 }

@@ -6,12 +6,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.dobot.imjang.domain.auth.entity.CustomUserDetails;
 import com.dobot.imjang.domain.building.dto.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.entity.Building;
 import com.dobot.imjang.domain.building.entity.Facility;
@@ -24,16 +20,13 @@ import com.dobot.imjang.domain.building.repository.BuildingRepository;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.entity.Member;
-import com.dobot.imjang.domain.member.repository.MemberRepository;
 
 @Service
 public class BuildingServiceImpl implements BuildingService {
     private final BuildingRepository buildingRepository;
-    private final MemberRepository memberRepository;
 
-    public BuildingServiceImpl(BuildingRepository buildingRepository, MemberRepository memberRepository) {
+    public BuildingServiceImpl(BuildingRepository buildingRepository) {
         this.buildingRepository = buildingRepository;
-        this.memberRepository = memberRepository;
     }
 
     public List<Building> getAllBuildings() {
@@ -46,19 +39,12 @@ public class BuildingServiceImpl implements BuildingService {
         return building;
     }
 
-    public Building createBuilding(BuildingCreateOrUpdateRequestDto dto) {
+    public Building createBuilding(BuildingCreateOrUpdateRequestDto dto, Member member) {
         isDuplicatedLocation(dto);
         Building building = new Building();
         building.setId(UUID.randomUUID());
         building.setLongitude(dto.getLongitude());
         building.setLatitude(dto.getLatitude());
-
-        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-
-        Member member = memberRepository.findById(customUserDetails.getId())
-                .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
-
         building.setMember(member);
 
         setBuildingInformation(dto, building);

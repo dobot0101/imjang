@@ -9,6 +9,7 @@ public enum ErrorCode {
   UNIT_NOT_FOUND(HttpStatus.NOT_FOUND, "유닛 정보를 찾을 수 없습니다."),
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 정보를 찾을 수 없습니다."),
   PERMISSION_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
+  UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증 오류"),
   JWT_NOT_VALID(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다.");
 
   private ErrorCode(HttpStatus status, String message) {

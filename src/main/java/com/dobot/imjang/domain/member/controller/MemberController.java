@@ -32,7 +32,7 @@ public class MemberController {
 
   @GetMapping("/signup")
   public String showSignupForm(Model model) {
-    model.addAttribute("signUpRequestDto", new SignUpRequestDto());
+    model.addAttribute("signUpRequestDto", SignUpRequestDto.builder().build());
     return "signup";
   }
 }

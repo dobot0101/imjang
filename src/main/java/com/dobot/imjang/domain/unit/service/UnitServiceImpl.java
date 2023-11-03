@@ -28,8 +28,8 @@ public class UnitServiceImpl implements UnitService {
     return this.unitRepository.findAll();
   }
 
-  public Unit createUnit(UnitCreateOrUpdateDto dto) {
-    Building building = this.buildingRepository.findById(UUID.fromString(dto.getBuildingId()))
+  public Unit createUnit(UnitCreateOrUpdateDto dto, UUID buildingId) {
+    Building building = this.buildingRepository.findById(buildingId)
         .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
 
     Unit unit = new Unit();
@@ -47,7 +47,7 @@ public class UnitServiceImpl implements UnitService {
     return this.unitRepository.save(updatingUnit);
   }
 
-  public void deleteUnit(UUID id) {
+  public void deleteUnitById(UUID id) {
     this.unitRepository.deleteById(id);
   }
 
@@ -74,9 +74,11 @@ public class UnitServiceImpl implements UnitService {
     unit.setSalePrice(dto.getSalePrice());
     unit.setDeposit(dto.getDeposit());
 
-    List<UnitImage> unitImages = dto.getImageUrls().stream()
-        .map(imageUrl -> new UnitImage(UUID.randomUUID(), imageUrl, unit)).toList();
-    unit.setImages(unitImages);
+    if (!dto.getImageUrls().isEmpty()) {
+      List<UnitImage> unitImages = dto.getImageUrls().stream()
+          .map(imageUrl -> new UnitImage(UUID.randomUUID(), imageUrl, unit)).toList();
+      unit.setImages(unitImages);
+    }
 
     return unit;
   }

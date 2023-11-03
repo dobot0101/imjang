@@ -101,6 +101,12 @@
         $('#saveButton').click(function () {
             event.preventDefault();
 
+            const buildingId = $('#buildingId').val();
+            if (!buildingId) {
+                alert('건물정보 아이디가 없습니다.');
+                return false;
+            }
+
             const formDataArr = $("#unitCreateForm").serializeArray();
             const data = {};
 
@@ -110,7 +116,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/api/units",
+                url: "/api/units/new/" + buildingId,
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json',
                 data: JSON.stringify(data),

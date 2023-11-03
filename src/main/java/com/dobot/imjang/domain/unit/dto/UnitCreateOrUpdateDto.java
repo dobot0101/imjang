@@ -17,13 +17,15 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+// @Setter
+@Builder
+@AllArgsConstructor
 public class UnitCreateOrUpdateDto {
-  private String buildingId;
   // 동
   @NotBlank
   private String buildingNumber;
@@ -85,5 +87,6 @@ public class UnitCreateOrUpdateDto {
   private LeakStatus leakStatus;
 
   // 첨부 이미지 url
-  private List<String> imageUrls = new ArrayList<>();
+  // @Builder 어노테이션은 초기화를 무시하기 때문에 초기화하려면 아래와 같이 필드에 final을 붙이면 된다.
+  private final List<String> imageUrls = new ArrayList<>();
 }

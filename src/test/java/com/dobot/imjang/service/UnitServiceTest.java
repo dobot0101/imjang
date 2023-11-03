@@ -1,11 +1,7 @@
 package com.dobot.imjang.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,11 +22,16 @@ import com.dobot.imjang.domain.member.entity.Member;
 import com.dobot.imjang.domain.member.entity.Role;
 import com.dobot.imjang.domain.member.repository.MemberRepository;
 import com.dobot.imjang.domain.member.service.MemberService;
+import com.dobot.imjang.domain.unit.dto.UnitCreateOrUpdateDto;
+import com.dobot.imjang.domain.unit.entity.Unit;
+import com.dobot.imjang.domain.unit.service.UnitService;
 
 @SpringBootTest
 @Transactional
 @TestInstance(Lifecycle.PER_CLASS)
-public class BuildingServiceTest {
+public class UnitServiceTest {
+  @Autowired
+  private UnitService unitService;
 
   @Autowired
   private BuildingService buildingService;
@@ -68,49 +69,41 @@ public class BuildingServiceTest {
   }
 
   @Test
-  void 전체_건물정보_목록조회() {
-    List<Building> allBuildings = this.buildingService.getAllBuildings();
-    boolean allElementsAreBuildings = allBuildings.stream().allMatch(Building.class::isInstance);
-    assertTrue(allElementsAreBuildings, "모든 요소가 Building 클래스의 인스턴트여야 합니다.");
+  public void 세대정보_조회() {
+    UnitCreateOrUpdateDto dto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
+    Unit unit = unitService.createUnit(dto, building.getId());
+
+    Unit foundUnit = unitService.getUnitById(unit.getId());
+    assertEquals(foundUnit.getId(), unit.getId());
   }
 
   @Test
-  void 건물정보_저장() {
-    BuildingCreateOrUpdateRequestDto buildingCreateOrUpdateDto = BuildingCreateOrUpdateRequestDto.builder()
-        .latitude(9.9999).longitude(9.9999)
-        .address("테스트 건물 주소").name("테스트 빌딩").build();
-    Building building = buildingService.createBuilding(buildingCreateOrUpdateDto, member);
-
-    assertNotNull(building, "빌딩 객체가 생성되어야 합니다.");
-    assertEquals(buildingCreateOrUpdateDto.getName(), building.getName(), "빌딩 이름이 일치해야 합니다.");
-    assertEquals(buildingCreateOrUpdateDto.getAddress(), building.getAddress(), "빌딩 주소가 일치해야 합니다.");
+  public void 세대정보_생성() {
+    UnitCreateOrUpdateDto dto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
+    Unit unit = unitService.createUnit(dto, building.getId());
+    assertEquals(unit.getMemo(), "테스트 메모");
   }
 
   @Test
-  void 건물정보_삭제() {
-    BuildingCreateOrUpdateRequestDto buildingCreateOrUpdateDto = BuildingCreateOrUpdateRequestDto.builder()
-        .latitude(9.9999).longitude(9.9999)
-        .address("테스트 건물 주소")
-        .name("테스트 빌딩").build();
-    Building building = buildingService.createBuilding(buildingCreateOrUpdateDto, member);
-    buildingService.deleteBuilding(building.getId());
+  public void 세대정보_수정() {
+    UnitCreateOrUpdateDto createDto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
+    Unit unit = unitService.createUnit(createDto, building.getId());
+
+    UnitCreateOrUpdateDto updateDto = UnitCreateOrUpdateDto.builder().memo("수정된 테스트 메모").build();
+    Unit updatedUnit = unitService.updateUnit(unit.getId(), updateDto);
+
+    assertEquals(updatedUnit.getMemo(), "수정된 테스트 메모");
+  }
+
+  @Test
+  public void 세대정보_삭제() {
+    UnitCreateOrUpdateDto createDto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
+    Unit unit = unitService.createUnit(createDto, building.getId());
+
+    unitService.deleteUnitById(unit.getId());
 
     assertThrows(CustomException.class, () -> {
-      buildingService.getBuildingById(building.getId());
+      unitService.getUnitById(unit.getId());
     });
-  }
-
-  @Test
-  void 건물정보_수정() {
-    BuildingCreateOrUpdateRequestDto createDto = BuildingCreateOrUpdateRequestDto.builder()
-        .latitude(9.9999).longitude(9.9999)
-        .address("테스트 건물 주소")
-        .name("테스트 빌딩").build();
-    Building building = buildingService.createBuilding(createDto, member);
-
-    BuildingCreateOrUpdateRequestDto updateDto = BuildingCreateOrUpdateRequestDto.builder().name("수정된 테스트 빌딩").build();
-    Building updatedBuilding = buildingService.updateBuilding(building.getId(), updateDto);
-
-    assertEquals(updatedBuilding.getName(), "수정된 테스트 빌딩");
   }
 }

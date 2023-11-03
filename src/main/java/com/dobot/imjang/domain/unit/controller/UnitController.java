@@ -35,13 +35,14 @@ public class UnitController {
     this.permissionChecker = permissionChecker;
   }
 
-  @PostMapping("")
+  @PostMapping("/new/{buildingId}")
   public ResponseEntity<Map<String, String>> createUnit(
-      @RequestBody @Valid UnitCreateOrUpdateDto dto) {
-    Building building = buildingService.getBuildingById(UUID.fromString(dto.getBuildingId()));
+      @PathVariable("buildingId") String buildingId, @RequestBody @Valid UnitCreateOrUpdateDto dto) {
+    UUID buildingUUID = UUID.fromString(buildingId);
+    Building building = buildingService.getBuildingById(buildingUUID);
     permissionChecker.checkPermission(building.getMember().getId());
 
-    Unit unit = unitService.createUnit(dto);
+    Unit unit = unitService.createUnit(dto, buildingUUID);
     Map<String, String> response = new HashMap<String, String>();
     response.put("savedUnitId", unit.getId().toString());
     return ResponseEntity.ok(response);
@@ -64,7 +65,7 @@ public class UnitController {
     Unit unit = unitService.getUnitById(id);
     permissionChecker.checkPermission(unit.getMember().getId());
 
-    unitService.deleteUnit(id);
+    unitService.deleteUnitById(id);
     Map<String, String> response = new HashMap<>();
     response.put("result", "success");
     return ResponseEntity.ok(response);

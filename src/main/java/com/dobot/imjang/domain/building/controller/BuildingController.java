@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dobot.imjang.domain.auth.entity.CustomUserDetails;
+import com.dobot.imjang.domain.auth.services.AuthService;
 import com.dobot.imjang.domain.building.dto.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.entity.Building;
 import com.dobot.imjang.domain.building.service.BuildingService;
+import com.dobot.imjang.domain.member.entity.Member;
 import com.dobot.imjang.domain.permission.PermissionChecker;
 
 import jakarta.validation.Valid;
@@ -29,11 +31,13 @@ import jakarta.validation.Valid;
 public class BuildingController {
   private final BuildingService buildingService;
   private final PermissionChecker permissionChecker;
+  private final AuthService authService;
 
   public BuildingController(BuildingService buildingService,
-      PermissionChecker permissionChecker) {
+      PermissionChecker permissionChecker, AuthService authService) {
     this.buildingService = buildingService;
     this.permissionChecker = permissionChecker;
+    this.authService = authService;
   }
 
   @GetMapping("")
@@ -57,7 +61,8 @@ public class BuildingController {
   @PostMapping("")
   public ResponseEntity<Map<String, String>> createBuilding(
       @RequestBody @Valid BuildingCreateOrUpdateRequestDto buildingCreateOrUpdateRequestDto) {
-    Building building = buildingService.createBuilding(buildingCreateOrUpdateRequestDto);
+    Member member = authService.getMemberFromAuthenticatedInfo();
+    Building building = buildingService.createBuilding(buildingCreateOrUpdateRequestDto, member);
     Map<String, String> response = new HashMap<String, String>();
     response.put("savedBuildingId", building.getId().toString());
     return ResponseEntity.ok(response);
