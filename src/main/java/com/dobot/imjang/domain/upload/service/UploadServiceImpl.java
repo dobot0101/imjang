@@ -1,4 +1,4 @@
-package com.dobot.imjang.domain.attachment.services;
+package com.dobot.imjang.domain.upload.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,24 +15,24 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.dobot.imjang.domain.attachment.entities.Attachment;
-import com.dobot.imjang.domain.attachment.repositories.AttachmentRepository;
+import com.dobot.imjang.domain.upload.entity.UploadResult;
+import com.dobot.imjang.domain.upload.repository.UploadResultRepository;
 
 @Service
-public class AttachmentServiceImpl implements AttachmentService {
+public class UploadServiceImpl implements UploadService {
 
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
   private final AmazonS3 amazonS3;
-  private final AttachmentRepository attachmentRepository;
+  private final UploadResultRepository uploadResultRepository;
 
-  public AttachmentServiceImpl(AmazonS3 amazonS3, AttachmentRepository attachmentRepository) {
+  public UploadServiceImpl(AmazonS3 amazonS3, UploadResultRepository uploadResultRepository) {
     this.amazonS3 = amazonS3;
-    this.attachmentRepository = attachmentRepository;
+    this.uploadResultRepository = uploadResultRepository;
   }
 
   @Override
-  public Attachment uploadFile(MultipartFile multipartFile) {
+  public UploadResult uploadFile(MultipartFile multipartFile) {
     String originalFilename = multipartFile.getOriginalFilename();
     String uploadFilename = getUploadFilename(originalFilename);
 
@@ -52,9 +52,9 @@ public class AttachmentServiceImpl implements AttachmentService {
     // 접근가능한 URL 가져오기
     String mediaUrl = amazonS3.getUrl(bucket, uploadFilename).toString();
 
-    Attachment media = Attachment.builder().id(UUID.randomUUID()).fileType(multipartFile.getContentType())
+    UploadResult media = UploadResult.builder().id(UUID.randomUUID()).fileType(multipartFile.getContentType())
         .mediaUrl(mediaUrl).originalFilename(originalFilename).build();
-    attachmentRepository.save(media);
+    uploadResultRepository.save(media);
 
     return media;
   }

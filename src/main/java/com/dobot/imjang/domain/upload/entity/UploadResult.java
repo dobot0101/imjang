@@ -1,4 +1,4 @@
-package com.dobot.imjang.domain.attachment.entities;
+package com.dobot.imjang.domain.upload.entity;
 
 import java.util.UUID;
 
@@ -8,30 +8,26 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Entity
-public class Attachment extends BaseTime {
-  @Builder
-  public Attachment(UUID id, String originalFilename, String fileType, String mediaUrl) {
-    this.id = id;
-    this.originalFilename = originalFilename;
-    this.fileType = fileType;
-    this.mediaUrl = mediaUrl;
-  }
-
+public class UploadResult extends BaseTime {
   @Id()
   UUID id;
+
   @Column(nullable = false)
   String originalFilename;
+
   @Column(nullable = false)
   String fileType;
+
+  @Getter
   @Column(nullable = false)
   String mediaUrl;
-
-  public String getMediaUrl() {
-    return mediaUrl;
-  }
 }
