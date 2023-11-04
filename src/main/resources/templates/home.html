@@ -81,6 +81,7 @@
         $.ajax({
           type: "GET",
           url: "/api/buildings",
+          dataType: "json",
           success: function (data) {
             if (!data.buildings) {
               return;

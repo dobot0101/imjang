@@ -1,8 +1,8 @@
 package com.dobot.imjang.domain.unit.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -87,8 +87,14 @@ public class UnitServiceImpl implements UnitService {
         return UnitImage.builder().id(UUID.randomUUID()).unit(unit).uploadResult(uploadResult).build();
       }).toList();
 
-      List<UnitImage> unitImageList = unit.getImages();
-      unitImageList.addAll(newUnitImages);
+      List<UnitImage> filteredOriginalUnitImages = unit.getImages().stream().filter(image -> {
+        return dto.getUploadedFileIds().contains(image.getUploadResult().getId().toString());
+      }).collect(Collectors.toList());
+      filteredOriginalUnitImages.addAll(newUnitImages);
+      unit.getImages().clear();
+      unit.getImages().addAll(filteredOriginalUnitImages);
+    } else {
+      unit.getImages().clear();
     }
 
     return unit;

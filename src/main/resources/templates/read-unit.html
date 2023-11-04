@@ -91,7 +91,13 @@
             <input type="radio" id="presentLeakStatus" name="leakStatus" value="PRESENT" th:checked="${unit.leakStatus.name() == 'PRESENT'}">
             <label for="presentLeakStatus">있음</label><br>
 
-            <!-- 첨부 이미지 표시 예정 -->
+            <label>첨부 이미지</label>
+            <div th:each="image: ${unit.images}">
+                <div class="image-container">
+                    <img th:src="${image.uploadResult.fileUrl}">
+                    <button class="delete-button">삭제</button>
+                </div>
+            </div>
 
             <button type="button" id="cancelButton">취소</button>
             <button type="button" id="deleteButton">삭제</button>

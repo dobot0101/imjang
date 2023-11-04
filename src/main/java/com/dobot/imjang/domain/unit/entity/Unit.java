@@ -98,8 +98,4 @@ public class Unit extends BaseTime {
 
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   List<UnitImage> images = new ArrayList<>();
-
-  // @ManyToOne()
-  // @JoinColumn(name = "member_id")
-  // private Member member;
 }
