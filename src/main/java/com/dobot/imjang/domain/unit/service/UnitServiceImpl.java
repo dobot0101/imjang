@@ -1,6 +1,7 @@
 package com.dobot.imjang.domain.unit.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -13,15 +14,20 @@ import com.dobot.imjang.domain.unit.dto.UnitCreateOrUpdateDto;
 import com.dobot.imjang.domain.unit.entity.Unit;
 import com.dobot.imjang.domain.unit.entity.UnitImage;
 import com.dobot.imjang.domain.unit.repository.UnitRepository;
+import com.dobot.imjang.domain.upload.entity.UploadResult;
+import com.dobot.imjang.domain.upload.repository.UploadResultRepository;
 
 @Service
 public class UnitServiceImpl implements UnitService {
   private final UnitRepository unitRepository;
   private final BuildingRepository buildingRepository;
+  private final UploadResultRepository uploadResultRepository;
 
-  public UnitServiceImpl(UnitRepository unitRepository, BuildingRepository buildingRepository) {
+  public UnitServiceImpl(UnitRepository unitRepository, BuildingRepository buildingRepository,
+      UploadResultRepository uploadResultRepository) {
     this.unitRepository = unitRepository;
     this.buildingRepository = buildingRepository;
+    this.uploadResultRepository = uploadResultRepository;
   }
 
   public List<Unit> getAllUnits() {
@@ -35,7 +41,6 @@ public class UnitServiceImpl implements UnitService {
     Unit unit = new Unit();
     unit.setId(UUID.randomUUID());
     unit.setBuilding(building);
-    unit.setMember(building.getMember());
     unit = addUnitProperties(dto, unit);
 
     return this.unitRepository.save(unit);
@@ -74,10 +79,16 @@ public class UnitServiceImpl implements UnitService {
     unit.setSalePrice(dto.getSalePrice());
     unit.setDeposit(dto.getDeposit());
 
-    if (!dto.getImageUrls().isEmpty()) {
-      List<UnitImage> unitImages = dto.getImageUrls().stream()
-          .map(imageUrl -> new UnitImage(UUID.randomUUID(), imageUrl, unit)).toList();
-      unit.setImages(unitImages);
+    if (!dto.getUploadedFileIds().isEmpty()) {
+      List<UnitImage> newUnitImages = dto.getUploadedFileIds().stream().map(uploadedFileId -> {
+        UploadResult uploadResult = uploadResultRepository.findById(UUID.fromString(uploadedFileId))
+            .orElseThrow(() -> new CustomException(ErrorCode.UPLOAD_RESULT_NOT_FOUND));
+
+        return UnitImage.builder().id(UUID.randomUUID()).unit(unit).uploadResult(uploadResult).build();
+      }).toList();
+
+      List<UnitImage> unitImageList = unit.getImages();
+      unitImageList.addAll(newUnitImages);
     }
 
     return unit;

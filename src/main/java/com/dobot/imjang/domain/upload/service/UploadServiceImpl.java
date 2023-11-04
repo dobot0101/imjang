@@ -50,13 +50,13 @@ public class UploadServiceImpl implements UploadService {
     }
 
     // 접근가능한 URL 가져오기
-    String mediaUrl = amazonS3.getUrl(bucket, uploadFilename).toString();
+    String fileUrl = amazonS3.getUrl(bucket, uploadFilename).toString();
 
-    UploadResult media = UploadResult.builder().id(UUID.randomUUID()).fileType(multipartFile.getContentType())
-        .mediaUrl(mediaUrl).originalFilename(originalFilename).build();
-    uploadResultRepository.save(media);
+    UploadResult uploadResult = UploadResult.builder().id(UUID.randomUUID()).fileType(multipartFile.getContentType())
+        .fileUrl(fileUrl).originalFilename(originalFilename).build();
+    UploadResult savedUploadResult = uploadResultRepository.save(uploadResult);
 
-    return media;
+    return savedUploadResult;
   }
 
   @Override

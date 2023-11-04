@@ -2,6 +2,7 @@ package com.dobot.imjang.config;
 
 import java.io.PrintWriter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 // @RequiredArgsConstructor
 public class SecurityConfig {
+  @Autowired
+  private ObjectMapper objectMapper;
   private final String[] allowedUrls = { "/auth/login", "/member/signup" };
   // private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -73,7 +76,7 @@ public class SecurityConfig {
   private final AuthenticationEntryPoint unauthorizedEntryPoint = (request, response, authException) -> {
     ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED,
         "Spring Security Unauthorized...");
-    String json = new ObjectMapper().writeValueAsString(errorResponse);
+    String json = objectMapper.writeValueAsString(errorResponse);
     response.setStatus(HttpStatus.UNAUTHORIZED.value());
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     PrintWriter writer = response.getWriter();
@@ -84,7 +87,7 @@ public class SecurityConfig {
 
   private final AccessDeniedHandler accessDeniedHandler = (request, response, accessDeniedException) -> {
     ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, "Spring Security Forbidden...");
-    String json = new ObjectMapper()
+    String json = objectMapper
         .writeValueAsString(errorResponse);
     response.setStatus(HttpStatus.FORBIDDEN.value());
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);

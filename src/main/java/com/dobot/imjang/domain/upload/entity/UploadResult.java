@@ -16,9 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Getter
 @Entity
 public class UploadResult extends BaseTime {
-  @Id()
+  @Id
   UUID id;
 
   @Column(nullable = false)
@@ -27,7 +28,6 @@ public class UploadResult extends BaseTime {
   @Column(nullable = false)
   String fileType;
 
-  @Getter
   @Column(nullable = false)
-  String mediaUrl;
+  String fileUrl;
 }

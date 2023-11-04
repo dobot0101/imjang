@@ -9,9 +9,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@Getter
 public abstract class BaseTime {
   @CreatedDate()
   @Nonnull
@@ -19,12 +21,4 @@ public abstract class BaseTime {
 
   @LastModifiedDate
   LocalDateTime modifiedAt;
-
-  public LocalDateTime getCreatedDate() {
-    return createdAt;
-  }
-
-  public LocalDateTime getModifiedDate() {
-    return modifiedAt;
-  }
 }

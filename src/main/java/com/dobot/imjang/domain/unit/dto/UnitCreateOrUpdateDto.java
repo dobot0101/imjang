@@ -17,13 +17,16 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 // @Setter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class UnitCreateOrUpdateDto {
   // 동
@@ -88,5 +91,5 @@ public class UnitCreateOrUpdateDto {
 
   // 첨부 이미지 url
   // @Builder 어노테이션은 초기화를 무시하기 때문에 초기화하려면 아래와 같이 필드에 final을 붙이면 된다.
-  private final List<String> imageUrls = new ArrayList<>();
+  private final List<String> uploadedFileIds = new ArrayList<>();
 }

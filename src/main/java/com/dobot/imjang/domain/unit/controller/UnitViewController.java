@@ -33,6 +33,8 @@ public class UnitViewController {
   public String showUnitCreateForm(Model model, @PathVariable("buildingId") String buildingId) {
     Building building = this.buildingService.getBuildingById(UUID.fromString(buildingId));
     permissionChecker.checkPermission(building.getMember().getId());
+    
+    model.addAttribute("buildingId", buildingId);
 
     return "create-unit";
   }
@@ -49,7 +51,7 @@ public class UnitViewController {
   public String showUnitUpdateForm(Model model, @PathVariable("unitId") String unitId) {
     Unit unit = unitService.getUnitById(UUID.fromString(unitId));
     model.addAttribute("unit", unit);
-    
+
     return "update-unit";
   }
 }

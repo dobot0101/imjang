@@ -23,7 +23,6 @@ import com.dobot.imjang.domain.building.service.BuildingService;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.member.dto.SignUpRequestDto;
 import com.dobot.imjang.domain.member.entity.Member;
-import com.dobot.imjang.domain.member.entity.Role;
 import com.dobot.imjang.domain.member.repository.MemberRepository;
 import com.dobot.imjang.domain.member.service.MemberService;
 
@@ -50,7 +49,7 @@ public class BuildingServiceTest {
   @BeforeAll
   void 테스트데이터_생성() throws Exception {
     SignUpRequestDto dto = SignUpRequestDto.builder().confirmPassword("test").password("test").email("test@test.co.kr")
-        .name("tester").role(Role.USER).build();
+        .name("tester").build();
     member = memberService.signUp(dto);
 
     BuildingCreateOrUpdateRequestDto buildingCreateRequestDto = BuildingCreateOrUpdateRequestDto.builder()

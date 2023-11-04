@@ -34,7 +34,8 @@ public class SignUpRequestDto {
   @Size(min = 2, message = "이름을 2자 이상 입력하세요")
   private String name;
 
-  private Role role = Role.USER;
+  // @Builder 어노테이션은 초기화를 무시하기 때문에 초기화하려면 필드에 final을 붙여야 함
+  private final Role role = Role.USER;
 
   public Member toEntity(PasswordEncoder passwordEncoder) {
     return Member.builder().id(UUID.randomUUID()).email(this.email).password(passwordEncoder.encode(this.password))

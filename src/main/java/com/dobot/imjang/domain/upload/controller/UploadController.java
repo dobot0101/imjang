@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,11 +15,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dobot.imjang.domain.upload.entity.UploadResult;
 import com.dobot.imjang.domain.upload.service.UploadService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @RequestMapping("/api/upload")
 class UploadController {
   private final UploadService uploadService;
+
+  @Autowired
+  private ObjectMapper objectMapper;
 
   public UploadController(UploadService uploadService) {
     this.uploadService = uploadService;
@@ -33,8 +38,8 @@ class UploadController {
     }
 
     try {
-      UploadResult upload = this.uploadService.uploadFile(file);
-      map.put("accessMediaUrl", upload.getMediaUrl());
+      UploadResult result = this.uploadService.uploadFile(file);
+      map.put("result", objectMapper.writeValueAsString(result));
       return ResponseEntity.ok(map);
     } catch (Exception e) {
       e.printStackTrace();

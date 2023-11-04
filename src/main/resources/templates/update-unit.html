@@ -90,6 +90,11 @@
             <input type="radio" id="presentLeakStatus" name="leakStatus" value="PRESENT" th:checked="${unit.leakStatus.name() == 'PRESENT'}">
             <label for="presentLeakStatus">있음</label><br>
 
+            <label>파일첨부: </label><br>
+            <input type="file" name="fileInput" id="fileInput" accept="image/*">
+            <button type="button" id="uploadButton">업로드</button>
+            <div id="uploadStatus" th:text="${unit.fileUrl}"></div>
+
             <button type="button" id="cancelButton">취소</button>
             <button type="button" id="saveButton">저장</button>
         </form>

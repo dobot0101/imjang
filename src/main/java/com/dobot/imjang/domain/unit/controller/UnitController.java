@@ -52,7 +52,7 @@ public class UnitController {
   public ResponseEntity<Map<String, String>> updateUnit(@PathVariable("id") UUID id,
       @RequestBody @Valid UnitCreateOrUpdateDto dto) {
     Unit unit = unitService.getUnitById(id);
-    permissionChecker.checkPermission(unit.getMember().getId());
+    permissionChecker.checkPermission(unit.getBuilding().getMember().getId());
 
     Unit updatedUnit = unitService.updateUnit(id, dto);
     Map<String, String> response = new HashMap<String, String>();
@@ -63,7 +63,7 @@ public class UnitController {
   @DeleteMapping("/{id}")
   public ResponseEntity<Map<String, String>> deleteUnit(@PathVariable("id") UUID id) {
     Unit unit = unitService.getUnitById(id);
-    permissionChecker.checkPermission(unit.getMember().getId());
+    permissionChecker.checkPermission(unit.getBuilding().getMember().getId());
 
     unitService.deleteUnitById(id);
     Map<String, String> response = new HashMap<>();
