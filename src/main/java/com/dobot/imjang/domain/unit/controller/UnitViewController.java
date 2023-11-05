@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dobot.imjang.domain.building.entity.Building;
 import com.dobot.imjang.domain.building.service.BuildingService;
@@ -35,6 +34,7 @@ public class UnitViewController {
     permissionChecker.checkPermission(building.getMember().getId());
     
     model.addAttribute("buildingId", buildingId);
+    model.addAttribute("headerPageName", "세대정보 등록");
 
     return "create-unit";
   }
@@ -43,6 +43,7 @@ public class UnitViewController {
   public String showUnitReadForm(Model model, @PathVariable("unitId") String unitId) {
     Unit unit = unitService.getUnitById(UUID.fromString(unitId));
     model.addAttribute("unit", unit);
+    model.addAttribute("headerPageName", "세대정보");
     
     return "read-unit";
   }
@@ -51,6 +52,7 @@ public class UnitViewController {
   public String showUnitUpdateForm(Model model, @PathVariable("unitId") String unitId) {
     Unit unit = unitService.getUnitById(UUID.fromString(unitId));
     model.addAttribute("unit", unit);
+    model.addAttribute("headerPageName", "세대정보 수정");
 
     return "update-unit";
   }

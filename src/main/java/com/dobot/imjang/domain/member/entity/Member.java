@@ -1,18 +1,14 @@
 package com.dobot.imjang.domain.member.entity;
 
-import java.util.List;
 import java.util.UUID;
 
-import com.dobot.imjang.domain.building.entity.Building;
 import com.dobot.imjang.domain.common.entities.BaseTime;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,9 +47,11 @@ public class Member extends BaseTime {
   @Enumerated(EnumType.STRING)
   private Role role;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)
-  List<Building> buildings;
+  // @OneToMany(mappedBy = "member", orphanRemoval = true, cascade =
+  // CascadeType.REMOVE)
+  // List<Building> buildings;
 
-  @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.REMOVE)
-  List<Building> units;
+  // @OneToMany(mappedBy = "member", orphanRemoval = true, cascade =
+  // CascadeType.REMOVE)
+  // List<Building> units;
 }

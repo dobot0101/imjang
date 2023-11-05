@@ -31,11 +31,21 @@ public class BuildingViewController {
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
         .getPrincipal();
     List<Building> buildings = buildingService.getBuildingsByMemberId(userDetails.getId());
+    model.addAttribute("buildings", buildings);
+    model.addAttribute("headerPageName", "홈");
+    return "home";
+  }
+
+  @GetMapping("/buildings/list")
+  public String showListPage(Model model) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+        .getPrincipal();
+    List<Building> buildings = buildingService.getBuildingsByMemberId(userDetails.getId());
 
     model.addAttribute("buildings", buildings);
-    model.addAttribute("username", userDetails.getUsername());
+    model.addAttribute("headerPageName", "건물정보 목록");
 
-    return "home";
+    return "list-building";
   }
 
   @GetMapping("/buildings/register")
@@ -48,6 +58,7 @@ public class BuildingViewController {
 
     String buildingName = dto.getBuildingName();
     model.addAttribute("buildingName", buildingName == null ? "" : buildingName);
+    model.addAttribute("headerPageName", "건물정보 등록");
 
     return "create-building";
   }
@@ -69,6 +80,7 @@ public class BuildingViewController {
     List<String> facilityTypes = building.getFacilities().stream().map(facility -> facility.getFacilityType().name())
         .toList();
     model.addAttribute("facilityTypes", facilityTypes);
+    model.addAttribute("headerPageName", "건물정보");
 
     return "read-building";
   }
@@ -90,6 +102,7 @@ public class BuildingViewController {
     List<String> facilityTypes = building.getFacilities().stream().map(facility -> facility.getFacilityType().name())
         .toList();
     model.addAttribute("facilityTypes", facilityTypes);
+    model.addAttribute("headerPageName", "건물정보 수정");
 
     return "update-building";
   }

@@ -4,195 +4,176 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{layout/default_layout}"
 >
-<th:block layout:fragment="content">
-    <div class="container">
-        <h1 class="text-center">세대정보 수정</h1>
-        <input type="hidden" name="unitId" id="unitId" th:value="${unit.id}">
-        <form id="unitUpdateForm">
-            <label for="buildingNumber">동:</label>
-            <input type="text" id="buildingNumber" name="buildingNumber" th:value="${unit.buildingNumber}"><br>
-    
-            <label for="roomNumber">호:</label>
-            <input type="text" id="roomNumber" name="roomNumber" th:value="${unit.roomNumber}"><br>
-    
-            <label for="area">면적:</label>
-            <input type="text" id="area" name="area" th:value="${unit.area}"><br>
-    
-            <label for="memo">메모:</label>
-            <textarea id="memo" name="memo" maxlength="500" th:text="${unit.memo}"></textarea><br>
-    
-            <label for="transactionPrice">월세 가격(단위: 만원):</label>
-            <input type="text" id="monthlyPrice" name="monthlyPrice" maxlength="6" th:value="${unit.monthlyPrice}"><br>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/unit.css}" >
+    </th:block>
+    <th:block layout:fragment="content">
+        <div class="container">
+            <input type="hidden" name="unitId" id="unitId" th:value="${unit.id}">
+            <form id="unitUpdateForm">
+                <label class="form-label" for="buildingNumber">동:</label>
+                <input type="text" class="form-control" id="buildingNumber" name="buildingNumber" th:value="${unit.buildingNumber}">
+        
+                <label class="form-label" for="roomNumber">호:</label>
+                <input type="text" class="form-control" id="roomNumber" name="roomNumber" th:value="${unit.roomNumber}">
+        
+                <label class="form-label" for="area">면적:</label>
+                <input type="text" class="form-control" id="area" name="area" th:value="${unit.area}">
+        
+                <label class="form-label" for="memo">메모:</label>
+                <textarea class="form-control" id="memo" name="memo" maxlength="500" th:text="${unit.memo}"></textarea>
+        
+                <label class="form-label" for="transactionPrice">월세 가격(단위: 만원):</label>
+                <input type="text" class="form-control" id="monthlyPrice" name="monthlyPrice" maxlength="6" th:value="${unit.monthlyPrice}">
 
-            <label for="transactionPrice">전세 가격(단위: 만원):</label>
-            <input type="text" id="monthlyPrice" name="jeonsePrice" maxlength="6" th:value="${unit.jeonsePrice}"><br>
+                <label class="form-label" for="transactionPrice">전세 가격(단위: 만원):</label>
+                <input type="text" class="form-control" id="monthlyPrice" name="jeonsePrice" maxlength="6" th:value="${unit.jeonsePrice}">
 
-            <label for="transactionPrice">매매 가격(단위: 만원):</label>
-            <input type="text" id="monthlyPrice" name="salePrice" maxlength="6" th:value="${unit.salePrice}"><br>
+                <label class="form-label" for="transactionPrice">매매 가격(단위: 만원):</label>
+                <input type="text" class="form-control" id="monthlyPrice" name="salePrice" maxlength="6" th:value="${unit.salePrice}">
 
-            <label for="deposit">융자금(단위: 만원):</label>
-            <input type="text" id="deposit" name="deposit" maxlength="6" th:value="${unit.deposit}"><br>
-    
-            <label>집 방향:</label><br>
-            <input type="radio" id="south" name="direction" value="SOUTH" th:checked="${unit.direction.name() == 'SOUTH'}">
-            <label for="south">남향</label><br>
-            <input type="radio" id="southeast" name="direction" value="SOUTHEAST" th:checked="${unit.direction.name() == 'SOUTHEAST'}">
-            <label for="southeast">남동향</label><br>
-            <input type="radio" id="southwest" name="direction" value="SOUTHWEST" th:checked="${unit.direction.name() == 'SOUTHWEST'}">
-            <label for="southwest">남서향</label><br>
-            <input type="radio" id="east" name="direction" value="EAST" th:checked="${unit.direction.name() == 'EAST'}">
-            <label for="east">동향</label><br>
-            <input type="radio" id="west" name="direction" value="WEST" th:checked="${unit.direction.name() == 'WEST'}">
-            <label for="west">서향</label><br>
-            <input type="radio" id="north" name="direction" value="NORTH" th:checked="${unit.direction.name() == 'NORTH'}">
-            <label for="north">북향</label><br>
-
-            <label>전망:</label><br>
-            <input type="radio" id="good" name="viewQuality" value="GOOD" th:checked="${unit.viewQuality.name() == 'GOOD'}">
-            <label for="good">좋음</label><br>
-            <input type="radio" id="average" name="viewQuality" value="AVERAGE" th:checked="${unit.viewQuality.name() == 'AVERAGE'}">
-            <label for="average">보통</label><br>
-            <input type="radio" id="poor" name="viewQuality" value="POOR" th:checked="${unit.viewQuality.name() == 'POOR'}">
-            <label for="poor">나쁨</label><br>
-
-            <label>통풍:</label><br>
-            <input type="radio" id="goodVentilation" name="ventilation" value="GOOD" th:checked="${unit.ventilation.name() == 'GOOD'}">
-            <label for="goodVentilation">좋음</label><br>
-            <input type="radio" id="poorVentilation" name="ventilation" value="POOR" th:checked="${unit.ventilation.name() == 'POOR'}">
-            <label for="poorVentilation">나쁨</label><br>
-
-            <label>수압:</label><br>
-            <input type="radio" id="goodWaterPressure" name="waterPressure" value="GOOD" th:checked="${unit.waterPressure.name() == 'GOOD'}">
-            <label for="goodWaterPressure">좋음</label><br>
-            <input type="radio" id="poorWaterPressure" name="waterPressure" value="POOR" th:checked="${unit.waterPressure.name() == 'POOR'}">
-            <label for="poorWaterPressure">나쁨</label><br>
-
-            <label>소음:</label><br>
-            <input type="radio" id="noneNoiseLevel" name="noiseLevel" value="NONE" th:checked="${unit.noiseLevel.name() == 'NONE'}">
-            <label for="noneNoiseLevel">없음</label><br>
-            <input type="radio" id="moderateNoiseLevel" name="noiseLevel" value="MODERATE" th:checked="${unit.noiseLevel.name() == 'MODERATE'}">
-            <label for="moderateNoiseLevel">보통</label><br>
-            <input type="radio" id="highNoiseLevel" name="noiseLevel" value="HIGH" th:checked="${unit.noiseLevel.name() == 'HIGH'}">
-            <label for="highNoiseLevel">심함</label><br>
-
-            <label>결로/곰팡이:</label><br>
-            <input type="radio" id="noneCondensationMoldLevel" name="condensationMoldLevel" value="NONE" th:checked="${unit.condensationMoldLevel.name() == 'NONE'}">
-            <label for="noneCondensationMoldLevel">없음</label><br>
-            <input type="radio" id="moderateCondensationMoldLevel" name="condensationMoldLevel" value="MODERATE" th:checked="${unit.condensationMoldLevel.name() == 'MODERATE'}">
-            <label for="moderateCondensationMoldLevel">보통</label><br>
-            <input type="radio" id="severeCondensationMoldLevel" name="condensationMoldLevel" value="SEVERE" th:checked="${unit.condensationMoldLevel.name() == 'SEVERE'}">
-            <label for="severeCondensationMoldLevel">심함</label><br>
-
-            <label>누수:</label><br>
-            <input type="radio" id="noneLeakStatus" name="leakStatus" value="NONE" th:checked="${unit.leakStatus.name() == 'NONE'}">
-            <label for="noneLeakStatus">없음</label><br>
-            <input type="radio" id="presentLeakStatus" name="leakStatus" value="PRESENT" th:checked="${unit.leakStatus.name() == 'PRESENT'}">
-            <label for="presentLeakStatus">있음</label><br>
-
-            <label>파일첨부: </label><br>
-            <input type="file" name="fileInput" id="fileInput" accept="image/*">
-            <button type="button" id="uploadButton">업로드</button>
-            <div id="uploadStatus"></div>
-
-            <label>첨부 이미지</label>
-            <div id="uploadedImages" th:if="${!unit.images.isEmpty()}" th:each="image: ${unit.images}">
-                <div class="image-container">
-                    <img th:src="${image.uploadResult.fileUrl}">
-                    <button class="delete-button">삭제</button>
+                <label class="form-label" for="deposit">융자금(단위: 만원):</label>
+                <input type="text" class="form-control" id="deposit" name="deposit" maxlength="6" th:value="${unit.deposit}">
+        
+                <div class="mb-3">
+                    <label class="form-label">집 방향:</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="south" name="direction" value="SOUTH" th:checked="${unit.direction.name() == 'SOUTH'}">
+                        <label class="form-check-label" for="south">남향</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="southeast" name="direction" value="SOUTHEAST" th:checked="${unit.direction.name() == 'SOUTHEAST'}">
+                        <label class="form-check-label" for="southeast">남동향</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="southwest" name="direction" value="SOUTHWEST" th:checked="${unit.direction.name() == 'SOUTHWEST'}">
+                        <label class="form-check-label" for="southwest">남서향</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="east" name="direction" value="EAST" th:checked="${unit.direction.name() == 'EAST'}">
+                        <label class="form-check-label" for="east">동향</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="west" name="direction" value="WEST" th:checked="${unit.direction.name() == 'WEST'}">
+                        <label class="form-check-label" for="west">서향</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="north" name="direction" value="NORTH" th:checked="${unit.direction.name() == 'NORTH'}">
+                        <label class="form-check-label" for="north">북향</label>
+                    </div>
                 </div>
-            </div>
-            <div id="uploadedImages" th:if="${unit.images.isEmpty()}"></div>
+                
+                <div class="mb-3">
+                    <label class="form-label">전망:</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="good" name="viewQuality" value="GOOD" th:checked="${unit.viewQuality.name() == 'GOOD'}">
+                        <label class="form-check-label" for="good">좋음</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="average" name="viewQuality" value="AVERAGE" th:checked="${unit.viewQuality.name() == 'AVERAGE'}">
+                        <label class="form-check-label" for="average">보통</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="poor" name="viewQuality" value="POOR" th:checked="${unit.viewQuality.name() == 'POOR'}">
+                        <label class="form-check-label" for="poor">나쁨</label>
+                    </div>
+                </div>
 
-            <button type="button" id="cancelButton">취소</button>
-            <button type="button" id="saveButton">저장</button>
-        </form>
-    </div>
+                <div class="mb-3">
+                    <label class="form-label">통풍:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="goodVentilation" name="ventilation" value="GOOD" th:checked="${unit.ventilation.name() == 'GOOD'}">
+                        <label class="form-check-label" for="goodVentilation">좋음</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="poorVentilation" name="ventilation" value="POOR" th:checked="${unit.ventilation.name() == 'POOR'}">
+                        <label class="form-check-label" for="poorVentilation">나쁨</label>
+                    </div>
+                </div>
 
-    <script>
-        let uploadedFileIds = [];
-        $('#uploadButton').click(function() {
-            var fileInput = $('#fileInput')[0];
-            var files = fileInput.files;
+                <div class="mb-3">
+                    <label class="form-label">수압:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="goodWaterPressure" name="waterPressure" value="GOOD" th:checked="${unit.waterPressure.name() == 'GOOD'}">
+                        <label class="form-check-label" for="goodWaterPressure">좋음</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="poorWaterPressure" name="waterPressure" value="POOR" th:checked="${unit.waterPressure.name() == 'POOR'}">
+                        <label class="form-check-label" for="poorWaterPressure">나쁨</label>
+                    </div>
+                </div>                
+                
+                <div class="mb-3">
+                    <label class="form-label">소음:</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="noneNoiseLevel" name="noiseLevel" value="NONE" th:checked="${unit.noiseLevel.name() == 'NONE'}">
+                        <label class="form-check-label" for="noneNoiseLevel">없음</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="moderateNoiseLevel" name="noiseLevel" value="MODERATE" th:checked="${unit.noiseLevel.name() == 'MODERATE'}">
+                        <label class="form-check-label" for="moderateNoiseLevel">보통</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="highNoiseLevel" name="noiseLevel" value="HIGH" th:checked="${unit.noiseLevel.name() == 'HIGH'}">
+                        <label class="form-check-label" for="highNoiseLevel">심함</label>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">결로/곰팡이:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="noneCondensationMoldLevel" name="condensationMoldLevel" value="NONE" th:checked="${unit.condensationMoldLevel.name() == 'NONE'}">
+                        <label class="form-check-label" for="noneCondensationMoldLevel">없음</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="moderateCondensationMoldLevel" name="condensationMoldLevel" value="MODERATE" th:checked="${unit.condensationMoldLevel.name() == 'MODERATE'}">
+                        <label class="form-check-label" for="moderateCondensationMoldLevel">보통</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="severeCondensationMoldLevel" name="condensationMoldLevel" value="SEVERE" th:checked="${unit.condensationMoldLevel.name() == 'SEVERE'}">
+                        <label class="form-check-label" for="severeCondensationMoldLevel">심함</label>
+                    </div>
+                </div>
 
-            if (files.length === 0) {
-                $('#uploadStatus').text('파일을 선택해주세요.');
-                return;
-            }
+                <div class="mb-3">
+                    <label class="form-label">누수:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="noneLeakStatus" name="leakStatus" value="NONE" th:checked="${unit.leakStatus.name() == 'NONE'}">
+                        <label class="form-check-label" for="noneLeakStatus">없음</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="presentLeakStatus" name="leakStatus" value="PRESENT" th:checked="${unit.leakStatus.name() == 'PRESENT'}">
+                        <label class="form-check-label" for="presentLeakStatus">있음</label>
+                    </div>
+                </div>
 
-            var formData = new FormData();
-            formData.append('file', files[0]);
-
-            $.ajax({
-                url: '/api/upload',
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response.result) {
-                        const result = JSON.parse(response.result);
-                        uploadedFileIds.push(result.id);
-                        $('#uploadStatus').text('파일 업로드 성공.');
-                        
-                        const imageContainer = `<div class="image-container">
-                            <img src="${result.fileUrl}">
-                            <button class="delete-button" data-id="${result.id}">삭제</button>
-                        </div>`;
-                        $('#uploadedImages').append(imageContainer);
-                    }
-                },
-                error: function() {
-                    $('#uploadStatus').text('파일 업로드 실패.');
-                }
-            });
-        });
-
-        $(document).on('click', '.delete-button', function () {
-            event.preventDefault();
-            event.stopPropagation();
-
-            const uploadResultId = $(this).data('id');
-            uploadedFileIds = uploadedFileIds.filter(fileId => fileId !== uploadResultId);
-            $(this).parent('.image-container').remove();
-        });
-
-        $('#saveButton').click(function () {
-            const unitId = $('#unitId').val();
-            if (!unitId) {
-                return false;
-            }
-
-            const formDataArr = $("#unitUpdateForm").serializeArray();
-            const data = {};
-
-            for (const {name,value} of formDataArr) {
-                data[name] = value;
-            }
-
-            if (uploadedFileIds.length > 0) {
-                data['uploadedFileIds'] = uploadedFileIds;
-            }
-
-            $.ajax({
-                type: "PUT",
-                url: "/api/units/" + unitId,
-                contentType: 'application/json; charset=UTF-8',
-                dataType: 'json',
-                data: JSON.stringify(data),
-                success: function(response) {
-                    window.location.href=`/units/${response.savedUnitId}`
-                },
-                error: function(data) {
-                    console.log("저장 실패", data);
-                }
-            });
-        })
-
-        $('#cancelButton').click(function () {
-            event.preventDefault();
-            history.back();
-        });
-    </script>
-</th:block>
+                <div class="mb-3">
+                    <label class="form-label">파일첨부: </label>
+                    <input class="form-control" type="file" name="fileInput" id="fileInput" accept="image/*">
+                    <button class="btn btn-secondary" type="button" id="uploadButton">업로드</button>
+                    <div id="uploadStatus"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">첨부 이미지:</label>
+                    <div id="uploadedImages" th:if="${!unit.images.isEmpty()}" th:each="image: ${unit.images}">
+                        <div class="image-container">
+                            <img th:src="${image.uploadResult.fileUrl}">
+                            <button class="delete-button">삭제</button>
+                        </div>
+                    </div>
+                    <div id="uploadedImages" th:if="${unit.images.isEmpty()}"></div>
+                </div>
+                
+                <button class="btn btn-secondary" type="button" id="cancelButton">취소</button>
+                <button class="btn btn-primary" type="button" id="saveButton">저장</button>
+            </form>
+        </div>
+        
+    </th:block>
+    <th:block layout:fragment="bottom">
+        <th:block th:replace="~{fragments/nav :: navFragment}"></th:block>
+    </th:block>
+    <th:block layout:fragment="script">
+        <script type="text/javascript" th:src="@{/js/update-unit.js}"></script>
+    </th:block>
 </html>

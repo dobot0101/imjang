@@ -23,7 +23,6 @@ import com.dobot.imjang.domain.building.entity.Building;
 import com.dobot.imjang.domain.building.service.BuildingService;
 import com.dobot.imjang.domain.member.entity.Member;
 import com.dobot.imjang.domain.permission.PermissionChecker;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.validation.Valid;
 
@@ -42,7 +41,7 @@ public class BuildingController {
   }
 
   @GetMapping("")
-  public ResponseEntity<Map<String, Object>> getAllBuildings() throws JsonProcessingException {
+  public ResponseEntity<Map<String, Object>> getAllBuildings() {
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
         .getPrincipal();
     permissionChecker.checkPermission(userDetails.getId());

@@ -8,7 +8,6 @@ import com.dobot.imjang.domain.member.service.MemberService;
 
 @Component
 public class TestDataInitializer implements CommandLineRunner {
-
   private final MemberService memberService;
 
   public TestDataInitializer(MemberService memberService) {
@@ -17,8 +16,12 @@ public class TestDataInitializer implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    SignUpRequestDto dto = SignUpRequestDto.builder().confirmPassword("test").password("test")
-        .email("tester@imjang.com").name("테스터").build();
-    memberService.signUp(dto);
+    try {
+      SignUpRequestDto dto = SignUpRequestDto.builder().confirmPassword("test").password("test")
+          .email("tester@imjang.com").name("테스터").build();
+      memberService.signUp(dto);
+    } catch (Exception e) {
+
+    }
   }
 }

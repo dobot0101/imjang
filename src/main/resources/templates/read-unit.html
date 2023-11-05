@@ -4,137 +4,195 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{layout/default_layout}"
 >
+<th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/unit.css}" >
+</th:block>
+
 <th:block layout:fragment="content">
     <div class="container">
-        <h1 class="text-center">세대정보 상세</h1>
         <form action="/save-unit" method="post" id="unitCreateForm">
-
             <input type="hidden" name="unitId" id="unitId" th:value="${unitId}">
 
-            <label for="buildingNumber">동:</label>
-            <input type="text" id="buildingNumber" name="buildingNumber" th:value="${unit.buildingNumber}"><br>
+            <div class="mb-3">
+                <label class="form-label" for="buildingNumber">동:</label>
+                <input class="form-control" type="text" id="buildingNumber" name="buildingNumber" th:value="${unit.buildingNumber}">
+            </div>
     
-            <label for="roomNumber">호:</label>
-            <input type="text" id="roomNumber" name="roomNumber" th:value="${unit.roomNumber}"><br>
+            <div class="mb-3">
+                <label class="form-label" for="roomNumber">호:</label>
+                <input class="form-control" type="text" id="roomNumber" name="roomNumber" th:value="${unit.roomNumber}">
+            </div>
+            
     
-            <label for="area">면적:</label>
-            <input type="text" id="area" name="area" th:value="${unit.area}"><br>
+            <div class="mb-3">
+                <label class="form-label" for="area">면적:</label>
+                <input class="form-control" type="text" id="area" name="area" th:value="${unit.area}">
+            </div>
+            
     
-            <label for="memo">메모:</label>
-            <textarea id="memo" name="memo" maxlength="500" th:text="${unit.memo}"></textarea><br>
+            <div class="mb-3">
+                <label class="form-label" for="memo">메모:</label>
+                <textarea class="form-control" id="memo" name="memo" maxlength="500" th:text="${unit.memo}"></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label" for="transactionPrice">월세 가격(단위: 만원):</label>
+                <input class="form-control" type="text" id="monthlyPrice" name="monthlyPrice" maxlength="6" th:value="${unit.monthlyPrice}">
+            </div>
     
-            <label for="transactionPrice">월세 가격(단위: 만원):</label>
-            <input type="text" id="monthlyPrice" name="monthlyPrice" maxlength="6" th:value="${unit.monthlyPrice}"><br>
+            <div class="mb-3">
+                <label class="form-label" for="transactionPrice">전세 가격(단위: 만원):</label>
+                <input class="form-control" type="text" id="monthlyPrice" name="jeonsePrice" maxlength="6" th:value="${unit.jeonsePrice}">
+            </div>
 
-            <label for="transactionPrice">전세 가격(단위: 만원):</label>
-            <input type="text" id="monthlyPrice" name="jeonsePrice" maxlength="6" th:value="${unit.jeonsePrice}"><br>
+            <div class="mb-3">
+                <label class="form-label" for="transactionPrice">매매 가격(단위: 만원):</label>
+                <input class="form-control" type="text" id="monthlyPrice" name="salePrice" maxlength="6" th:value="${unit.salePrice}">
+            </div>
 
-            <label for="transactionPrice">매매 가격(단위: 만원):</label>
-            <input type="text" id="monthlyPrice" name="salePrice" maxlength="6" th:value="${unit.salePrice}"><br>
-
-            <label for="deposit">융자금(단위: 만원):</label>
-            <input type="text" id="deposit" name="deposit" maxlength="6" th:value="${unit.deposit}"><br>
+            <div class="mb-3">
+                <label class="form-label" for="deposit">융자금(단위: 만원):</label>
+                <input class="form-control" type="text" id="deposit" name="deposit" maxlength="6" th:value="${unit.deposit}">
+            </div>
     
-            <label>집 방향:</label><br>
-            <input type="radio" id="south" name="direction" value="SOUTH" th:checked="${unit.direction.name() == 'SOUTH'}">
-            <label for="south">남향</label><br>
-            <input type="radio" id="southeast" name="direction" value="SOUTHEAST" th:checked="${unit.direction.name() == 'SOUTHEAST'}">
-            <label for="southeast">남동향</label><br>
-            <input type="radio" id="southwest" name="direction" value="SOUTHWEST" th:checked="${unit.direction.name() == 'SOUTHWEST'}">
-            <label for="southwest">남서향</label><br>
-            <input type="radio" id="east" name="direction" value="EAST" th:checked="${unit.direction.name() == 'EAST'}">
-            <label for="east">동향</label><br>
-            <input type="radio" id="west" name="direction" value="WEST" th:checked="${unit.direction.name() == 'WEST'}">
-            <label for="west">서향</label><br>
-            <input type="radio" id="north" name="direction" value="NORTH" th:checked="${unit.direction.name() == 'NORTH'}">
-            <label for="north">북향</label><br>
+            <div class="mb-3">
+                <label class="form-label">집 방향:</label>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="south" name="direction" value="SOUTH" th:checked="${unit.direction.name() == 'SOUTH'}">
+                    <label class="form-check-label" for="south">남향</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="southeast" name="direction" value="SOUTHEAST" th:checked="${unit.direction.name() == 'SOUTHEAST'}">
+                    <label class="form-check-label" for="southeast">남동향</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="southwest" name="direction" value="SOUTHWEST" th:checked="${unit.direction.name() == 'SOUTHWEST'}">
+                    <label class="form-check-label" for="southwest">남서향</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="east" name="direction" value="EAST" th:checked="${unit.direction.name() == 'EAST'}">
+                    <label class="form-check-label" for="east">동향</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="west" name="direction" value="WEST" th:checked="${unit.direction.name() == 'WEST'}">
+                    <label class="form-check-label" for="west">서향</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="north" name="direction" value="NORTH" th:checked="${unit.direction.name() == 'NORTH'}">
+                    <label class="form-check-label" for="north">북향</label>
+                </div>
+            </div>
+            
 
-            <label>전망:</label><br>
-            <input type="radio" id="good" name="viewQuality" value="GOOD" th:checked="${unit.viewQuality.name() == 'GOOD'}">
-            <label for="good">좋음</label><br>
-            <input type="radio" id="average" name="viewQuality" value="AVERAGE" th:checked="${unit.viewQuality.name() == 'AVERAGE'}">
-            <label for="average">보통</label><br>
-            <input type="radio" id="poor" name="viewQuality" value="POOR" th:checked="${unit.viewQuality.name() == 'POOR'}">
-            <label for="poor">나쁨</label><br>
-
-            <label>통풍:</label><br>
-            <input type="radio" id="goodVentilation" name="ventilation" value="GOOD" th:checked="${unit.ventilation.name() == 'GOOD'}">
-            <label for="goodVentilation">좋음</label><br>
-            <input type="radio" id="poorVentilation" name="ventilation" value="POOR" th:checked="${unit.ventilation.name() == 'POOR'}">
-            <label for="poorVentilation">나쁨</label><br>
-
-            <label>수압:</label><br>
-            <input type="radio" id="goodWaterPressure" name="waterPressure" value="GOOD" th:checked="${unit.waterPressure.name() == 'GOOD'}">
-            <label for="goodWaterPressure">좋음</label><br>
-            <input type="radio" id="poorWaterPressure" name="waterPressure" value="POOR" th:checked="${unit.waterPressure.name() == 'POOR'}">
-            <label for="poorWaterPressure">나쁨</label><br>
-
-            <label>소음:</label><br>
-            <input type="radio" id="noneNoiseLevel" name="noiseLevel" value="NONE" th:checked="${unit.noiseLevel.name() == 'NONE'}">
-            <label for="noneNoiseLevel">없음</label><br>
-            <input type="radio" id="moderateNoiseLevel" name="noiseLevel" value="MODERATE" th:checked="${unit.noiseLevel.name() == 'MODERATE'}">
-            <label for="moderateNoiseLevel">보통</label><br>
-            <input type="radio" id="highNoiseLevel" name="noiseLevel" value="HIGH" th:checked="${unit.noiseLevel.name() == 'HIGH'}">
-            <label for="highNoiseLevel">심함</label><br>
-
-            <label>결로/곰팡이:</label><br>
-            <input type="radio" id="noneCondensationMoldLevel" name="condensationMoldLevel" value="NONE" th:checked="${unit.condensationMoldLevel.name() == 'NONE'}">
-            <label for="noneCondensationMoldLevel">없음</label><br>
-            <input type="radio" id="moderateCondensationMoldLevel" name="condensationMoldLevel" value="MODERATE" th:checked="${unit.condensationMoldLevel.name() == 'MODERATE'}">
-            <label for="moderateCondensationMoldLevel">보통</label><br>
-            <input type="radio" id="severeCondensationMoldLevel" name="condensationMoldLevel" value="SEVERE" th:checked="${unit.condensationMoldLevel.name() == 'SEVERE'}">
-            <label for="severeCondensationMoldLevel">심함</label><br>
-
-            <label>누수:</label><br>
-            <input type="radio" id="noneLeakStatus" name="leakStatus" value="NONE" th:checked="${unit.leakStatus.name() == 'NONE'}">
-            <label for="noneLeakStatus">없음</label><br>
-            <input type="radio" id="presentLeakStatus" name="leakStatus" value="PRESENT" th:checked="${unit.leakStatus.name() == 'PRESENT'}">
-            <label for="presentLeakStatus">있음</label><br>
-
-            <label>첨부 이미지</label>
-            <div th:each="image: ${unit.images}">
-                <div class="image-container">
-                    <img th:src="${image.uploadResult.fileUrl}">
-                    <button class="delete-button">삭제</button>
+            <div class="mb-3">
+                <label class="form-label">전망:</label>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="good" name="viewQuality" value="GOOD" th:checked="${unit.viewQuality.name() == 'GOOD'}">
+                    <label class="form-check-label" for="good">좋음</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="average" name="viewQuality" value="AVERAGE" th:checked="${unit.viewQuality.name() == 'AVERAGE'}">
+                    <label class="form-check-label" for="average">보통</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="poor" name="viewQuality" value="POOR" th:checked="${unit.viewQuality.name() == 'POOR'}">
+                    <label class="form-check-label" for="poor">나쁨</label>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">통풍:</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="goodVentilation" name="ventilation" value="GOOD" th:checked="${unit.ventilation.name() == 'GOOD'}">
+                    <label class="form-check-label" for="goodVentilation">좋음</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="poorVentilation" name="ventilation" value="POOR" th:checked="${unit.ventilation.name() == 'POOR'}">
+                    <label class="form-check-label" for="poorVentilation">나쁨</label>
                 </div>
             </div>
 
-            <button type="button" id="cancelButton">취소</button>
-            <button type="button" id="deleteButton">삭제</button>
-            <button type="button" id="modifyButton">수정</button>
+            
+
+            <div class="mb-3">
+                <label class="form-label">수압:</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="goodWaterPressure" name="waterPressure" value="GOOD" th:checked="${unit.waterPressure.name() == 'GOOD'}">
+                    <label class="form-check-label" for="goodWaterPressure">좋음</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="poorWaterPressure" name="waterPressure" value="POOR" th:checked="${unit.waterPressure.name() == 'POOR'}">
+                    <label class="form-check-label" for="poorWaterPressure">나쁨</label>
+                </div>
+            </div>
+            
+
+            <div class="mb-3">
+                <label class="form-label">소음:</label>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="noneNoiseLevel" name="noiseLevel" value="NONE" th:checked="${unit.noiseLevel.name() == 'NONE'}">
+                    <label class="form-check-label" for="noneNoiseLevel">없음</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="moderateNoiseLevel" name="noiseLevel" value="MODERATE" th:checked="${unit.noiseLevel.name() == 'MODERATE'}">
+                    <label class="form-check-label" for="moderateNoiseLevel">보통</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="highNoiseLevel" name="noiseLevel" value="HIGH" th:checked="${unit.noiseLevel.name() == 'HIGH'}">
+                    <label class="form-check-label" for="highNoiseLevel">심함</label>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">결로/곰팡이:</label>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="noneCondensationMoldLevel" name="condensationMoldLevel" value="NONE" th:checked="${unit.condensationMoldLevel.name() == 'NONE'}">
+                    <label class="form-check-label" for="noneCondensationMoldLevel">없음</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="moderateCondensationMoldLevel" name="condensationMoldLevel" value="MODERATE" th:checked="${unit.condensationMoldLevel.name() == 'MODERATE'}">
+                    <label class="form-check-label" for="moderateCondensationMoldLevel">보통</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="severeCondensationMoldLevel" name="condensationMoldLevel" value="SEVERE" th:checked="${unit.condensationMoldLevel.name() == 'SEVERE'}">
+                    <label class="form-check-label" for="severeCondensationMoldLevel">심함</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">누수:</label>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="noneLeakStatus" name="leakStatus" value="NONE" th:checked="${unit.leakStatus.name() == 'NONE'}">
+                    <label class="form-check-label" for="noneLeakStatus">없음</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="presentLeakStatus" name="leakStatus" value="PRESENT" th:checked="${unit.leakStatus.name() == 'PRESENT'}">
+                    <label class="form-check-label" for="presentLeakStatus">있음</label>
+                </div>
+            </div>
+            
+
+            <div class="mb-3">
+                <label class="form-label">첨부 이미지:</label>
+                <div th:each="image: ${unit.images}">
+                    <div class="image-container">
+                        <img th:src="${image.uploadResult.fileUrl}">
+                    </div>
+                </div>
+            </div>
+            
+
+            <button class="btn btn-secondary" type="button" id="cancelButton">취소</button>
+            <button class="btn btn-danger" type="button" id="deleteButton">삭제</button>
+            <button class="btn btn-primary" type="button" id="modifyButton">수정</button>
         </form>
     </div>
-
-    
-    <script th:src="@{/js/util.js}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            disableOrMakeReadonlyAllInputs();
-        })
-
-        $('#cancelButton').click(function () {
-            event.preventDefault();
-            history.back();
-        });
-
-        $('#modifyButton').click(function () {
-            event.preventDefault();
-            const unitId= $('#unitId').val();
-            window.location= `/units/${unitId}/edit`;
-        });
-
-        $('#deleteButton').click(function () {
-            const unitId = $('#unitId').val();
-            $.ajax({
-                type: "DELETE",
-                url: `/api/units/${unitId}`,
-                success: function(data){
-                    window.location.href = '/';
-                },error: function(data) {
-                    console.log('건물정보 삭제 실패');
-                }
-            })
-        });
-    </script>
 </th:block>
+<th:block layout:fragment="bottom">
+    <th:block th:replace="~{fragments/nav :: navFragment}"></th:block>
+</th:block>
+<th:block layout:fragment="script">
+    <script type="text/javascript" th:src="@{/js/util.js}"></script>
+    <script type="text/javascript" th:src="@{/js/read-unit.js}"></script>
+</th>
 </html>

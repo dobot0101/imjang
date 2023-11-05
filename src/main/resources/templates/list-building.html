@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/default_layout}"
+>
+  <th:block layout:fragment="content">
+    <div class="container">
+      <ul class="list-group mt-3" th:each="building: ${buildings}">
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col-8">
+              <h5 th:text="${building.name}"></h5>
+              <p th:text="${building.address}"></p>
+            </div>
+            <div class="col-4 text-end">
+              <a
+                th:href="@{/buildings/read/{buildingId}(buildingId = ${building.id})}"
+                class="btn btn-primary"
+                >상세 정보</a
+              >
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </th:block>
+  <th:block layout:fragment="bottom">
+    <th:block th:replace="~{fragments/nav :: navFragment}"></th:block>
+  </th:block>
+</html>

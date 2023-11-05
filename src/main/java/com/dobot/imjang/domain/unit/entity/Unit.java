@@ -92,7 +92,7 @@ public class Unit extends BaseTime {
   @Enumerated(EnumType.STRING)
   LeakStatus leakStatus;
 
-  @ManyToOne()
+  @ManyToOne(cascade = CascadeType.REMOVE)
   @JoinColumn(name = "building_id")
   Building building;
 

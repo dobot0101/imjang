@@ -4,191 +4,191 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{layout/default_layout}"
 >
-<th:block layout:fragment="content">
-    <div class="container">
-        <h1 class="text-center">세대정보 등록</h1>
-        <input type="hidden" name="buildingId" id="buildingId" th:value="${buildingId}">
-        <form action="/save-unit" method="post" id="unitCreateForm">
-            <label for="buildingNumber">동:</label>
-            <input type="text" id="buildingNumber" name="buildingNumber"><br>
-    
-            <label for="roomNumber">호:</label>
-            <input type="text" id="roomNumber" name="roomNumber"><br>
-    
-            <label for="area">면적:</label>
-            <input type="text" id="area" name="area" placeholder="면적을 입력하세요 (0.0 이상)" value="0.0"><br>
-    
-            <label for="memo">메모:</label>
-            <textarea id="memo" name="memo" maxlength="500"></textarea><br>
-    
-            <label for="transactionPrice">월세 가격:</label>
-            <input type="text" id="monthlyPrice" name="monthlyPrice" maxlength="6" value="0" placeholder="금액을 입력하세요 (단위: 만원)"><br>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/unit.css}" >
+    </th:block>
 
-            <label for="transactionPrice">전세 가격:</label>
-            <input type="text" id="monthlyPrice" name="jeonsePrice" maxlength="6" value="0" placeholder="금액을 입력하세요 (단위: 만원)"><br>
+    <th:block layout:fragment="content">
+        <div class="container">
+            <input type="hidden" name="buildingId" id="buildingId" th:value="${buildingId}">
+            <form action="/save-unit" method="post" id="unitCreateForm">
+                <div class="mb-3">
+                    <label class="form-label" for="buildingNumber">동:</label>
+                    <input class="form-control" type="text" id="buildingNumber" name="buildingNumber">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label" for="roomNumber">호:</label>
+                    <input class="form-control" type="text" id="roomNumber" name="roomNumber">
+                </div>
+        
+                <div class="mb-3">
+                    <label class="form-label" for="area">면적:</label>
+                    <input class="form-control" type="text" id="area" name="area" placeholder="면적을 입력하세요 (0.0 이상)" value="0.0">
+                </div>
+        
+                <div class="mb-3">
+                    <label class="form-label" for="memo">메모:</label>
+                    <textarea class="form-control" id="memo" name="memo" maxlength="500"></textarea>
+                </div>
+        
+                <div class="mb-3">
+                    <label class="form-label" for="transactionPrice">월세 가격:</label>
+                    <input class="form-control" type="text" id="monthlyPrice" name="monthlyPrice" maxlength="6" value="0" placeholder="금액을 입력하세요 (단위: 만원)">
+                </div>
+        
+                <div class="mb-3">
+                    <label class="form-label" for="transactionPrice">전세 가격:</label>
+                    <input class="form-control" type="text" id="monthlyPrice" name="jeonsePrice" maxlength="6" value="0" placeholder="금액을 입력하세요 (단위: 만원)">
+                </div>
 
-            <label for="transactionPrice">매매 가격:</label>
-            <input type="text" id="monthlyPrice" name="salePrice" maxlength="6" value="0" placeholder="금액을 입력하세요 (단위: 만원)"><br>
+                <div class="mb-3">
+                    <label class="form-label" for="transactionPrice">매매 가격:</label>
+                    <input class="form-control" type="text" id="monthlyPrice" name="salePrice" maxlength="6" value="0" placeholder="금액을 입력하세요 (단위: 만원)">
+                </div>
 
-            <label for="deposit">융자금:</label>
-            <input type="text" id="deposit" name="deposit" maxlength="6" value="0" placeholder="금액을 입력하세요 (단위: 만원)"><br>
-    
-            <label>집 방향:</label><br>
-            <input type="radio" id="south" name="direction" value="SOUTH" checked>
-            <label for="south">남향</label><br>
-            <input type="radio" id="southeast" name="direction" value="SOUTHEAST">
-            <label for="southeast">남동향</label><br>
-            <input type="radio" id="southwest" name="direction" value="SOUTHWEST">
-            <label for="southwest">남서향</label><br>
-            <input type="radio" id="east" name="direction" value="EAST">
-            <label for="east">동향</label><br>
-            <input type="radio" id="west" name="direction" value="WEST">
-            <label for="west">서향</label><br>
-            <input type="radio" id="north" name="direction" value="NORTH">
-            <label for="north">북향</label><br>
+                <div class="mb-3">
+                    <label class="form-label" for="deposit">융자금:</label>
+                    <input class="form-control" type="text" id="deposit" name="deposit" maxlength="6" value="0" placeholder="금액을 입력하세요 (단위: 만원)">
+                </div>
 
-            <label>전망:</label><br>
-            <input type="radio" id="good" name="viewQuality" value="GOOD" checked>
-            <label for="good">좋음</label><br>
-            <input type="radio" id="average" name="viewQuality" value="AVERAGE">
-            <label for="average">보통</label><br>
-            <input type="radio" id="poor" name="viewQuality" value="POOR">
-            <label for="poor">나쁨</label><br>
+                <div class="mb-3">
+                    <label class="form-label">집 방향:</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="south" name="direction" value="SOUTH" checked>
+                        <label class="form-check-label" for="south">남향</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="southeast" name="direction" value="SOUTHEAST">
+                        <label class="form-check-label" for="southeast">남동향</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="southwest" name="direction" value="SOUTHWEST">
+                        <label class="form-check-label" for="southwest">남서향</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="east" name="direction" value="EAST">
+                        <label class="form-check-label" for="east">동향</label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="west" name="direction" value="WEST">
+                        <label class="form-check-label" for="west">서향</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="north" name="direction" value="NORTH">
+                        <label class="form-check-label" for="north">북향</label>
+                    </div>
+                </div>
+                
 
-            <label>통풍:</label><br>
-            <input type="radio" id="goodVentilation" name="ventilation" value="GOOD" checked>
-            <label for="goodVentilation">좋음</label><br>
-            <input type="radio" id="poorVentilation" name="ventilation" value="POOR">
-            <label for="poorVentilation">나쁨</label><br>
+                <div class="mb-3">
+                    <label class="form-label">전망:</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="good" name="viewQuality" value="GOOD" checked>
+                        <label class="form-check-label" for="good">좋음</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="average" name="viewQuality" value="AVERAGE">
+                        <label class="form-check-label" for="average">보통</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="poor" name="viewQuality" value="POOR">
+                        <label class="form-check-label" for="poor">나쁨</label>
+                    </div>
+                </div>
+                
 
-            <label>수압:</label><br>
-            <input type="radio" id="goodWaterPressure" name="waterPressure" value="GOOD" checked>
-            <label for="goodWaterPressure">좋음</label><br>
-            <input type="radio" id="poorWaterPressure" name="waterPressure" value="POOR">
-            <label for="poorWaterPressure">나쁨</label><br>
+                <div class="mb-3">
+                    <label class="form-label">통풍:</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="goodVentilation" name="ventilation" value="GOOD" checked>
+                        <label class="form-check-label" for="goodVentilation">좋음</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="poorVentilation" name="ventilation" value="POOR">
+                        <label class="form-check-label" for="poorVentilation">나쁨</label>
+                    </div>
+                </div>
 
-            <label>소음:</label><br>
-            <input type="radio" id="noneNoiseLevel" name="noiseLevel" value="NONE" checked>
-            <label for="noneNoiseLevel">없음</label><br>
-            <input type="radio" id="moderateNoiseLevel" name="noiseLevel" value="MODERATE">
-            <label for="moderateNoiseLevel">보통</label><br>
-            <input type="radio" id="highNoiseLevel" name="noiseLevel" value="HIGH">
-            <label for="highNoiseLevel">심함</label><br>
+                <div class="mb-3">
+                    <label class="form-label">수압:</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="goodWaterPressure" name="waterPressure" value="GOOD" checked>
+                        <label class="form-check-label" for="goodWaterPressure">좋음</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="poorWaterPressure" name="waterPressure" value="POOR">
+                        <label class="form-check-label" for="poorWaterPressure">나쁨</label>
+                    </div>
+                </div>
 
-            <label>결로/곰팡이:</label><br>
-            <input type="radio" id="noneCondensationMoldLevel" name="condensationMoldLevel" value="NONE" checked>
-            <label for="noneCondensationMoldLevel">없음</label><br>
-            <input type="radio" id="moderateCondensationMoldLevel" name="condensationMoldLevel" value="MODERATE">
-            <label for="moderateCondensationMoldLevel">보통</label><br>
-            <input type="radio" id="severeCondensationMoldLevel" name="condensationMoldLevel" value="SEVERE">
-            <label for="severeCondensationMoldLevel">심함</label><br>
+                <div class="mb-3">
+                    <label class="form-label">소음:</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="noneNoiseLevel" name="noiseLevel" value="NONE" checked>
+                        <label class="form-check-label" for="noneNoiseLevel">없음</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="moderateNoiseLevel" name="noiseLevel" value="MODERATE">
+                        <label class="form-check-label" for="moderateNoiseLevel">보통</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="highNoiseLevel" name="noiseLevel" value="HIGH">
+                        <label class="form-check-label" for="highNoiseLevel">심함</label>   
+                    </div>
+                </div>
+                
 
-            <label>누수:</label><br>
-            <input type="radio" id="noneLeakStatus" name="leakStatus" value="NONE" checked>
-            <label for="noneLeakStatus">없음</label><br>
-            <input type="radio" id="presentLeakStatus" name="leakStatus" value="PRESENT">
-            <label for="presentLeakStatus">있음</label><br>
+                <div class="mb-3">
+                    <label class="form-label">결로/곰팡이:</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="noneCondensationMoldLevel" name="condensationMoldLevel" value="NONE" checked>
+                        <label class="form-check-label" for="noneCondensationMoldLevel">없음</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="moderateCondensationMoldLevel" name="condensationMoldLevel" value="MODERATE">
+                        <label class="form-check-label" for="moderateCondensationMoldLevel">보통</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="severeCondensationMoldLevel" name="condensationMoldLevel" value="SEVERE">
+                        <label class="form-check-label" for="severeCondensationMoldLevel">심함</label>
+                    </div>
+                </div>
 
-            <label>파일첨부: </label><br>
-            <input type="file" name="fileInput" id="fileInput" accept="image/*">
-            <button type="button" id="uploadButton">업로드</button>
-            <div id="uploadStatus"></div>
+                <div class="mb-3">
+                    <label class="form-label">누수:</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="noneLeakStatus" name="leakStatus" value="NONE" checked>
+                        <label class="form-check-label" for="noneLeakStatus">없음</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="presentLeakStatus" name="leakStatus" value="PRESENT">
+                        <label class="form-check-label" for="presentLeakStatus">있음</label>
+                    </div>
+                </div>
 
-            <label>첨부 이미지</label>
-            <div id="uploadedImages"></div>
+                <div class="mb-3">
+                    <label class="form-label">파일첨부: </label>
+                    <input class="form-control" type="file" name="fileInput" id="fileInput" accept="image/*">
+                    <button class="btn btn-secondary" type="button" id="uploadButton">업로드</button>
+                    <div id="uploadStatus"></div>
+                </div>
 
-            <button type="button" id="cancelButton">취소</button>
-            <button type="submit" id="saveButton">저장</button>
-        </form>
-    </div>
-    <script>
-        let uploadedFileIds = [];
-        $('#uploadButton').click(function() {
-            var fileInput = $('#fileInput')[0];
-            var files = fileInput.files;
+                <div class="mb-3">
+                    <label class="form-label">첨부 이미지:</label>
+                    <div id="uploadedImages"></div>
+                </div>
 
-            if (files.length === 0) {
-                $('#uploadStatus').text('파일을 선택해주세요.');
-                return;
-            }
-
-            var formData = new FormData();
-            formData.append('file', files[0]);
-
-            $.ajax({
-                url: '/api/upload',
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response.result) {
-                        const result = JSON.parse(response.result);
-                        uploadedFileIds.push(result.id);
-                        $('#uploadStatus').text('파일 업로드 성공.');
-
-                        const imageContainer = `<div class="image-container">
-                            <img src="${result.fileUrl}">
-                            <button class="delete-button" data-id="${result.id}">삭제</button>
-                        </div>`;
-                        $('#uploadedImages').append(imageContainer);
-                    }
-                },
-                error: function() {
-                    $('#uploadStatus').text('파일 업로드 실패.');
-                }
-            });
-        });
-
-        $(document).on('click', '.delete-button', function () {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            const uploadResultId = $(this).data('id');
-            $(this).parent('.image-container').remove();
-            uploadedFileIds = uploadedFileIds.filter(fileId => fileId !== uploadResultId);
-        });
-
-        $('#saveButton').click(function () {
-            event.preventDefault();
-
-            const buildingId = $('#buildingId').val();
-            if (!buildingId) {
-                alert('건물정보 아이디가 없습니다.');
-                return false;
-            }
-
-            const formDataArr = $("#unitCreateForm").serializeArray();
-            const data = {};
-
-            for (const {name,value} of formDataArr) {
-                data[name] = value;
-            }
-
-            if (uploadedFileIds.length > 0) {
-                data['uploadedFileIds'] = uploadedFileIds;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "/api/units/new/" + buildingId,
-                contentType: 'application/json; charset=UTF-8',
-                dataType: 'json',
-                data: JSON.stringify(data),
-                success: function(response) {
-                    window.location.href=`/units/${response.savedUnitId}`
-                },
-                error: function(data) {
-                    console.log("저장 실패", data);
-                }
-            });
-        })
-
-        $('#cancelButton').click(function () {
-            event.preventDefault();
-            history.back();
-        });
-    </script>
-</th:block>
+                <button class="btn btn-danger" type="button" id="cancelButton">취소</button>
+                <button class="btn btn-primary" type="submit" id="saveButton">저장</button>
+            </form>
+        </div>
+    </th:block>
+    <th:block layout:fragment="script">
+        <script type="text/javascript" th:src="@{/js/create-unit.js}"></script>
+    </th:block>
+    <th:block layout:fragment="bottom">
+        <th:block th:replace="~{fragments/nav :: navFragment}"></th:block>
+    </th:block>
 </html>

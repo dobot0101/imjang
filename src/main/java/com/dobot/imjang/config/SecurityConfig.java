@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
   @Autowired
   private ObjectMapper objectMapper;
-  private final String[] allowedUrls = { "/auth/login", "/member/signup" };
+  private final String[] allowedUrls = { "/auth/login", "/members/signup", "/api/members/signup", "/css/**", "/js/**" };
   // private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
   @Bean
