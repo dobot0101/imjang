@@ -8,14 +8,14 @@
   height: auto;
 }
 
-.delete-button {
+.img-del-btn {
   position: absolute;
   top: 0;
   right: 0;
-  background-color: red;
+  cursor: pointer;
+  /* background-color: red;
   color: white;
   border: none;
   border-radius: 50%;
-  padding: 5px;
-  cursor: pointer;
+  padding: 5px; */
 }

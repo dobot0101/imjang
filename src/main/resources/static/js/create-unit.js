@@ -26,7 +26,7 @@ $("#uploadButton").click(function () {
 
         const imageContainer = `<div class="image-container">
                             <img src="${result.fileUrl}">
-                            <button class="delete-button" data-id="${result.id}">삭제</button>
+                            <button class="btn-close img-del-btn" aria-label="Delete Image" data-id="${result.id}"></button>
                         </div>`;
         $("#uploadedImages").append(imageContainer);
       }
@@ -37,7 +37,7 @@ $("#uploadButton").click(function () {
   });
 });
 
-$(document).on("click", ".delete-button", function () {
+$(document).on("click", ".img-del-btn", function () {
   event.preventDefault();
   event.stopPropagation();
 

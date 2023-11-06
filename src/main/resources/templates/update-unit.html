@@ -158,7 +158,7 @@
                     <div id="uploadedImages" th:if="${!unit.images.isEmpty()}" th:each="image: ${unit.images}">
                         <div class="image-container">
                             <img th:src="${image.uploadResult.fileUrl}">
-                            <button class="delete-button">삭제</button>
+                            <button class="btn-close img-del-btn"></button>
                         </div>
                     </div>
                     <div id="uploadedImages" th:if="${unit.images.isEmpty()}"></div>

@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.dobot.imjang.domain.common.entities.BaseTime;
 import com.dobot.imjang.domain.upload.entity.UploadResult;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,6 +31,8 @@ public class UnitImage extends BaseTime {
   @JoinColumn(name = "upload_result_id")
   UploadResult uploadResult;
 
+  @JsonBackReference
   @ManyToOne
+  @JoinColumn(name = "unit_id")
   Unit unit;
 }

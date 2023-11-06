@@ -14,6 +14,7 @@ import com.dobot.imjang.domain.unit.enums.Ventilation;
 import com.dobot.imjang.domain.unit.enums.ViewQuality;
 import com.dobot.imjang.domain.unit.enums.WaterPressure;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -98,6 +99,7 @@ public class Unit extends BaseTime {
   @JoinColumn(name = "building_id")
   Building building;
 
+  @JsonManagedReference
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   List<UnitImage> images = new ArrayList<>();
 }
