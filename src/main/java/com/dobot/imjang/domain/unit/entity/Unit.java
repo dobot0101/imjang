@@ -13,6 +13,7 @@ import com.dobot.imjang.domain.unit.enums.NoiseLevel;
 import com.dobot.imjang.domain.unit.enums.Ventilation;
 import com.dobot.imjang.domain.unit.enums.ViewQuality;
 import com.dobot.imjang.domain.unit.enums.WaterPressure;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -92,7 +93,8 @@ public class Unit extends BaseTime {
   @Enumerated(EnumType.STRING)
   LeakStatus leakStatus;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
+  @JsonBackReference
+  @ManyToOne()
   @JoinColumn(name = "building_id")
   Building building;
 

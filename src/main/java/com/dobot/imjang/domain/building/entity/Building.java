@@ -9,6 +9,8 @@ import com.dobot.imjang.domain.building.enums.EntranceStructure;
 import com.dobot.imjang.domain.building.enums.ParkingSpace;
 import com.dobot.imjang.domain.common.entities.BaseTime;
 import com.dobot.imjang.domain.member.entity.Member;
+import com.dobot.imjang.domain.unit.entity.Unit;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -78,8 +80,9 @@ public class Building extends BaseTime {
   @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<Transportation> transportations = new ArrayList<>();
 
-  // @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.REMOVE)
-  // private List<Unit> units = new ArrayList<>();
+  @JsonManagedReference
+  @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.REMOVE)
+  private List<Unit> units = new ArrayList<>();
 
   @ManyToOne()
   @JoinColumn(name = "member_id")
