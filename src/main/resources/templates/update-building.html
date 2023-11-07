@@ -7,7 +7,7 @@
     <th:block layout:fragment="content">
         <div class="container">
             <input type="hidden" name="buildingId" id="buildingId" th:value="${building.id}">
-            <form id="buildingModifyForm" action="PUT">
+            <form id="buildingModifyForm">
                 <!-- 위도 -->
                 <input type="hidden" id="latitude" name="latitude" th:value="${building.latitude}">
 

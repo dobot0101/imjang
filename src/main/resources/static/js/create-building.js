@@ -47,7 +47,7 @@ $("#saveButton").click(function () {
       window.location.href = `/buildings/read/${response.savedBuildingId}`;
     },
     error: function (data) {
-      console.log("저장 실패", data);
+      handleAjaxErrorResponse(data);
     },
   });
 });

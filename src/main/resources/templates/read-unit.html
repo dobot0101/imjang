@@ -10,7 +10,7 @@
 
 <th:block layout:fragment="content">
     <div class="container">
-        <form action="/save-unit" method="post" id="unitCreateForm">
+        <form method="post" id="unitCreateForm">
             <input type="hidden" name="unitId" id="unitId" th:value="${unitId}">
 
             <div class="mb-3">
@@ -193,7 +193,6 @@
     <th:block th:replace="~{fragments/nav :: navFragment}"></th:block>
 </th:block>
 <th:block layout:fragment="script">
-    <script type="text/javascript" th:src="@{/js/util.js}"></script>
     <script type="text/javascript" th:src="@{/js/read-unit.js}"></script>
 </th>
 </html>

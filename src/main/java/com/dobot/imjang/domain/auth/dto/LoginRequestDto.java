@@ -1,4 +1,4 @@
-package com.dobot.imjang.domain.auth.dtos;
+package com.dobot.imjang.domain.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

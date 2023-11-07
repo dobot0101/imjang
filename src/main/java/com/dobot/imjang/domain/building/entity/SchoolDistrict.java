@@ -19,13 +19,13 @@ import lombok.Setter;
 @Entity
 public class SchoolDistrict extends BaseTime {
     @Id
-    UUID id;
+    private UUID id;
 
     @Getter
     @Enumerated(EnumType.STRING)
-    SchoolType schoolType;
+    private SchoolType schoolType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "building_id")
-    Building building;
+    private Building building;
 }

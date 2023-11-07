@@ -13,7 +13,6 @@ import com.dobot.imjang.domain.unit.enums.WaterPressure;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -30,35 +29,35 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UnitCreateOrUpdateDto {
   // 동
-  @NotBlank
+  @NotBlank(message = "동을 입력하세요.")
   private String buildingNumber;
 
   // 호
-  @NotBlank
+  @NotBlank(message = "호를 입력하세요.")
   private String roomNumber;
 
   // 면적
-  @DecimalMin(inclusive = true, message = "면적은 0 이상이어야 합니다.", value = "0.0")
-  private Double area;
+  @Size(min = 0, max = 10, message = "면적은 0자 이상 10자 이하로 입력하세요.")
+  private String area;
 
   // 메모
-  @Size(min = 0, max = 100)
+  @Size(min = 0, max = 100, message = "메모는 0자 이상 100자 이하로 입력하세요.")
   private String memo;
 
   // 월세가
-  @Min(value = 0, message = "0 이상의 숫자를 입력하세요.")
+  @Min(value = 0, message = "월세 가격은 0 이상의 숫자를 입력하세요.")
   private Integer monthlyPrice;
 
   // 전세가
-  @Min(value = 0, message = "0 이상의 숫자를 입력하세요.")
+  @Min(value = 0, message = "전세 가격은 0 이상의 숫자를 입력하세요.")
   private Integer jeonsePrice;
 
   // 매매가
-  @Min(value = 0, message = "0 이상의 숫자를 입력하세요.")
+  @Min(value = 0, message = "매매 가격은 0 이상의 숫자를 입력하세요.")
   private Integer salePrice;
 
   // 융자금
-  @Min(value = 0, message = "0 이상의 숫자를 입력하세요.")
+  @Min(value = 0, message = "융자금은 0 이상의 숫자를 입력하세요.")
   private Integer deposit;
 
   // 집 방향(ex: 남향 등)

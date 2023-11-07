@@ -1,8 +1,6 @@
 package com.dobot.imjang.domain.common.exception;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,24 +15,22 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-  // 컨트롤러 계층에서 @valid를 사용해서 처리하는 dto validation 에러 핸들러
+  /**
+   * 컨트롤러의 DTO Validation Exception 핸들러
+   */
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ExceptionDto> dtoValidation(final MethodArgumentNotValidException e) {
-    Map<String, String> errors = new HashMap<>();
-    e.getBindingResult().getAllErrors().forEach((error) -> {
-      String fieldName = ((FieldError) error).getField();
-      String errorMessage = error.getDefaultMessage();
-      errors.put(fieldName, errorMessage);
-    });
+    FieldError error = (FieldError) e.getBindingResult().getAllErrors().get(0);
+    ExceptionDto exceptionDto = ExceptionDto.builder().message(error.getDefaultMessage())
+        .errorCode(ErrorCode.VALIDATION_ERROR)
+        .timestamp(LocalDateTime.now()).build();
 
-    ExceptionDto exceptionDto = ExceptionDto.builder().message("Invalid Dto!")
-        .timestamp(LocalDateTime.now()).errorData(errors).build();
-
-    return ResponseEntity.status(exceptionDto.getErrorCode().getStatus())
-        .body(exceptionDto);
+    return ResponseEntity.badRequest().body(exceptionDto);
   }
 
-  // 서비스 계층에서 발생하는 커스텀 에러 핸들러
+  /**
+   * 서비스 계층에서 발생하는 커스텀 에러 핸들러
+   */
   @ExceptionHandler(CustomException.class)
   public ResponseEntity<ExceptionDto> handleCustomException(CustomException e) {
     ExceptionDto exceptionDto = ExceptionDto.builder().message(e.getMessage()).errorCode(e.getErrorCode())
@@ -51,7 +47,9 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionDto);
   }
 
-  // 그 외의 서버에서 발생하는 에러 핸들러
+  /**
+   * 그 외의 서버에서 발생하는 에러 핸들러
+   */
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<ExceptionDto> handleRuntimException(RuntimeException e) {
     log.error(e.getMessage(), e);

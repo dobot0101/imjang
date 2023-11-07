@@ -11,7 +11,7 @@
     <th:block layout:fragment="content">
         <div class="container">
             <input type="hidden" name="buildingId" id="buildingId" th:value="${buildingId}">
-            <form action="/save-unit" method="post" id="unitCreateForm">
+            <form method="post" id="unitCreateForm">
                 <div class="mb-3">
                     <label class="form-label" for="buildingNumber">동:</label>
                     <input class="form-control" type="text" id="buildingNumber" name="buildingNumber">

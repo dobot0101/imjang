@@ -46,12 +46,4 @@ public class Member extends BaseTime {
   @Getter
   @Enumerated(EnumType.STRING)
   private Role role;
-
-  // @OneToMany(mappedBy = "member", orphanRemoval = true, cascade =
-  // CascadeType.REMOVE)
-  // List<Building> buildings;
-
-  // @OneToMany(mappedBy = "member", orphanRemoval = true, cascade =
-  // CascadeType.REMOVE)
-  // List<Building> units;
 }

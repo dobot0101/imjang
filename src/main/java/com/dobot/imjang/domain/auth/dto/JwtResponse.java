@@ -1,4 +1,4 @@
-package com.dobot.imjang.domain.auth.dtos;
+package com.dobot.imjang.domain.auth.dto;
 
 import lombok.Getter;
 

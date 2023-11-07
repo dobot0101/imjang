@@ -22,7 +22,7 @@ public class Facility extends BaseTime {
 
     @Getter
     @Enumerated(EnumType.STRING)
-    FacilityType facilityType;
+    private FacilityType facilityType;
 
     @ManyToOne()
     @JoinColumn(name = "building_id")

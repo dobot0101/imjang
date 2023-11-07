@@ -25,14 +25,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UnitImage extends BaseTime {
   @Id
-  UUID id;
+  private UUID id;
 
   @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "upload_result_id")
-  UploadResult uploadResult;
+  private UploadResult uploadResult;
 
   @JsonBackReference
   @ManyToOne
   @JoinColumn(name = "unit_id")
-  Unit unit;
+  private Unit unit;
 }

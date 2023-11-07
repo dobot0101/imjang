@@ -78,7 +78,7 @@ $("#saveButton").click(function () {
       window.location.href = `/units/${response.savedUnitId}`;
     },
     error: function (data) {
-      console.log("저장 실패", data);
+      handleAjaxErrorResponse(data);
     },
   });
 });
@@ -87,3 +87,4 @@ $("#cancelButton").click(function () {
   event.preventDefault();
   history.back();
 });
+

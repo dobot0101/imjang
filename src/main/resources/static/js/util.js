@@ -9,3 +9,15 @@ function disableOrMakeReadonlyAllInputs() {
     }
   }
 }
+
+function handleAjaxErrorResponse(data) {
+  if (data.responseText) {
+    const errorResponse = JSON.parse(data.responseText);
+    if (errorResponse.message) {
+      alert(errorResponse.message);
+    }
+  } else {
+    alert("처리 중 에러 발생");
+    console.error(data);
+  }
+}

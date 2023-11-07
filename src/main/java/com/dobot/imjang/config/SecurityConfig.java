@@ -39,7 +39,7 @@ public class SecurityConfig {
             customizer -> customizer
                 .loginPage("/auth/login")
                 .defaultSuccessUrl("/")
-                .loginProcessingUrl("/auth/login")
+                // .loginProcessingUrl("/auth/login")
                 .failureUrl("/auth/login")
                 .usernameParameter("email")
                 .passwordParameter("password")

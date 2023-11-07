@@ -6,8 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BuildingRegisterPageRequestDto {
-  double latitude;
-  double longitude;
-  String address;
-  String buildingName;
+  private double latitude;
+  private double longitude;
+  private String address;
+  private String buildingName;
 }
