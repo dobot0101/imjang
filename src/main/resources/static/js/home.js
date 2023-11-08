@@ -1,65 +1,30 @@
-var map = null;
-var markers = [];
-var infoWindow = new naver.maps.InfoWindow();
+// 지도 객체
+let map = null;
+// 지도 마커
+const markers = [];
+// 우편번호 찾기 화면을 넣을 element
+const elementLayer = document.getElementById("layer");
+// 마커를 클릭하면 표시되는 정보 툴팁
+const infoWindow = new naver.maps.InfoWindow({
+  maxWidth: 300,
+});
 
 $(document).ready(() => {
   initMap();
 });
 
 function initMap() {
+  const position = localStorage.getItem("lastPosition");
   map = new naver.maps.Map("map", {
-    center: new naver.maps.LatLng(37.5665, 126.978),
+    center: position
+      ? JSON.parse(position)
+      : createNaverMapPosition(37.5665, 126.978),
     zoom: 15,
   });
-  initMapClickEventHandler(map);
+
+  // 무조건 주소를 검색하는 방식으로 변경되어 주석 처리
+  // initMapClickEventHandler(map);
   initSavedMarkers();
-
-  // 현재 위치 불러오는 속도가 느려서 일단은 위와 같이 고정 위치에서 시작하도록 수정
-  // if ("geolocation" in navigator) {
-  //   new Promise(function (resolve, reject) {
-  //     navigator.geolocation.getCurrentPosition(resolve, reject);
-  //   })
-  //     .then((position) => {
-  //       latitude = position.coords.latitude;
-  //       longitude = position.coords.longitude;
-  //       map = new naver.maps.Map("map", {
-  //         center: new naver.maps.LatLng(latitude, longitude),
-  //         zoom: 15,
-  //       });
-  //       initMapClickEventHandler(map);
-  //       initSavedMarkers();
-  //     })
-  //     .catch((error) => {
-  //       switch (error.code) {
-  //         case error.PERMISSION_DENIED:
-  //           console.error("위치 권한이 거부되었습니다.");
-  //           break;
-  //         case error.POSITION_UNAVAILABLE:
-  //           console.error("위치 정보를 사용할 수 없습니다.");
-  //           break;
-  //         case error.TIMEOUT:
-  //           console.error("요청 시간이 초과되었습니다.");
-  //           break;
-  //         case error.UNKNOWN_ERROR:
-  //           console.error("알 수 없는 오류가 발생했습니다.");
-  //           break;
-  //       }
-  //     });
-  // } else {
-  //   console.log("Geolocation을 지원하지 않는 브라우저입니다.");
-  //   map = new naver.maps.Map("map", {
-  //     center: new naver.maps.LatLng(37.5665, 126.978),
-  //     zoom: 15,
-  //   });
-  //   initMapClickEventHandler(map);
-  //   initSavedMarkers();
-  // }
-}
-
-function initMapClickEventHandler(map) {
-  naver.maps.Event.addListener(map, "click", function (e) {
-    addMarker(e.coord);
-  });
 }
 
 function initSavedMarkers() {
@@ -74,16 +39,15 @@ function initSavedMarkers() {
 
       for (let i = 0; i < data.buildings.length; i++) {
         const building = data.buildings[i];
-        var marker = new naver.maps.Marker({
-          position: new naver.maps.LatLng(
-            building.latitude,
-            building.longitude
-          ),
-          map: map,
+        const position = createNaverMapPosition(
+          building.latitude,
+          building.longitude
+        );
+        addMarker(position, {
+          id: building.id,
+          name: building.name,
+          address: building.address,
         });
-        marker.set("id", building.id);
-        addClickEventListenerToMarker(marker);
-        markers.push(marker);
       }
     },
     error: function (data) {
@@ -92,21 +56,37 @@ function initSavedMarkers() {
   });
 }
 
+function createNaverMapPosition(latitude, longitude) {
+  return new naver.maps.LatLng(latitude, longitude);
+}
+
 // 마커를 클릭했을 때 InfoWindow를 열고 "상세보기" 또는 "등록하기" 또는 "삭제하기" 버튼 표시
 function addClickEventListenerToMarker(marker) {
   naver.maps.Event.addListener(marker, "click", function () {
     const id = marker.get("id");
-    var content = "<div>";
-    if (id) {
-      content +=
-        '<button id="detailButton" value="' + id + '">상세보기</button>';
-      content +=
-        '<button id="deleteMarker" value="' + id + '">삭제하기</button>';
-    } else {
-      content += '<button id="registerButton">등록하기</button>';
-      content += '<button id="deleteMarker">삭제하기</button>';
+    const name = marker.get("name");
+    const address = marker.get("address");
+
+    let content = "<div>";
+
+    if (name) {
+      content += "<h4>" + name + "</h4>";
     }
+
+    if (address) {
+      content += "<p>" + address + "</p>";
+    }
+
+    if (id) {
+      content += '<button id="detailButton" value="' + id + '">보기</button>';
+      content += '<button id="deleteMarker" value="' + id + '">삭제</button>';
+    } else {
+      content += '<button id="registerButton">등록</button>';
+      content += '<button id="deleteMarker">삭제</button>';
+    }
+
     content += "</div>";
+
     infoWindow.setContent(content);
     infoWindow.open(map, marker);
 
@@ -134,14 +114,31 @@ function addClickEventListenerToMarker(marker) {
         infoWindow.close();
       }
     });
+
+    const position = marker.getPosition();
+    localStorage.setItem("lastPosition", JSON.stringify(position));
   });
 }
 
-function addMarker(coord) {
+function addMarker(position, buildingInfo) {
   const marker = new naver.maps.Marker({
-    position: coord,
+    position,
     map: map,
   });
+
+  if (buildingInfo) {
+    if (buildingInfo.id) {
+      marker.set("id", buildingInfo.id);
+    }
+
+    if (buildingInfo.name) {
+      marker.set("name", buildingInfo.name);
+    }
+
+    if (buildingInfo.address) {
+      marker.set("address", buildingInfo.address);
+    }
+  }
 
   addClickEventListenerToMarker(marker);
   markers.push(marker);
@@ -158,7 +155,7 @@ function moveToRegisterPage(marker) {
   // Reverse Geocoding을 사용하여 좌표를 주소로 변환
   naver.maps.Service.reverseGeocode(
     {
-      coords: new naver.maps.LatLng(_lat, _lng),
+      coords: createNaverMapPosition(_lat, _lng),
       orders: "roadaddr",
     },
     function (status, response) {
@@ -230,3 +227,99 @@ function removeMarker(marker) {
 window.navermap_authFailure = function () {
   alert("네이버 지도 인증 실패");
 };
+
+function closeDaumPostcode() {
+  elementLayer.style.display = "none";
+}
+
+function execDaumPostcode() {
+  new daum.Postcode({
+    oncomplete: function (data) {
+      let addr = ""; // 주소 변수
+
+      //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+      if (data.userSelectedType === "R") {
+        // 사용자가 도로명 주소를 선택했을 경우
+        addr = data.roadAddress;
+      } else {
+        // 사용자가 지번 주소를 선택했을 경우(J)
+        addr = data.jibunAddress;
+      }
+
+      if (addr) {
+        getPositionFromAddress(addr).then((position) => {
+          if (position) {
+            addMarker(position, {
+              id: null,
+              name: data.buildingName,
+              address: data.address,
+            });
+            if (map) {
+              map.setCenter(position);
+            }
+          }
+        });
+      }
+
+      elementLayer.style.display = "none";
+    },
+    width: "100%",
+    height: "100%",
+    maxSuggestItems: 5,
+  }).embed(elementLayer);
+
+  // iframe을 넣은 element를 보이게 한다.
+  elementLayer.style.display = "block";
+
+  // iframe을 넣은 element의 위치를 화면의 가운데로 이동시킨다.
+  initLayerPosition();
+}
+
+function getPositionFromAddress(query) {
+  return new Promise((resolve) => {
+    naver.maps.Service.geocode(
+      {
+        query,
+      },
+      function (status, response) {
+        if (status !== naver.maps.Service.Status.OK) {
+          return alert("Something wrong!");
+        }
+
+        var result = response.v2,
+          items = result.addresses;
+
+        const item = items[0];
+        resolve(createNaverMapPosition(item.y, item.x));
+      }
+    );
+  });
+}
+
+function initLayerPosition() {
+  const width = 300;
+  const height = 400;
+  const borderWidth = 5;
+
+  // 위에서 선언한 값들을 실제 element에 넣는다.
+  elementLayer.style.width = width + "px";
+  elementLayer.style.height = height + "px";
+  elementLayer.style.border = borderWidth + "px solid";
+  // 실행되는 순간의 화면 너비와 높이 값을 가져와서 중앙에 뜰 수 있도록 위치를 계산한다.
+  elementLayer.style.left =
+    ((window.innerWidth || document.documentElement.clientWidth) - width) / 2 -
+    borderWidth +
+    "px";
+  elementLayer.style.top =
+    ((window.innerHeight || document.documentElement.clientHeight) - height) /
+      2 -
+    borderWidth +
+    "px";
+}
+
+// 지도를 클릭하면 좌표를 받아 마커 표시
+// function initMapClickEventHandler(map) {
+//   naver.maps.Event.addListener(map, "click", function (e) {
+//     addMarker(e.coord);
+//   });
+// }

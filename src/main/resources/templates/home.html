@@ -4,7 +4,32 @@
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout/default_layout}"
 >
+  <th:block layout:fragment="css">
+    <style>
+      #searchAddressDiv {
+        position: absolute;
+        top: 84px;
+        left: 24px;
+        right: 24px;
+        z-index: 9999;
+        display: flex;
+      }
+
+      #searchAddress {
+        cursor: pointer;
+      }
+    </style>
+  </th:block>
+
   <th:block layout:fragment="content">
+    <div id="searchAddressDiv">
+      <input type="text" class="form-control me-3" name="searchAddress" id="searchAddress" onclick="execDaumPostcode()" placeholder="주소 찾기" readonly />
+      <input type="button" class="btn btn-primary" onclick="execDaumPostcode()" value="주소 찾기" />
+    </div>
+    
+    <div id="layer" style="display:none;position:fixed;overflow:hidden;z-index:1;-webkit-overflow-scrolling:touch;">
+      <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnCloseLayer" style="cursor:pointer;position:absolute;right:-3px;top:-3px;z-index:1" onclick="closeDaumPostcode()" alt="닫기 버튼">
+    </div>
     <div id="map"></div>
   </th:block>
 
@@ -16,6 +41,9 @@
     <script
       type="text/javascript"
       src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=707dwqhvjo&submodules=geocoder"
+    ></script>
+    <script
+      src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
     ></script>
     <script type="text/javascript" th:src="@{/js/home.js}"></script>
   </th:block>
