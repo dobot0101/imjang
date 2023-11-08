@@ -42,12 +42,15 @@ public class Unit extends BaseTime {
   private UUID id;
 
   // 동
+  @Column(length = 20)
   private String buildingNumber;
 
   // 호
+  @Column(length = 20)
   private String roomNumber;
 
   // 면적
+  @Column(length = 20)
   private String area;
 
   // 메모
@@ -67,30 +70,37 @@ public class Unit extends BaseTime {
   private Integer salePrice;
 
   // 집 방향(남향, 남동향, 남서향, 동향, 서향, 북향)
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private Direction direction;
 
   // 전망(좋음, 보통, 나쁨)
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private ViewQuality viewQuality;
 
   // 통풍(좋음, 나쁨)
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private Ventilation ventilation;
 
   // 수압(좋음, 나쁨)
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private WaterPressure waterPressure;
 
   // 소음(없음, 보통, 심함)
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private NoiseLevel noiseLevel;
 
   // 결로, 곰팡이(없음, 보통, 심함)
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private CondensationMoldLevel condensationMoldLevel;
 
   // 누수(없음, 있음)
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private LeakStatus leakStatus;
 

@@ -22,12 +22,14 @@ public class UploadResult extends BaseTime {
   @Id
   UUID id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 255)
   String originalFilename;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 30)
   String fileType;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 255)
   String fileUrl;
 }
+
+

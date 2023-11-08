@@ -44,6 +44,7 @@ public class Member extends BaseTime {
   private String password;
 
   @Getter
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private Role role;
 }

@@ -54,17 +54,17 @@ public class Building extends BaseTime {
   private String address;
 
   // 엘리베이터(있음, 없음)
-  @Column()
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private ElevatorStatus elevatorStatus;
 
   // 현관구조(계단식, 복도식)
-  @Column()
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private EntranceStructure entranceStructure;
 
   // 주차공간(많음, 적음, 보통)
-  @Column()
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private ParkingSpace parkingSpace;
 

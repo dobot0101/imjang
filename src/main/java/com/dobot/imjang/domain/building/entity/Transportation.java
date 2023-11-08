@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.dobot.imjang.domain.building.enums.TransportationType;
 import com.dobot.imjang.domain.common.entities.BaseTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,6 +24,7 @@ public class Transportation extends BaseTime {
 
     @Getter
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private TransportationType transportationType;
 
     @ManyToOne(fetch = FetchType.LAZY)

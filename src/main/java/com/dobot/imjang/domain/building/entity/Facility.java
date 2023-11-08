@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.dobot.imjang.domain.building.enums.FacilityType;
 import com.dobot.imjang.domain.common.entities.BaseTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,6 +23,7 @@ public class Facility extends BaseTime {
 
     @Getter
     @Enumerated(EnumType.STRING)
+    @Column(length = 50)
     private FacilityType facilityType;
 
     @ManyToOne()
