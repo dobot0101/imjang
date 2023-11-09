@@ -7,6 +7,7 @@ const elementLayer = document.getElementById("layer");
 // 마커를 클릭하면 표시되는 정보 툴팁
 const infoWindow = new naver.maps.InfoWindow({
   maxWidth: 300,
+  borderWidth: 0,
 });
 
 $(document).ready(() => {
@@ -23,7 +24,7 @@ function initMap() {
   });
 
   // 무조건 주소를 검색하는 방식으로 변경되어 주석 처리
-  // initMapClickEventHandler(map);
+  initMapClickEventHandler(map);
   initSavedMarkers();
 }
 
@@ -60,63 +61,84 @@ function createNaverMapPosition(latitude, longitude) {
   return new naver.maps.LatLng(latitude, longitude);
 }
 
-// 마커를 클릭했을 때 InfoWindow를 열고 "상세보기" 또는 "등록하기" 또는 "삭제하기" 버튼 표시
+function showMarkerInfoWindow(marker) {
+  const id = marker.get("id");
+  const name = marker.get("name");
+  const address = marker.get("address");
+
+  const contents = [];
+  contents.push("<div>");
+
+  if (name) {
+    contents.push("<h4>" + name + "</h4>");
+  }
+
+  if (address) {
+    contents.push("<p>" + address + "</p>");
+  }
+
+  contents.push('<div class="btn-group" style="width:100%">');
+  if (id) {
+    contents.push(
+      '<button class="btn btn-secondary" id="detailButton" value="' +
+        id +
+        '">보기</button>'
+    );
+    contents.push(
+      '<button class="btn btn-danger" id="deleteMarker" value="' +
+        id +
+        '">삭제</button>'
+    );
+  } else {
+    contents.push(
+      '<button class="btn btn-primary" id="registerButton">등록</button>'
+    );
+    contents.push(
+      '<button class="btn btn-danger" id="deleteMarker">삭제</button>'
+    );
+  }
+  contents.push("</div>");
+  contents.push("</div>");
+  infoWindow.setContent(contents.join(""));
+  infoWindow.open(map, marker);
+
+  $("#registerButton").click(function () {
+    moveToRegisterPage(marker);
+  });
+
+  $("#detailButton").click(function () {
+    const id = $(this).val();
+    window.location.href = `/buildings/read/${id}`;
+  });
+
+  // "마커 삭제" 버튼 클릭 시 마커 삭제
+  $("#deleteMarker").click(function () {
+    const id = $(this).val();
+    if (id) {
+      if (confirm("저장된 데이터가 삭제됩니다. 삭제하시겠습니까?")) {
+        removeMarkerWithDB(marker, function () {
+          removeMarker(marker);
+          closeInfoWindow();
+        });
+      }
+    } else {
+      removeMarker(marker);
+      closeInfoWindow();
+    }
+  });
+
+  const position = marker.getPosition();
+  localStorage.setItem("lastPosition", JSON.stringify(position));
+}
+
+// 마커를 클릭했을 때 InfoWindow 열기/닫기
 function addClickEventListenerToMarker(marker) {
   naver.maps.Event.addListener(marker, "click", function () {
-    const id = marker.get("id");
-    const name = marker.get("name");
-    const address = marker.get("address");
-
-    let content = "<div>";
-
-    if (name) {
-      content += "<h4>" + name + "</h4>";
-    }
-
-    if (address) {
-      content += "<p>" + address + "</p>";
-    }
-
-    if (id) {
-      content += '<button id="detailButton" value="' + id + '">보기</button>';
-      content += '<button id="deleteMarker" value="' + id + '">삭제</button>';
+    if (infoWindow.getMap()) {
+      closeInfoWindow();
     } else {
-      content += '<button id="registerButton">등록</button>';
-      content += '<button id="deleteMarker">삭제</button>';
+      showMarkerInfoWindow(marker);
     }
-
-    content += "</div>";
-
-    infoWindow.setContent(content);
-    infoWindow.open(map, marker);
-
-    $("#registerButton").click(function () {
-      moveToRegisterPage(marker);
-    });
-
-    $("#detailButton").click(function () {
-      const id = $(this).val();
-      window.location.href = `/buildings/read/${id}`;
-    });
-
-    // "마커 삭제" 버튼 클릭 시 마커 삭제
-    $("#deleteMarker").click(function () {
-      const id = $(this).val();
-      if (id) {
-        if (confirm("저장된 데이터가 삭제됩니다. 삭제하시겠습니까?")) {
-          removeMarkerWithDB(marker, function () {
-            removeMarker(marker);
-            infoWindow.close();
-          });
-        }
-      } else {
-        removeMarker(marker);
-        infoWindow.close();
-      }
-    });
-
-    const position = marker.getPosition();
-    localStorage.setItem("lastPosition", JSON.stringify(position));
   });
 }
 
@@ -142,6 +164,7 @@ function addMarker(position, buildingInfo) {
 
   addClickEventListenerToMarker(marker);
   markers.push(marker);
+  return marker;
 }
 
 function moveToRegisterPage(marker) {
@@ -249,7 +272,7 @@ function execDaumPostcode() {
       if (addr) {
         getPositionFromAddress(addr).then((position) => {
           if (position) {
-            addMarker(position, {
+            const marker = addMarker(position, {
               id: null,
               name: data.buildingName,
               address: data.address,
@@ -257,6 +280,7 @@ function execDaumPostcode() {
             if (map) {
               map.setCenter(position);
             }
+            showMarkerInfoWindow(marker);
           }
         });
       }
@@ -318,8 +342,13 @@ function initLayerPosition() {
 }
 
 // 지도를 클릭하면 좌표를 받아 마커 표시
-// function initMapClickEventHandler(map) {
-//   naver.maps.Event.addListener(map, "click", function (e) {
-//     addMarker(e.coord);
-//   });
-// }
+function initMapClickEventHandler(map) {
+  naver.maps.Event.addListener(map, "click", function (e) {
+    // addMarker(e.coord);
+    closeInfoWindow();
+  });
+}
+
+function closeInfoWindow() {
+  infoWindow.close();
+}
