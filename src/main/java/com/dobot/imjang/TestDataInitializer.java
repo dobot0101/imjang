@@ -3,8 +3,8 @@ package com.dobot.imjang;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import com.dobot.imjang.domain.member.dto.SignUpRequestDto;
-import com.dobot.imjang.domain.member.service.MemberService;
+import com.dobot.imjang.domain.member.MemberService;
+import com.dobot.imjang.domain.member.SignUpRequestDto;
 
 @Component
 public class TestDataInitializer implements CommandLineRunner {

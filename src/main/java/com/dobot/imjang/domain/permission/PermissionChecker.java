@@ -5,12 +5,12 @@ import java.util.UUID;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.dobot.imjang.domain.auth.entity.CustomUserDetails;
+import com.dobot.imjang.domain.auth.CustomUserDetails;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
-import com.dobot.imjang.domain.member.entity.Member;
-import com.dobot.imjang.domain.member.entity.Role;
-import com.dobot.imjang.domain.member.repository.MemberRepository;
+import com.dobot.imjang.domain.member.Member;
+import com.dobot.imjang.domain.member.MemberRepository;
+import com.dobot.imjang.domain.member.Role;
 
 @Component
 public class PermissionChecker {

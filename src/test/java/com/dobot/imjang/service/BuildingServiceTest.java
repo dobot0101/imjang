@@ -16,15 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dobot.imjang.domain.building.dto.BuildingCreateOrUpdateRequestDto;
-import com.dobot.imjang.domain.building.entity.Building;
-import com.dobot.imjang.domain.building.repository.BuildingRepository;
-import com.dobot.imjang.domain.building.service.BuildingService;
+import com.dobot.imjang.domain.building.Building;
+import com.dobot.imjang.domain.building.BuildingCreateOrUpdateRequestDto;
+import com.dobot.imjang.domain.building.BuildingRepository;
+import com.dobot.imjang.domain.building.BuildingService;
 import com.dobot.imjang.domain.common.exception.CustomException;
-import com.dobot.imjang.domain.member.dto.SignUpRequestDto;
-import com.dobot.imjang.domain.member.entity.Member;
-import com.dobot.imjang.domain.member.repository.MemberRepository;
-import com.dobot.imjang.domain.member.service.MemberService;
+import com.dobot.imjang.domain.member.Member;
+import com.dobot.imjang.domain.member.MemberRepository;
+import com.dobot.imjang.domain.member.MemberService;
+import com.dobot.imjang.domain.member.SignUpRequestDto;
 
 @SpringBootTest
 @Transactional

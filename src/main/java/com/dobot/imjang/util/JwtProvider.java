@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.dobot.imjang.domain.auth.services.CustomUserDetailsService;
+import com.dobot.imjang.domain.auth.CustomUserDetailsService;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 
