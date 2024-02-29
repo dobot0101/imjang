@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.dobot.imjang.domain.building.BuildingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.dobot.imjang.domain.building.Building;
-import com.dobot.imjang.domain.building.BuildingService;
 import com.dobot.imjang.domain.permission.PermissionChecker;
 
 import jakarta.validation.Valid;
