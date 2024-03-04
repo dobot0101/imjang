@@ -7,7 +7,7 @@
 
 # 사용 기술
 - Backend
-  - Java 17, Spring Boot 3.1.2, Spring Data JPA, Spring Security, Spring Validation, PostgreSQL
+  - Java 17, Spring Boot 3.1.2, Spring Data JPA, Spring Security, Spring Validation, PostgreSQL, QueryDSL
 - AWS
   - S3, EC2, ECR, RDS
 - Container

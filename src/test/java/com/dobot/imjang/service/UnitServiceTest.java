@@ -1,5 +1,17 @@
 package com.dobot.imjang.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.BuildingRepository;
@@ -12,17 +24,6 @@ import com.dobot.imjang.domain.member.SignUpRequestDto;
 import com.dobot.imjang.domain.unit.Unit;
 import com.dobot.imjang.domain.unit.UnitCreateOrUpdateDto;
 import com.dobot.imjang.domain.unit.UnitService;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
