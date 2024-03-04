@@ -3,6 +3,7 @@ package com.dobot.imjang.service;
 import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.BuildingRepository;
+import com.dobot.imjang.domain.building.CustomBuildingRepository;
 import com.dobot.imjang.domain.building.BuildingService;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.member.Member;
