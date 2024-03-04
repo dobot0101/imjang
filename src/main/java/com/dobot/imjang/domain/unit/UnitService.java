@@ -20,7 +20,7 @@ public class UnitService {
     private final UploadResultRepository uploadResultRepository;
 
     public UnitService(UnitRepository unitRepository, BuildingRepository buildingRepository,
-                       UploadResultRepository uploadResultRepository) {
+            UploadResultRepository uploadResultRepository) {
         this.unitRepository = unitRepository;
         this.buildingRepository = buildingRepository;
         this.uploadResultRepository = uploadResultRepository;

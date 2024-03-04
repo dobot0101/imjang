@@ -1,19 +1,18 @@
 package com.dobot.imjang.domain.building;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.dobot.imjang.domain.building.enums.FacilityType;
 import com.dobot.imjang.domain.building.enums.SchoolType;
 import com.dobot.imjang.domain.building.enums.TransportationType;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.Member;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class BuildingService {
@@ -55,7 +54,8 @@ public class BuildingService {
     }
 
     public Building updateBuilding(UUID id, BuildingCreateOrUpdateRequestDto dto) {
-        Building building = buildingRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
+        Building building = buildingRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
 
         this.setBuildingInformation(dto, building);
 
@@ -75,39 +75,42 @@ public class BuildingService {
 
         // 학군
         List<SchoolType> schoolTypes = dto.getSchoolTypes();
-        List<SchoolDistrict> newSchoolDistricts = Optional.ofNullable(schoolTypes).map(types -> types.stream().map(schoolType -> {
-            SchoolDistrict schoolDistrict = new SchoolDistrict();
-            schoolDistrict.setId(UUID.randomUUID());
-            schoolDistrict.setSchoolType(schoolType);
-            schoolDistrict.setBuilding(building);
-            return schoolDistrict;
-        }).collect(Collectors.toList())).orElse(new ArrayList<>());
+        List<SchoolDistrict> newSchoolDistricts = Optional.ofNullable(schoolTypes)
+                .map(types -> types.stream().map(schoolType -> {
+                    SchoolDistrict schoolDistrict = new SchoolDistrict();
+                    schoolDistrict.setId(UUID.randomUUID());
+                    schoolDistrict.setSchoolType(schoolType);
+                    schoolDistrict.setBuilding(building);
+                    return schoolDistrict;
+                }).collect(Collectors.toList())).orElse(new ArrayList<>());
         List<SchoolDistrict> schoolDistricts = building.getSchoolDistricts();
         schoolDistricts.clear();
         schoolDistricts.addAll(newSchoolDistricts);
 
         // 편의시설
         List<FacilityType> facilityTypes = dto.getFacilityTypes();
-        List<Facility> newFacilities = Optional.ofNullable(facilityTypes).map(types -> types.stream().map(facilityType -> {
-            Facility facility = new Facility();
-            facility.setId(UUID.randomUUID());
-            facility.setBuilding(building);
-            facility.setFacilityType(facilityType);
-            return facility;
-        }).collect(Collectors.toList())).orElse(new ArrayList<>());
+        List<Facility> newFacilities = Optional.ofNullable(facilityTypes)
+                .map(types -> types.stream().map(facilityType -> {
+                    Facility facility = new Facility();
+                    facility.setId(UUID.randomUUID());
+                    facility.setBuilding(building);
+                    facility.setFacilityType(facilityType);
+                    return facility;
+                }).collect(Collectors.toList())).orElse(new ArrayList<>());
         List<Facility> facilities = building.getFacilities();
         facilities.clear();
         facilities.addAll(newFacilities);
 
         // 교통수단
         List<TransportationType> transportationTypes = dto.getTransportationTypes();
-        List<Transportation> newTransportations = Optional.ofNullable(transportationTypes).map(types -> types.stream().map(transportationType -> {
-            Transportation transportation = new Transportation();
-            transportation.setId(UUID.randomUUID());
-            transportation.setTransportationType(transportationType);
-            transportation.setBuilding(building);
-            return transportation;
-        }).collect(Collectors.toList())).orElse(new ArrayList<>());
+        List<Transportation> newTransportations = Optional.ofNullable(transportationTypes)
+                .map(types -> types.stream().map(transportationType -> {
+                    Transportation transportation = new Transportation();
+                    transportation.setId(UUID.randomUUID());
+                    transportation.setTransportationType(transportationType);
+                    transportation.setBuilding(building);
+                    return transportation;
+                }).collect(Collectors.toList())).orElse(new ArrayList<>());
         List<Transportation> transportations = building.getTransportations();
         transportations.clear();
         transportations.addAll(newTransportations);
