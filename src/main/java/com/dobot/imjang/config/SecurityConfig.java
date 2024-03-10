@@ -1,111 +1,81 @@
 package com.dobot.imjang.config;
 
-import java.io.PrintWriter;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 // @RequiredArgsConstructor
 public class SecurityConfig {
-  @Autowired
-  private ObjectMapper objectMapper;
-  private final String[] allowedUrls = { "/auth/login", "/members/signup", "/api/members/signup", "/css/**", "/js/**" };
-  // private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final String[] allowedUrls = {"/auth/login", "/members/signup", "/api/members/signup", "/css/**", "/js/**", "/h2-console/**"};
+    @Autowired
+    private ObjectMapper objectMapper;
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-    httpSecurity
-        .csrf(customizer -> customizer.disable())
-        .cors(customizer -> customizer.disable())
-        .formLogin(
-            customizer -> customizer
-                .loginPage("/auth/login")
-                .defaultSuccessUrl("/")
-                // .loginProcessingUrl("/auth/login")
-                .failureUrl("/auth/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .permitAll())
-        .sessionManagement(customizer -> customizer.invalidSessionUrl("/auth/login"))
-        .logout(
-            customizer -> customizer
-                .logoutUrl("/auth/logout")
-                .logoutSuccessUrl("/auth/login")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID"))
-        .httpBasic(customizer -> customizer.disable())
-        .authorizeHttpRequests((customizer -> customizer
-            .requestMatchers(this.allowedUrls)
-            .permitAll()
-            .anyRequest()
-            .authenticated()));
-    // .exceptionHandling(customizer -> {
-    // customizer
-    // .accessDeniedHandler(this.accessDeniedHandler)
-    // .authenticationEntryPoint(this.unauthorizedEntryPoint);
-    // });
-    // .addFilterBefore(jwtAuthenticationFilter,
-    // UsernamePasswordAuthenticationFilter.class);
-    return httpSecurity.build();
-  }
+    // TODO: 현재 사용되지 않아서 주석 처리 (JWT 인증 시 사용 예정)
+    // private final JwtAuthenticationFilter jwtAuthenticationFilter;
+//    private final AuthenticationEntryPoint unauthorizedEntryPoint = (request, response, authException) -> {
+//        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED, "Spring Security Unauthorized...");
+//        String json = objectMapper.writeValueAsString(errorResponse);
+//        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//        PrintWriter writer = response.getWriter();
+//
+//        writer.write(json);
+//        writer.flush();
+//    };
+//    private final AccessDeniedHandler accessDeniedHandler = (request, response, accessDeniedException) -> {
+//        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, "Spring Security Forbidden...");
+//        String json = objectMapper.writeValueAsString(errorResponse);
+//        response.setStatus(HttpStatus.FORBIDDEN.value());
+//        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//        PrintWriter writer = response.getWriter();
+//
+//        writer.write(json);
+//        writer.flush();
+//    };
 
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-      throws Exception {
-    return authenticationConfiguration.getAuthenticationManager();
-  }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        RequestMatcher[] requestMatchers = Arrays.stream(allowedUrls).map(AntPathRequestMatcher::new).toArray(RequestMatcher[]::new);
+        httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable).formLogin(customizer -> customizer.loginPage("/auth/login").defaultSuccessUrl("/").failureUrl("/auth/login").usernameParameter("email").passwordParameter("password").permitAll()).sessionManagement(customizer -> customizer.invalidSessionUrl("/auth/login")).logout(customizer -> customizer.logoutUrl("/auth/logout").logoutSuccessUrl("/auth/login").invalidateHttpSession(true).deleteCookies("JSESSIONID")).httpBasic(AbstractHttpConfigurer::disable).authorizeHttpRequests((customizer -> customizer.requestMatchers(requestMatchers).permitAll().anyRequest().authenticated()))
+                // 아래의 frameOptions를 disable로 설정하지 않으면 h2-console 접속이 안됨
+                .headers(customizer -> customizer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+        // .loginProcessingUrl("/auth/login")
+        // .exceptionHandling(customizer -> {
+        // customizer
+        // .accessDeniedHandler(this.accessDeniedHandler)
+        // .authenticationEntryPoint(this.unauthorizedEntryPoint);
+        // });
+        // .addFilterBefore(jwtAuthenticationFilter,
+        // UsernamePasswordAuthenticationFilter.class);
+        return httpSecurity.build();
+    }
 
-  private final AuthenticationEntryPoint unauthorizedEntryPoint = (request, response, authException) -> {
-    ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED,
-        "Spring Security Unauthorized...");
-    String json = objectMapper.writeValueAsString(errorResponse);
-    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    PrintWriter writer = response.getWriter();
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-    writer.write(json);
-    writer.flush();
-  };
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  private final AccessDeniedHandler accessDeniedHandler = (request, response, accessDeniedException) -> {
-    ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN, "Spring Security Forbidden...");
-    String json = objectMapper
-        .writeValueAsString(errorResponse);
-    response.setStatus(HttpStatus.FORBIDDEN.value());
-    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    PrintWriter writer = response.getWriter();
-
-    writer.write(json);
-    writer.flush();
-  };
-
-  @Getter
-  @RequiredArgsConstructor
-  public class ErrorResponse {
-    private final HttpStatus status;
-    private final String message;
-  }
-
-  @Bean
-  public BCryptPasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    public record ErrorResponse(HttpStatus status, String message) {
+    }
 }

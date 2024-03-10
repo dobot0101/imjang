@@ -1,9 +1,11 @@
 package com.dobot.imjang.util;
 
-import java.util.Date;
-
-import javax.crypto.spec.SecretKeySpec;
-
+import com.dobot.imjang.domain.auth.CustomUserDetailsService;
+import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ErrorCode;
+import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,18 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.dobot.imjang.domain.auth.CustomUserDetailsService;
-import com.dobot.imjang.domain.common.exception.CustomException;
-import com.dobot.imjang.domain.common.exception.ErrorCode;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Date;
 
 @Slf4j
 @Component
