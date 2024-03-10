@@ -38,6 +38,7 @@ out/
 Dockerfile
 docker-compose.prod.yml
 env/prod.env
-src/main/resources/application.yml
-src/main/resources/application-prod.yml
-src/main/resources/application-dev.yml
+src/main/resources/yml
+#src/main/resources/application.yml
+#src/main/resources/application-prod.yml
+#src/main/resources/application-dev.yml
