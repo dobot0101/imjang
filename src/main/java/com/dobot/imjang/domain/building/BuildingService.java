@@ -6,6 +6,8 @@ import com.dobot.imjang.domain.building.enums.TransportationType;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.Member;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -119,4 +121,9 @@ public class BuildingService {
     public List<Building> getBuildingsByMemberId(UUID memberId) {
         return buildingRepository.findByMemberId(memberId);
     }
+
+    public Slice<Building> getBuildingsWithPagination(GetBuildingsWithPaginationDto dto, Pageable pageable) {
+        return buildingRepository.findWithCursorPagination(dto.cursor(), dto.createdAt(), pageable);
+    }
 }
+
