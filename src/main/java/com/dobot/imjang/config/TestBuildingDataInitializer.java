@@ -13,17 +13,43 @@ import java.util.Random;
 import java.util.UUID;
 
 @Component
-public class TestProductDataInitializer implements ApplicationRunner {
+public class TestBuildingDataInitializer implements ApplicationRunner {
     private final BuildingRepository buildingRepository;
 
     @Autowired
-    public TestProductDataInitializer(BuildingRepository buildingRepository) {
+    public TestBuildingDataInitializer(BuildingRepository buildingRepository) {
         this.buildingRepository = buildingRepository;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         initBuildingData();
+    }
+
+
+    private record Coordinates(double latitude, double longitude) {
+    }
+
+    protected void initBuildingData() {
+        List<Building> allBuildingList = buildingRepository.findAll();
+        if (allBuildingList.isEmpty()) {
+            List<Building> buildingList = new ArrayList<>();
+            for (int i = 0; i < 10000; i++) {
+                Coordinates coordinates = getRandomCoordinates();
+                Building building = Building.builder()
+                        .id(UUID.randomUUID())
+                        .latitude(coordinates.latitude)
+                        .longitude(coordinates.longitude)
+                        .name("아파트 단지 이름")
+                        .address("아파트 단지 주소")
+                        .build();
+                buildingList.add(building);
+            }
+
+            if (!buildingList.isEmpty()) {
+                buildingRepository.saveAll(buildingList);
+            }
+        }
     }
 
     private Coordinates getRandomCoordinates() {
@@ -40,27 +66,5 @@ public class TestProductDataInitializer implements ApplicationRunner {
         double randomLon = minLon + (maxLon - minLon) * random.nextDouble();
 
         return new Coordinates(randomLat, randomLon);
-    }
-
-    private record Coordinates(double latitude, double longitude) {
-    }
-
-    protected void initBuildingData() {
-        List<Building> buildingList = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
-            Coordinates coordinates = getRandomCoordinates();
-            Building building = Building.builder()
-                    .id(UUID.randomUUID())
-                    .latitude(coordinates.latitude)
-                    .longitude(coordinates.longitude)
-                    .name("아파트 단지 이름")
-                    .address("아파트 단지 주소")
-                    .build();
-            buildingList.add(building);
-        }
-
-        if (!buildingList.isEmpty()) {
-            buildingRepository.saveAll(buildingList);
-        }
     }
 }
