@@ -37,7 +37,7 @@ out/
 .vscode/
 Dockerfile
 docker-compose.prod.yml
-env/prod.env
+env/*.env
 src/main/resources/yml
 application.yml
 # src/main/resources/application.yml

@@ -1,6 +1,6 @@
 package com.dobot.imjang;
 
-import com.dobot.imjang.config.BuildingDataInitService;
+import com.dobot.imjang.config.BuildingTestDataInitService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -11,8 +11,8 @@ public class InitTestData {
         app.setWebApplicationType(WebApplicationType.NONE);
         ConfigurableApplicationContext ctx = app.run(args);
 
-        BuildingDataInitService buildingDataInitService = ctx.getBean(BuildingDataInitService.class);
-        buildingDataInitService.initBuildingData();
+        BuildingTestDataInitService buildingTestDataInitService = ctx.getBean(BuildingTestDataInitService.class);
+        buildingTestDataInitService.initBuildingData();
 
         ctx.close();
     }

@@ -11,11 +11,11 @@ import java.util.Random;
 import java.util.UUID;
 
 @Service
-public class BuildingDataInitService {
+public class BuildingTestDataInitService {
     private final BuildingRepository buildingRepository;
 
     @Autowired
-    public BuildingDataInitService(BuildingRepository buildingRepository) {
+    public BuildingTestDataInitService(BuildingRepository buildingRepository) {
         this.buildingRepository = buildingRepository;
     }
 
@@ -35,7 +35,7 @@ public class BuildingDataInitService {
                 buildingList.add(building);
             }
 
-            if (!buildingList.isEmpty()) {
+        if (!buildingList.isEmpty()) {
                 buildingRepository.saveAll(buildingList);
             }
         }
