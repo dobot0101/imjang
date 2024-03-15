@@ -19,7 +19,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 @Service
 public class UploadServiceImpl implements UploadService {
 
-  @Value("${cloud.aws.s3.bucket}")
+  @Value("${aws.s3-bucket}")
   private String bucket;
   private final AmazonS3 amazonS3;
   private final UploadResultRepository uploadResultRepository;

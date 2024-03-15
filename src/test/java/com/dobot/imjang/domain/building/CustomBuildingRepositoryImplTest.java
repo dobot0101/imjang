@@ -18,6 +18,7 @@ import org.springframework.data.domain.Slice;
 
 import com.dobot.imjang.config.CoordinateUtils;
 import com.dobot.imjang.config.CoordinateUtils.Coordinates;
+import java.util.Comparator;
 
 @SpringBootTest
 public class CustomBuildingRepositoryImplTest {
@@ -29,12 +30,10 @@ public class CustomBuildingRepositoryImplTest {
     @Qualifier("customBuildingRepositoryImpl")
     private CustomBuildingRepositoryImpl customBuildingRepositoryImpl;
 
-    private List<Building> buildingList = new ArrayList<>();
-
     @BeforeEach
     void setUp() {
-        this.buildingList.clear();
-        for (int i = 0; i < 10; i++) {
+        List<Building> buildingList = new ArrayList<>();
+        for (int i = 0; i < 11; i++) {
             Coordinates coordinates = CoordinateUtils.getRandomCoordinates();
             Building building = Building.builder()
                     .id(UUID.randomUUID())
@@ -43,7 +42,6 @@ public class CustomBuildingRepositoryImplTest {
                     .name("아파트 단지 이름")
                     .address("아파트 단지 주소")
                     .build();
-            building.setCreatedAt(LocalDateTime.now());
             buildingList.add(building);
         }
         if (!buildingList.isEmpty()) {
@@ -52,14 +50,15 @@ public class CustomBuildingRepositoryImplTest {
     }
 
     @Test
-    void findWithCursorPagination() {
+    void findWithCursorPagination() throws Exception {
         Pageable pageable = PageRequest.of(0, 10);
 
+        List<Building> buildingList = buildingRepository.findAll();
+        // buildingList.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
+        buildingList.sort(Comparator.comparing(Building::getCreatedAt).reversed());
         var building = buildingList.get(0);
         var cursor = building.getId();
-        var createdAt = building.getCreatedAt();
-
-        System.out.println("bulding: " + building);
+        LocalDateTime createdAt = building.getCreatedAt();
 
         Slice<Building> result = customBuildingRepositoryImpl.findWithCursorPagination(cursor, createdAt, pageable);
         assertEquals(pageable.getPageSize(), result.getContent().size(), "The result size should match the page size");

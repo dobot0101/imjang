@@ -1,5 +1,9 @@
 package com.dobot.imjang.domain.building;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import com.dobot.imjang.domain.building.enums.ElevatorStatus;
 import com.dobot.imjang.domain.building.enums.EntranceStructure;
 import com.dobot.imjang.domain.building.enums.ParkingSpace;
@@ -7,13 +11,24 @@ import com.dobot.imjang.domain.common.entities.BaseTime;
 import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.unit.Unit;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import lombok.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 //필요한 필드만 변경 가능하도록 필드에 @Setter 를 추가하는게 좋다
 //@Setter

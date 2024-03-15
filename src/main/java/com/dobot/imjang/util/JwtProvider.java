@@ -25,7 +25,7 @@ public class JwtProvider {
     private final CustomUserDetailsService userDetailsService;
 
     public JwtProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration}") long expiration,
-                       CustomUserDetailsService userDetailsService) {
+            CustomUserDetailsService userDetailsService) {
         this.secret = secret;
         this.expiration = expiration;
         this.userDetailsService = userDetailsService;
