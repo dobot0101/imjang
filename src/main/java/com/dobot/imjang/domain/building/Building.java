@@ -10,14 +10,13 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 //필요한 필드만 변경 가능하도록 필드에 @Setter 를 추가하는게 좋다
 //@Setter
-
 
 // 기본 생성자를 생성하지 못하도록 하여 객체 생성시 Builder 를 사용하도록 함
 
@@ -25,8 +24,9 @@ import java.util.UUID;
 @Entity
 @Getter
 
-//@AllArgsConstructor 를 사용하면 멤버 필드의 순서대로 생성자의 파라미터를 결정함 => 상황에 따라 같은 데이터 타입의 값이 다른 필드에 할당될 수 있음
-//@AllArgsConstructor
+// @AllArgsConstructor 를 사용하면 멤버 필드의 순서대로 생성자의 파라미터를 결정함 => 상황에 따라 같은 데이터 타입의 값이
+// 다른 필드에 할당될 수 있음
+// @AllArgsConstructor
 
 @Table(indexes = {
         @Index(columnList = "latitude, longitude", unique = true)
@@ -34,7 +34,10 @@ import java.util.UUID;
 public class Building extends BaseTime {
 
     @Builder
-    public Building(UUID id, double latitude, double longitude, String name, String address, ElevatorStatus elevatorStatus, EntranceStructure entranceStructure, ParkingSpace parkingSpace, List<SchoolDistrict> schoolDistricts, List<Facility> facilities, List<Transportation> transportations, List<Unit> units, Member member) {
+    public Building(UUID id, double latitude, double longitude, String name, String address,
+            ElevatorStatus elevatorStatus, EntranceStructure entranceStructure, ParkingSpace parkingSpace,
+            List<SchoolDistrict> schoolDistricts, List<Facility> facilities, List<Transportation> transportations,
+            List<Unit> units, Member member) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;

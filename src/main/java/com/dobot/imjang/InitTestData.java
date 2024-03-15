@@ -10,9 +10,10 @@ public class InitTestData {
         SpringApplication app = new SpringApplication(ImjangApplication.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         ConfigurableApplicationContext ctx = app.run(args);
+        int num = Integer.valueOf(args[0]);
 
         BuildingTestDataInitService buildingTestDataInitService = ctx.getBean(BuildingTestDataInitService.class);
-        buildingTestDataInitService.initBuildingData();
+        buildingTestDataInitService.initBuildingData(num);
 
         ctx.close();
     }
