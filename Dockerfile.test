@@ -1,10 +1,19 @@
-FROM openjdk:17
+FROM openjdk:17-alpine
 
 WORKDIR /app
 
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
-COPY build/resources/yml/application-test.yml application.yml
+# Copy only the necessary files for building and testing
+COPY build.gradle .
+COPY settings.gradle .
+COPY gradlew .
+COPY gradlew.bat .
+COPY gradle gradle
+COPY src src
 
-EXPOSE 8080
-CMD ["java", "-jar", "app.jar"] 
+RUN ./gradlew build -x test
+
+# Copy the test resources
+COPY build/resources/main/yml/application-test.yml application.yml
+
+# Run the tests
+# CMD ["./gradlew", "test"]

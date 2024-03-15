@@ -11,10 +11,8 @@ services:
     build:
 #      context: .
       dockerfile: Dockerfile.test
-    env_file:
-      - env/test.env
+    # env_file:
+    #   - env/test.env
     depends_on:
       - db
-    volumes:
-      - ./src/main/resources/yml/application-test.yml:/app/application.yml
 
