@@ -1,0 +1,20 @@
+version: '3'
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: imjang-test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
+  app:
+    build:
+#      context: .
+      dockerfile: Dockerfile.test
+    env_file:
+      - env/test.env
+    depends_on:
+      - db
+    volumes:
+      - ./src/main/resources/yml/application-test.yml:/app/application.yml
+

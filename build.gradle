@@ -45,6 +45,11 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+tasks.register('initTestData', JavaExec) {
+    classpath(sourceSets.main.runtimeClasspath)
+    main('com.dobot.imjang.InitTestData')
+}
+
 // ./gradlew 작업 등록 테스트
 tasks.register('hello') {
     doLast {

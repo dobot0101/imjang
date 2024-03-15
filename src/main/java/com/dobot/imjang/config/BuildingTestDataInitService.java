@@ -3,34 +3,23 @@ package com.dobot.imjang.config;
 import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-@Component
-public class TestBuildingDataInitializer implements ApplicationRunner {
+@Service
+public class BuildingTestDataInitService {
     private final BuildingRepository buildingRepository;
 
     @Autowired
-    public TestBuildingDataInitializer(BuildingRepository buildingRepository) {
+    public BuildingTestDataInitService(BuildingRepository buildingRepository) {
         this.buildingRepository = buildingRepository;
     }
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        initBuildingData();
-    }
-
-
-    private record Coordinates(double latitude, double longitude) {
-    }
-
-    protected void initBuildingData() {
+    public void initBuildingData() {
         List<Building> allBuildingList = buildingRepository.findAll();
         if (allBuildingList.isEmpty()) {
             List<Building> buildingList = new ArrayList<>();
@@ -46,10 +35,13 @@ public class TestBuildingDataInitializer implements ApplicationRunner {
                 buildingList.add(building);
             }
 
-            if (!buildingList.isEmpty()) {
+        if (!buildingList.isEmpty()) {
                 buildingRepository.saveAll(buildingList);
             }
         }
+    }
+
+    private record Coordinates(double latitude, double longitude) {
     }
 
     private Coordinates getRandomCoordinates() {

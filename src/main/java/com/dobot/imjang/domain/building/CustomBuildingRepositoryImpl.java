@@ -16,7 +16,7 @@ public class CustomBuildingRepositoryImpl implements CustomBuildingRepository {
 
     @Override
     public Slice<Building> findWithCursorPagination(UUID cursor, LocalDateTime createdAt, Pageable pageable) {
-        var qBuilding = QBuilding.building;
+        QBuilding qBuilding = QBuilding.building;
         List<Building> content = query.select(qBuilding).from(qBuilding)
                 .where(qBuilding.createdAt.lt(createdAt).or(qBuilding.createdAt.eq(createdAt).and(qBuilding.id.lt(cursor))))
                 .orderBy(qBuilding.createdAt.desc(), qBuilding.id.desc())
