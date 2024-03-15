@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   db:
     image: postgres:latest
@@ -9,10 +9,6 @@ services:
       POSTGRES_PORT: 5432
   app:
     build:
-#      context: .
       dockerfile: Dockerfile.test
-    # env_file:
-    #   - env/test.env
     depends_on:
       - db
-
