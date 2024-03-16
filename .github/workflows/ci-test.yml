@@ -23,7 +23,7 @@ jobs:
         run: sleep 5
 
       - name: Run tests
-        run: docker-compose exec app ./gradlew test
+        run: docker-compose exec -T app ./gradlew test
 
       - name: Stop and remove container
         run: docker-compose down
