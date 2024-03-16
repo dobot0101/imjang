@@ -38,5 +38,5 @@ out/
 Dockerfile
 docker-compose.prod.yml
 env/*.env
-src/main/resources/yml
+# src/main/resources/yml
 application.yml
