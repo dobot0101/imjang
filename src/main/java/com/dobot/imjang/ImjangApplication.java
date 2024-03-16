@@ -12,3 +12,4 @@ public class ImjangApplication {
         SpringApplication.run(ImjangApplication.class, args);
     }
 }
+

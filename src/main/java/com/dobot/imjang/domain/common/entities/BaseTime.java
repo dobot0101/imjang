@@ -10,10 +10,12 @@ import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import lombok.Setter;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
+@Setter
 public abstract class BaseTime {
   @CreatedDate()
   @Nonnull

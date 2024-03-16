@@ -3,7 +3,7 @@ name: Docker Build and Test
 on:
   push:
     branches:
-      - main
+      - '*'
   pull_request:
     branches:
       - main
@@ -16,17 +16,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t imjang-test .
-
-      - name: Run Docker container
-        run: docker run -d --name app imjang-test
+      - name: Build and run Docker container
+        run: docker-compose up -d
 
       - name: Wait for container to start
         run: sleep 5
 
       - name: Run tests
-        run: docker exec app ./gradlew test
+        run: docker-compose exec app ./gradlew test
 
       - name: Stop and remove container
-        run: docker stop app && docker rm app
+        run: docker-compose down

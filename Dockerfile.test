@@ -14,6 +14,3 @@ RUN ./gradlew build -x test
 
 # Copy the test resources
 COPY build/resources/main/yml/application-test.yml application.yml
-
-# Run the tests
-# CMD ["./gradlew", "test"]
