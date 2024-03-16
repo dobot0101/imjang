@@ -41,8 +41,12 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+// tasks.named('test') {
+//     useJUnitPlatform()
+// }
+
+test {
+  useJUnitPlatform()
 }
 
 tasks.register('initTestData', JavaExec) {

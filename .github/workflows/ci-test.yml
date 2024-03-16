@@ -11,10 +11,19 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    env:
+      JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - run: echo $JWT_EXPIRATION
 
       - name: Build and run Docker container
         run: docker-compose up -d --build --force-recreate
