@@ -9,11 +9,7 @@ COPY gradlew .
 COPY gradlew.bat .
 COPY gradle gradle
 COPY src src
-
-RUN ./gradlew build -x test
-
-# Copy the test resources
-COPY build/resources/yml/application-test.yml application.yml
+COPY src/main/resources/yml/application-test.yml application.yml
 
 # Keep container running
 CMD tail -f /dev/null
