@@ -14,3 +14,6 @@ RUN ./gradlew build -x test
 
 # Copy the test resources
 COPY build/resources/main/yml/application-test.yml application.yml
+
+# Keep container running
+CMD tail -f /dev/null
