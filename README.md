@@ -16,6 +16,8 @@
   - Spring Thymeleaf, Javascript, JQuery, HTML, CSS
 - 외부 API
   - 네이버 지도, 카카오 주소 찾기
+- 기타
+  - Github Action, Docker를 사용한 테스트 자동화
 
 
 
