@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active: local
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+jwt:
+  expiration: 3600000
+  secret: test
+
+aws:
+  access-key: test
+  secret-key: test
+  region: test
+  s3-bucket: test
+        
