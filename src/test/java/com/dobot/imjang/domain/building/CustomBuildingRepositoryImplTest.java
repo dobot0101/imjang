@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,12 +24,7 @@ import java.util.Comparator;
 @SpringBootTest
 public class CustomBuildingRepositoryImplTest {
     @Autowired
-    @Qualifier("buildingRepository")
     private BuildingRepository buildingRepository;
-
-    @Autowired
-    @Qualifier("customBuildingRepositoryImpl")
-    private CustomBuildingRepositoryImpl customBuildingRepositoryImpl;
 
     @BeforeEach
     void setUp() {
@@ -50,7 +46,8 @@ public class CustomBuildingRepositoryImplTest {
     }
 
     @Test
-    void findWithCursorPagination() throws Exception {
+    @DisplayName("커서 페이지네이션 테스트")
+    void findWithCursorPagination() {
         Pageable pageable = PageRequest.of(0, 10);
 
         List<Building> buildingList = buildingRepository.findAll();
@@ -60,15 +57,16 @@ public class CustomBuildingRepositoryImplTest {
         var cursor = building.getId();
         LocalDateTime createdAt = building.getCreatedAt();
 
-        Slice<Building> result = customBuildingRepositoryImpl.findWithCursorPagination(cursor, createdAt, pageable);
+        Slice<Building> result = buildingRepository.findWithCursorPagination(cursor, createdAt, pageable);
         assertEquals(pageable.getPageSize(), result.getContent().size(), "The result size should match the page size");
     }
 
     @Test
+    @DisplayName("오프셋 페이지네이션 테스트")
     void findWithOffsetPagination() {
         Pageable pageable = PageRequest.of(0, 10);
 
-        List<Building> result = customBuildingRepositoryImpl.findWithOffsetPagination(pageable);
+        List<Building> result = buildingRepository.findWithOffsetPagination(pageable);
         assertEquals(pageable.getPageSize(), result.size(), "The result size should match the page size");
     }
 }

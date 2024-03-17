@@ -41,20 +41,26 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
-// tasks.named('test') {
-//     useJUnitPlatform()
-// }
-
-test {
-  useJUnitPlatform()
+tasks.named('test') {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
+
+// test {
+//   useJUnitPlatform()
+//   testLogging {
+//     events "passed", "skipped", "failed"
+//   }
+// }
 
 tasks.register('initTestData', JavaExec) {
     classpath(sourceSets.main.runtimeClasspath)
     main('com.dobot.imjang.InitTestData')
 }
 
-// ./gradlew 작업 등록 테스트
+// task 등록 테스트
 tasks.register('hello') {
     doLast {
         println 'Hello world!'

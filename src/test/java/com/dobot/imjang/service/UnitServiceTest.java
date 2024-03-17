@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -48,8 +49,9 @@ public class UnitServiceTest {
     private Building building;
 
     @BeforeAll
-    void 테스트데이터_생성() throws Exception {
-        SignUpRequestDto dto = SignUpRequestDto.builder().confirmPassword("test").password("test").email("test@test.co.kr")
+    void createTestData() throws Exception {
+        SignUpRequestDto dto = SignUpRequestDto.builder().confirmPassword("test").password("test")
+                .email("test@test.co.kr")
                 .name("tester").build();
         member = memberService.signUp(dto);
 
@@ -62,13 +64,14 @@ public class UnitServiceTest {
     }
 
     @AfterAll
-    void 테스트데이터_삭제() {
+    void deleteTestData() {
         buildingRepository.deleteById(building.getId());
         memberRepository.delete(member);
     }
 
     @Test
-    public void 세대정보_조회() {
+    @DisplayName("세대정보 조회")
+    public void findUnit() {
         UnitCreateOrUpdateDto dto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
         Unit unit = unitService.createUnit(dto, building.getId());
 
@@ -77,14 +80,16 @@ public class UnitServiceTest {
     }
 
     @Test
-    public void 세대정보_생성() {
+    @DisplayName("세대정보 생성")
+    public void createUnit() {
         UnitCreateOrUpdateDto dto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
         Unit unit = unitService.createUnit(dto, building.getId());
         assertEquals(unit.getMemo(), "테스트 메모");
     }
 
     @Test
-    public void 세대정보_수정() {
+    @DisplayName("세대정보 수정")
+    public void updateUnit() {
         UnitCreateOrUpdateDto createDto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
         Unit unit = unitService.createUnit(createDto, building.getId());
 
@@ -95,7 +100,8 @@ public class UnitServiceTest {
     }
 
     @Test
-    public void 세대정보_삭제() {
+    @DisplayName("세대정보 삭제")
+    public void deleteUnit() {
         UnitCreateOrUpdateDto createDto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
         Unit unit = unitService.createUnit(createDto, building.getId());
 
