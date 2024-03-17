@@ -15,22 +15,22 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+  logging:
+    level:
+      org: 
+        hibernate:
+          SQL: DEBUG
+          type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
 
-# jwt:
-#   expiration: ${JWT_EXPIRATION}
-#   secret: ${JWT_SECRET}
-
-# aws:
-#   access-key: ${AWS_ACCESS_KEY}
-#   secret-key: ${AWS_SECRET_KEY}
-#   region: ${AWS_REGION}
-#   s3-bucket: ${AWS_S3_BUCKET}
 jwt:
-  expiration: 3600000
-  secret: test
+  expiration: ${JWT_EXPIRATION}
+  secret: ${JWT_SECRET}
 
 aws:
-  access-key: test
-  secret-key: test
-  region: test
-  s3-bucket: test
+  access-key: ${AWS_ACCESS_KEY}
+  secret-key: ${AWS_SECRET_KEY}
+  region: ${AWS_REGION}
+  s3-bucket: ${AWS_S3_BUCKET}
