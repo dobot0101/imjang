@@ -1,24 +1,35 @@
 package com.dobot.imjang.domain.building;
 
-import com.dobot.imjang.domain.building.enums.*;
+import java.util.List;
+
+import org.hibernate.validator.constraints.Length;
+
+import com.dobot.imjang.domain.building.enums.ElevatorStatus;
+import com.dobot.imjang.domain.building.enums.EntranceStructure;
+import com.dobot.imjang.domain.building.enums.FacilityType;
+import com.dobot.imjang.domain.building.enums.ParkingSpace;
+import com.dobot.imjang.domain.building.enums.SchoolType;
+import com.dobot.imjang.domain.building.enums.TransportationType;
+
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import org.hibernate.validator.constraints.Length;
-
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor()
-public class BuildingCreateOrUpdateRequestDto {
+public class UpdateBuildingDto implements IBuildingDto {
+
     // 좌표(위도)
     @NotNull(message = "위도를 입력해주세요")
     private double latitude;
-
 
     // 좌표(경도)
     @NotNull(message = "경도를 입력해주세요")

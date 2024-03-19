@@ -14,9 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dobot.imjang.domain.building.Building;
-import com.dobot.imjang.domain.building.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.BuildingRepository;
 import com.dobot.imjang.domain.building.BuildingService;
+import com.dobot.imjang.domain.building.CreateBuildingDto;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.member.MemberRepository;
@@ -55,12 +55,12 @@ public class UnitServiceTest {
                 .name("tester").build();
         member = memberService.signUp(dto);
 
-        BuildingCreateOrUpdateRequestDto buildingCreateRequestDto = BuildingCreateOrUpdateRequestDto.builder()
+        CreateBuildingDto createBuildingDto = CreateBuildingDto.builder()
                 .latitude(99.999999)
                 .longitude(99.999999)
                 .name("테스트 건물명").address("테스트 건물 주소")
                 .build();
-        building = buildingService.createBuilding(buildingCreateRequestDto, member);
+        building = buildingService.createBuilding(createBuildingDto, member);
     }
 
     @AfterAll

@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -18,9 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dobot.imjang.domain.building.Building;
-import com.dobot.imjang.domain.building.BuildingCreateOrUpdateRequestDto;
 import com.dobot.imjang.domain.building.BuildingRepository;
 import com.dobot.imjang.domain.building.BuildingService;
+import com.dobot.imjang.domain.building.CreateBuildingDto;
+import com.dobot.imjang.domain.building.UpdateBuildingDto;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.member.MemberRepository;
@@ -47,21 +48,21 @@ public class BuildingServiceTest {
   private Member member;
   private Building building;
 
-  @BeforeAll
+  @BeforeEach
   void createTestData() throws Exception {
     SignUpRequestDto dto = SignUpRequestDto.builder().confirmPassword("test").password("test").email("test@test.co.kr")
         .name("tester").build();
     member = memberService.signUp(dto);
 
-    BuildingCreateOrUpdateRequestDto buildingCreateRequestDto = BuildingCreateOrUpdateRequestDto.builder()
+    CreateBuildingDto createBuildingDto = CreateBuildingDto.builder()
         .latitude(99.999999)
         .longitude(99.999999)
         .name("테스트 건물명").address("테스트 건물 주소")
         .build();
-    building = buildingService.createBuilding(buildingCreateRequestDto, member);
+    building = buildingService.createBuilding(createBuildingDto, member);
   }
 
-  @AfterAll
+  @AfterEach
   void deleteTestData() {
     buildingRepository.deleteById(building.getId());
     memberRepository.delete(member);
@@ -78,24 +79,19 @@ public class BuildingServiceTest {
   @Test
   @DisplayName("건물정보 저장")
   void createBuilding() {
-    BuildingCreateOrUpdateRequestDto buildingCreateOrUpdateDto = BuildingCreateOrUpdateRequestDto.builder()
+    CreateBuildingDto createBuildingDto = CreateBuildingDto.builder()
         .latitude(9.9999).longitude(9.9999)
         .address("테스트 건물 주소").name("테스트 빌딩").build();
-    Building building = buildingService.createBuilding(buildingCreateOrUpdateDto, member);
+    Building building = buildingService.createBuilding(createBuildingDto, member);
 
     assertNotNull(building, "빌딩 객체가 생성되어야 합니다.");
-    assertEquals(buildingCreateOrUpdateDto.getName(), building.getName(), "빌딩 이름이 일치해야 합니다.");
-    assertEquals(buildingCreateOrUpdateDto.getAddress(), building.getAddress(), "빌딩 주소가 일치해야 합니다.");
+    assertEquals(createBuildingDto.getName(), building.getName(), "빌딩 이름이 일치해야 합니다.");
+    assertEquals(createBuildingDto.getAddress(), building.getAddress(), "빌딩 주소가 일치해야 합니다.");
   }
 
   @Test
   @DisplayName("건물정보 삭제")
   void deleteBuilding() {
-    BuildingCreateOrUpdateRequestDto buildingCreateOrUpdateDto = BuildingCreateOrUpdateRequestDto.builder()
-        .latitude(9.9999).longitude(9.9999)
-        .address("테스트 건물 주소")
-        .name("테스트 빌딩").build();
-    Building building = buildingService.createBuilding(buildingCreateOrUpdateDto, member);
     buildingService.deleteBuilding(building.getId());
 
     assertThrows(CustomException.class, () -> {
@@ -106,13 +102,7 @@ public class BuildingServiceTest {
   @Test
   @DisplayName("건물정보 수정")
   void updateBuilding() {
-    BuildingCreateOrUpdateRequestDto createDto = BuildingCreateOrUpdateRequestDto.builder()
-        .latitude(9.9999).longitude(9.9999)
-        .address("테스트 건물 주소")
-        .name("테스트 빌딩").build();
-    Building building = buildingService.createBuilding(createDto, member);
-
-    BuildingCreateOrUpdateRequestDto updateDto = BuildingCreateOrUpdateRequestDto.builder().name("수정된 테스트 빌딩").build();
+    UpdateBuildingDto updateDto = UpdateBuildingDto.builder().name("수정된 테스트 빌딩").build();
     Building updatedBuilding = buildingService.updateBuilding(building.getId(), updateDto);
 
     assertEquals(updatedBuilding.getName(), "수정된 테스트 빌딩");

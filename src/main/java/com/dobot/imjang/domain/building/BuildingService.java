@@ -32,7 +32,7 @@ public class BuildingService {
         return buildingRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
     }
 
-    public Building createBuilding(BuildingCreateOrUpdateRequestDto dto, Member member) {
+    public Building createBuilding(CreateBuildingDto dto, Member member) {
         isDuplicatedLocation(dto);
         Building building = new Building();
         building.setId(UUID.randomUUID());
@@ -45,7 +45,7 @@ public class BuildingService {
         return buildingRepository.save(building);
     }
 
-    private void isDuplicatedLocation(BuildingCreateOrUpdateRequestDto dto) {
+    private void isDuplicatedLocation(IBuildingDto dto) {
         double latitude = dto.getLatitude();
         double longitude = dto.getLongitude();
 
@@ -55,7 +55,10 @@ public class BuildingService {
         }
     }
 
-    public Building updateBuilding(UUID id, BuildingCreateOrUpdateRequestDto dto) {
+    public Building updateBuilding(UUID id, UpdateBuildingDto dto) {
+        if (id == null) {
+            throw new Error("id is null");
+        }
         Building building = buildingRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
 
@@ -65,10 +68,13 @@ public class BuildingService {
     }
 
     public void deleteBuilding(UUID id) {
+        if (id == null) {
+            throw new Error("id is null");
+        }
         buildingRepository.deleteById(id);
     }
 
-    private void setBuildingInformation(BuildingCreateOrUpdateRequestDto dto, Building building) {
+    private void setBuildingInformation(IBuildingDto dto, Building building) {
         building.setAddress(dto.getAddress());
         building.setName(dto.getName());
         building.setEntranceStructure(dto.getEntranceStructure());
