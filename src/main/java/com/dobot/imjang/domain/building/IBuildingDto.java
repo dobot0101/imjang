@@ -11,9 +11,9 @@ import com.dobot.imjang.domain.building.enums.TransportationType;
 
 public interface IBuildingDto {
 
-  double getLatitude();
+  Double getLatitude();
 
-  double getLongitude();
+  Double getLongitude();
 
   String getName();
 

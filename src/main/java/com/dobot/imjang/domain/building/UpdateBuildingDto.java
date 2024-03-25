@@ -13,6 +13,8 @@ import com.dobot.imjang.domain.building.enums.TransportationType;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -29,11 +31,15 @@ public class UpdateBuildingDto implements IBuildingDto {
 
     // 좌표(위도)
     @NotNull(message = "위도를 입력해주세요")
-    private double latitude;
+    @DecimalMin(message = "-90 이상의 값을 입력해주세요", value = "-90")
+    @DecimalMax(message = "90 이하의 값을 입력해주세요", value = "90")
+    private Double latitude;
 
     // 좌표(경도)
     @NotNull(message = "경도를 입력해주세요")
-    private double longitude;
+    @DecimalMin(message = "-180 이상의 값을 입력해주세요", value = "-180")
+    @DecimalMax(message = "180 이하의 값을 입력해주세요", value = "180")
+    private Double longitude;
 
     // 건물(아파트, 빌라, 오피스텔 등)
     @NotBlank(message = "이름을 입력해주세요")
