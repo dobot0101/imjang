@@ -2,7 +2,6 @@ package com.dobot.imjang.domain.unit;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -10,7 +9,6 @@ import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingRepository;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
-import com.dobot.imjang.domain.upload.UploadResult;
 import com.dobot.imjang.domain.upload.UploadResultRepository;
 
 @Service
@@ -74,16 +72,18 @@ public class UnitService {
         unit.setDeposit(dto.getDeposit());
 
         if (!dto.getUploadedFileIds().isEmpty()) {
-            List<UnitImage> newUnitImages = dto.getUploadedFileIds().stream().map(uploadedFileId -> {
-                UploadResult uploadResult = uploadResultRepository.findById(UUID.fromString(uploadedFileId))
-                        .orElseThrow(() -> new CustomException(ErrorCode.UPLOAD_RESULT_NOT_FOUND));
+            var uploadedFileIds = dto.getUploadedFileIds().stream().map(UUID::fromString).toList();
+            var uploadResults = uploadResultRepository.findAllById(uploadedFileIds);
+            List<UnitImage> newUnitImages = uploadResults.stream()
+                    .map(uploadedFile -> UnitImage.builder().id(UUID.randomUUID()).unit(unit)
+                            .uploadResult(uploadedFile)
+                            .build())
+                    .toList();
 
-                return UnitImage.builder().id(UUID.randomUUID()).unit(unit).uploadResult(uploadResult).build();
-            }).toList();
+            List<UnitImage> filteredOriginalUnitImages = unit.getImages().stream()
+                    .filter(image -> dto.getUploadedFileIds().contains(image.getUploadResult().getId().toString()))
+                    .toList();
 
-            List<UnitImage> filteredOriginalUnitImages = unit.getImages().stream().filter(image -> {
-                return dto.getUploadedFileIds().contains(image.getUploadResult().getId().toString());
-            }).collect(Collectors.toList());
             filteredOriginalUnitImages.addAll(newUnitImages);
             unit.getImages().clear();
             unit.getImages().addAll(filteredOriginalUnitImages);
