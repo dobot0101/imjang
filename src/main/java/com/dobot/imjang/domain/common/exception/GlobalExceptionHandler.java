@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ExceptionDto> dtoValidation(final MethodArgumentNotValidException e) {
     FieldError error = (FieldError) e.getBindingResult().getAllErrors().get(0);
     ExceptionDto exceptionDto = ExceptionDto.builder().message(error.getDefaultMessage())
-        .errorCode(ErrorCode.VALIDATION_ERROR)
+        .errorCode(ErrorCode.BAD_REQUEST)
         .timestamp(LocalDateTime.now()).build();
 
     return ResponseEntity.badRequest().body(exceptionDto);
