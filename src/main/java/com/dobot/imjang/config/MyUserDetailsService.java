@@ -1,6 +1,5 @@
 package com.dobot.imjang.config;
 
-import java.util.UUID;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,12 +20,11 @@ public class MyUserDetailsService implements UserDetailsService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
-    Member member = this.memberRepository.findById(UUID.fromString(memberId))
+  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    Member member = this.memberRepository.findByEmail(email)
         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-    return User.withUsername(member.getId().toString()).password(member.getPassword())
+    return User.withUsername(member.getEmail()).password(member.getPassword())
         .authorities(member.getRole().name())
         .build();
   }
-
 }

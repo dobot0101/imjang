@@ -2,6 +2,8 @@ package com.dobot.imjang.domain.member;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.validation.constraints.Email;

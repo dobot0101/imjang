@@ -21,7 +21,7 @@ public class JwtUtil {
   }
 
   public boolean validateToken(String token, UserDetails userDetails) {
-    final String username = extractMemberId(token);
+    final String username = extractMemberEmail(token);
     return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
   }
 
@@ -30,7 +30,7 @@ public class JwtUtil {
     return parser.parseClaimsJws(token).getBody().getExpiration().before(new Date());
   }
 
-  public String extractMemberId(String token) {
+  public String extractMemberEmail(String token) {
     var parser = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build();
     return parser.parseClaimsJws(token).getBody().getSubject();
   }
