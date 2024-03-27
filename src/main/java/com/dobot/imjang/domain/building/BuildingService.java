@@ -80,43 +80,50 @@ public class BuildingService {
         building.setParkingSpace(dto.getParkingSpace());
 
         // 학군
-        List<SchoolType> schoolTypes = dto.getSchoolTypes();
-        List<SchoolDistrict> newSchoolDistricts = schoolTypes.stream().map(schoolType -> {
-            SchoolDistrict schoolDistrict = new SchoolDistrict();
-            schoolDistrict.setId(UUID.randomUUID());
-            schoolDistrict.setSchoolType(schoolType);
-            schoolDistrict.setBuilding(building);
-            return schoolDistrict;
-        }).toList();
+        if (dto.getSchoolTypes() != null) {
+            List<SchoolType> schoolTypes = dto.getSchoolTypes();
+            List<SchoolDistrict> newSchoolDistricts = schoolTypes.stream().map(schoolType -> {
+                SchoolDistrict schoolDistrict = new SchoolDistrict();
+                schoolDistrict.setId(UUID.randomUUID());
+                schoolDistrict.setSchoolType(schoolType);
+                schoolDistrict.setBuilding(building);
+                return schoolDistrict;
+            }).toList();
 
-        building.getSchoolDistricts().clear();
-        building.getSchoolDistricts().addAll(newSchoolDistricts);
+            building.getSchoolDistricts().clear();
+            building.getSchoolDistricts().addAll(newSchoolDistricts);
+        }
 
         // 편의시설
-        List<FacilityType> facilityTypes = dto.getFacilityTypes();
-        List<Facility> newFacilities = facilityTypes.stream().map(facilityType -> {
-            Facility facility = new Facility();
-            facility.setId(UUID.randomUUID());
-            facility.setBuilding(building);
-            facility.setFacilityType(facilityType);
-            return facility;
-        }).toList();
-        List<Facility> facilities = building.getFacilities();
-        facilities.clear();
-        facilities.addAll(newFacilities);
+        if (dto.getFacilityTypes() != null) {
+            List<FacilityType> facilityTypes = dto.getFacilityTypes();
+            List<Facility> newFacilities = facilityTypes.stream().map(facilityType -> {
+                Facility facility = new Facility();
+                facility.setId(UUID.randomUUID());
+                facility.setBuilding(building);
+                facility.setFacilityType(facilityType);
+                return facility;
+            }).toList();
+            List<Facility> facilities = building.getFacilities();
+            facilities.clear();
+            facilities.addAll(newFacilities);
+        }
 
         // 교통수단
-        List<TransportationType> transportationTypes = dto.getTransportationTypes();
-        List<Transportation> newTransportationList = transportationTypes.stream().map(transportationType -> {
-            Transportation transportation = new Transportation();
-            transportation.setId(UUID.randomUUID());
-            transportation.setTransportationType(transportationType);
-            transportation.setBuilding(building);
-            return transportation;
-        }).toList();
-        List<Transportation> transPortationList = building.getTransportations();
-        transPortationList.clear();
-        transPortationList.addAll(newTransportationList);
+        if (dto.getTransportationTypes() != null) {
+            List<TransportationType> transportationTypes = dto.getTransportationTypes();
+            List<Transportation> newTransportationList = transportationTypes.stream().map(transportationType -> {
+                Transportation transportation = new Transportation();
+                transportation.setId(UUID.randomUUID());
+                transportation.setTransportationType(transportationType);
+                transportation.setBuilding(building);
+                return transportation;
+            }).toList();
+            List<Transportation> transPortationList = building.getTransportations();
+            transPortationList.clear();
+            transPortationList.addAll(newTransportationList);
+        }
+
     }
 
     public List<Building> getBuildingsByMemberId(UUID memberId) {

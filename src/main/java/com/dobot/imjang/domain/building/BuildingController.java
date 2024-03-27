@@ -26,7 +26,6 @@ import com.dobot.imjang.domain.permission.PermissionChecker;
 
 import jakarta.validation.Valid;
 
-// TODO: Validation 꼼꼼하게 확인하기
 @RestController
 @RequestMapping("/api/buildings")
 public class BuildingController {
