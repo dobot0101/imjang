@@ -11,6 +11,8 @@ import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.upload.UploadResultRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class UnitService {
     private final UnitRepository unitRepository;
@@ -40,12 +42,14 @@ public class UnitService {
         return this.unitRepository.save(unit);
     }
 
+    @Transactional
     public Unit updateUnit(UUID id, UnitCreateOrUpdateDto dto) {
         Unit unit = this.unitRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.UNIT_NOT_FOUND));
         Unit updatingUnit = this.addUnitProperties(dto, unit);
         return this.unitRepository.save(updatingUnit);
     }
 
+    @Transactional
     public void deleteUnitById(UUID id) {
         this.unitRepository.deleteById(id);
     }

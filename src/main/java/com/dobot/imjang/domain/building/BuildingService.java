@@ -1,18 +1,18 @@
 package com.dobot.imjang.domain.building;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
-import com.dobot.imjang.domain.building.enums.FacilityType;
-import com.dobot.imjang.domain.building.enums.SchoolType;
-import com.dobot.imjang.domain.building.enums.TransportationType;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.Member;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class BuildingService {
@@ -53,6 +53,7 @@ public class BuildingService {
         }
     }
 
+    @Transactional
     public Building updateBuilding(UUID id, UpdateBuildingDto dto) {
         if (id == null) {
             throw new Error("id is null");
@@ -65,6 +66,7 @@ public class BuildingService {
         return buildingRepository.save(building);
     }
 
+    @Transactional
     public void deleteBuilding(UUID id) {
         if (id == null) {
             throw new Error("id is null");
@@ -80,8 +82,7 @@ public class BuildingService {
         building.setParkingSpace(dto.getParkingSpace());
 
         // 학군
-        if (dto.getSchoolTypes() != null) {
-            List<SchoolType> schoolTypes = dto.getSchoolTypes();
+        Optional.ofNullable(dto.getSchoolTypes()).ifPresent(schoolTypes -> {
             List<SchoolDistrict> newSchoolDistricts = schoolTypes.stream().map(schoolType -> {
                 SchoolDistrict schoolDistrict = new SchoolDistrict();
                 schoolDistrict.setId(UUID.randomUUID());
@@ -89,14 +90,12 @@ public class BuildingService {
                 schoolDistrict.setBuilding(building);
                 return schoolDistrict;
             }).toList();
-
             building.getSchoolDistricts().clear();
             building.getSchoolDistricts().addAll(newSchoolDistricts);
-        }
+        });
 
         // 편의시설
-        if (dto.getFacilityTypes() != null) {
-            List<FacilityType> facilityTypes = dto.getFacilityTypes();
+        Optional.ofNullable(dto.getFacilityTypes()).ifPresent(facilityTypes -> {
             List<Facility> newFacilities = facilityTypes.stream().map(facilityType -> {
                 Facility facility = new Facility();
                 facility.setId(UUID.randomUUID());
@@ -107,23 +106,21 @@ public class BuildingService {
             List<Facility> facilities = building.getFacilities();
             facilities.clear();
             facilities.addAll(newFacilities);
-        }
+        });
 
         // 교통수단
-        if (dto.getTransportationTypes() != null) {
-            List<TransportationType> transportationTypes = dto.getTransportationTypes();
+        Optional.ofNullable(dto.getTransportationTypes()).ifPresent(transportationTypes -> {
             List<Transportation> newTransportationList = transportationTypes.stream().map(transportationType -> {
                 Transportation transportation = new Transportation();
                 transportation.setId(UUID.randomUUID());
-                transportation.setTransportationType(transportationType);
                 transportation.setBuilding(building);
+                transportation.setTransportationType(transportationType);
                 return transportation;
             }).toList();
-            List<Transportation> transPortationList = building.getTransportations();
-            transPortationList.clear();
-            transPortationList.addAll(newTransportationList);
-        }
-
+            List<Transportation> transportationList = building.getTransportations();
+            transportationList.clear();
+            transportationList.addAll(newTransportationList);
+        });
     }
 
     public List<Building> getBuildingsByMemberId(UUID memberId) {

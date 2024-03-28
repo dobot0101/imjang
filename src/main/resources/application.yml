@@ -18,7 +18,7 @@ spring:
 
 jwt:
   expiration: 3600000
-  secret: test
+  secret: w7bGvSDpvsKvwqfCtsOpwrHCg8OtwrDCgsKTw6TDq8O7wrjCtsOsw7/Dq8Kxw7fDqMO9
 
 aws:
   access-key: test
