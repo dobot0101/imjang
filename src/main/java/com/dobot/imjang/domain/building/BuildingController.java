@@ -44,7 +44,6 @@ public class BuildingController {
     public ResponseEntity<Map<String, Object>> getAllBuildings() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        permissionChecker.checkPermission(userDetails.getId());
         List<Building> buildings = buildingService.getBuildingsByMemberId(userDetails.getId());
         Map<String, Object> map = new HashMap<>();
         map.put("buildings", buildings);

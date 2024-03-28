@@ -3,13 +3,13 @@ package com.dobot.imjang.config;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 // @Configuration
 // @EnableWebSecurity
 // @RequiredArgsConstructor
-public class SessionSpringSecurityConfig {
+public class SessionSecurityConfig {
         private final String[] allowedUrls = { "/auth/login", "/members/signup", "/api/members/signup", "/css/**",
                         "/js/**",
                         "/h2-console/**" };
