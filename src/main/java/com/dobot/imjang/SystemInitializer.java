@@ -1,9 +1,10 @@
 package com.dobot.imjang;
 
-import com.dobot.imjang.domain.member.MemberService;
-import com.dobot.imjang.domain.member.SignUpRequestDto;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import com.dobot.imjang.domain.member.MemberService;
+import com.dobot.imjang.domain.member.SignUpRequestDto;
 
 @Component
 public class SystemInitializer implements CommandLineRunner {
@@ -23,7 +24,8 @@ public class SystemInitializer implements CommandLineRunner {
     }
 
     private void initAdminMember() throws Exception {
-        SignUpRequestDto dto = SignUpRequestDto.builder().confirmPassword("test").password("test")
+        String password = "test";
+        SignUpRequestDto dto = SignUpRequestDto.builder().confirmPassword(password).password(password)
                 .email("tester@imjang.com").name("테스터").build();
         memberService.signUp(dto);
     }

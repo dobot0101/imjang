@@ -17,18 +17,18 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-public class JwtSpringSecurityConfig {
+public class JwtSecurityConfig {
   private JwtRequestFilter jwtRequestFilter;
   private MyUserDetailsService myUserDetailsService;
 
-  public JwtSpringSecurityConfig(JwtRequestFilter jwtRequestFilter, MyUserDetailsService myUserDetailsService) {
+  public JwtSecurityConfig(JwtRequestFilter jwtRequestFilter, MyUserDetailsService myUserDetailsService) {
     this.jwtRequestFilter = jwtRequestFilter;
     this.myUserDetailsService = myUserDetailsService;
   }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    var matcher = new AntPathRequestMatcher("/auth");
+    var matcher = new AntPathRequestMatcher("/api/auth");
     http.csrf(c -> c.disable())
         .authorizeHttpRequests(c -> c.requestMatchers(matcher).permitAll().anyRequest().authenticated())
         .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -48,7 +48,7 @@ public class JwtSpringSecurityConfig {
   }
 
   @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  public void configure(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(this.myUserDetailsService);
   }
 

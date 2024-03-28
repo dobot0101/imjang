@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 // @Configuration
 // @EnableWebSecurity
 // @RequiredArgsConstructor
-public class SessionSpringSecurityConfig {
+public class SessionSecurityConfig {
         private final String[] allowedUrls = { "/auth/login", "/members/signup", "/api/members/signup", "/css/**",
                         "/js/**",
                         "/h2-console/**" };

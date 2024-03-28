@@ -1,6 +1,6 @@
 package com.dobot.imjang.domain.auth;
 
-public record AuthenticationRequest(String email, String password) {
+public record AuthenticationRequestDto(String email, String password) {
 
 }
 
