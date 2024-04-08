@@ -1,6 +1,7 @@
 package com.dobot.imjang.domain.building;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class BuildingService {
+    private static final String BUILDING_ID_SHOULD_NOT_BE_NULL = "Building id should not be null.";
     private final BuildingRepository buildingRepository;
 
     public BuildingService(BuildingRepository buildingRepository) {
@@ -55,21 +57,19 @@ public class BuildingService {
 
     @Transactional
     public Building updateBuilding(UUID id, UpdateBuildingDto dto) {
-        if (id == null) {
-            throw new Error("id is null");
+        if (Objects.isNull(id)) {
+            throw new CustomException(ErrorCode.INVALID_INPUT, BUILDING_ID_SHOULD_NOT_BE_NULL);
         }
         Building building = buildingRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
-
         this.setBuildingInformation(dto, building);
-
         return buildingRepository.save(building);
     }
 
     @Transactional
     public void deleteBuilding(UUID id) {
-        if (id == null) {
-            throw new Error("id is null");
+        if (Objects.isNull(id)) {
+            throw new CustomException(ErrorCode.INVALID_INPUT, BUILDING_ID_SHOULD_NOT_BE_NULL);
         }
         buildingRepository.deleteById(id);
     }
