@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -36,13 +38,15 @@ public class CustomBuildingRepositoryImpl implements CustomBuildingRepository {
     }
 
     @Override
-    public List<Building> findWithOffsetPagination(Pageable pageable) {
+    public Page<Building> findWithOffsetPagination(Pageable pageable) {
         var qBuilding = QBuilding.building;
-        return query.select(qBuilding).from(qBuilding)
+        var content = query.select(qBuilding).from(qBuilding)
                 .orderBy(qBuilding.createdAt.desc(), qBuilding.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+        var count = query.select(qBuilding.count()).from(qBuilding).fetchFirst();
+        return new PageImpl<>(content, pageable, count);
     }
 
 }

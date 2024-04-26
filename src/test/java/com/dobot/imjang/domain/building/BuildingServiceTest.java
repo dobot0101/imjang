@@ -1,4 +1,4 @@
-package com.dobot.imjang.service;
+package com.dobot.imjang.domain.building;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,11 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dobot.imjang.domain.building.Building;
-import com.dobot.imjang.domain.building.BuildingRepository;
-import com.dobot.imjang.domain.building.BuildingService;
-import com.dobot.imjang.domain.building.CreateBuildingDto;
-import com.dobot.imjang.domain.building.UpdateBuildingDto;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.member.MemberRepository;

@@ -1,4 +1,4 @@
-package com.dobot.imjang.service;
+package com.dobot.imjang.domain.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,9 +22,6 @@ import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.member.MemberRepository;
 import com.dobot.imjang.domain.member.MemberService;
 import com.dobot.imjang.domain.member.SignUpRequestDto;
-import com.dobot.imjang.domain.unit.Unit;
-import com.dobot.imjang.domain.unit.UnitCreateOrUpdateDto;
-import com.dobot.imjang.domain.unit.UnitService;
 
 @SpringBootTest
 @Transactional
