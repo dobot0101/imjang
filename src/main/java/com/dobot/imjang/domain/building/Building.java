@@ -30,19 +30,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//필요한 필드만 변경 가능하도록 필드에 @Setter 를 추가하는게 좋다
-//@Setter
-
 // 기본 생성자를 생성하지 못하도록 하여 객체 생성시 Builder 를 사용하도록 함
-
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
+// 필요한 필드만 변경 가능하도록 필드에 @Setter 를 추가하는게 좋다
+// @Setter
 
-// @AllArgsConstructor 를 사용하면 멤버 필드의 순서대로 생성자의 파라미터를 결정함 => 상황에 따라 같은 데이터 타입의 값이
-// 다른 필드에 할당될 수 있음
+// @AllArgsConstructor 어노테이션을 사용하면 멤버 필드의 순서대로 생성자의 파라미터가 결정되기 때문에,
+// 엉뚱한 값이 파라미터로 전달되어도 타입은 같기 때문에 에러가 나지 않는 문제가 발생할 수 있음
 // @AllArgsConstructor
-
 @Table(indexes = {
         @Index(columnList = "latitude, longitude", unique = true)
 })
