@@ -38,7 +38,7 @@ import lombok.Setter;
 // @Setter
 
 // @AllArgsConstructor 어노테이션을 사용하면 멤버 필드의 순서대로 생성자의 파라미터가 결정되기 때문에,
-// 엉뚱한 값이 파라미터로 전달되어도 타입은 같기 때문에 에러가 나지 않는 문제가 발생할 수 있음
+// 개발 중에 타입이 같은 멤버 필드의 순서를 실수로 변경하여도 컴파일 에러가 발생하지는 않아서 이후에 치명적인 오류로 발생할 수 있음
 // @AllArgsConstructor
 @Table(indexes = {
         @Index(columnList = "latitude, longitude", unique = true)
