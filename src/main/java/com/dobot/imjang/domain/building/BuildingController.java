@@ -25,20 +25,15 @@ import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.permission.PermissionChecker;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/buildings")
 public class BuildingController {
     private final BuildingService buildingService;
     private final PermissionChecker permissionChecker;
     private final AuthService authService;
-
-    public BuildingController(BuildingService buildingService,
-            PermissionChecker permissionChecker, AuthService authService) {
-        this.buildingService = buildingService;
-        this.permissionChecker = permissionChecker;
-        this.authService = authService;
-    }
 
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> getAllBuildings() {

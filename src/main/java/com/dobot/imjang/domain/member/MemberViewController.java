@@ -11,15 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.dobot.imjang.domain.auth.CustomUserDetails;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/members")
 public class MemberViewController {
   private final MemberService memberService;
-
-  public MemberViewController(MemberService memberService) {
-    this.memberService = memberService;
-  }
 
   @GetMapping("/mypage")
   public String showMyPage(Model model) {

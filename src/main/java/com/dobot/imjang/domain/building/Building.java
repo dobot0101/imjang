@@ -25,6 +25,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,8 @@ import lombok.Setter;
 
 // 기본 생성자를 생성하지 못하도록 하여 객체 생성시 Builder 를 사용하도록 함
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 @Entity
 @Getter
 // 필요한 필드만 변경 가능하도록 필드에 @Setter 를 추가하는게 좋다
@@ -45,25 +48,28 @@ import lombok.Setter;
 })
 public class Building extends BaseTime {
 
-    @Builder
-    public Building(UUID id, double latitude, double longitude, String name, String address,
-            ElevatorStatus elevatorStatus, EntranceStructure entranceStructure, ParkingSpace parkingSpace,
-            List<SchoolDistrict> schoolDistricts, List<Facility> facilities, List<Transportation> transportations,
-            List<Unit> units, Member member) {
-        this.id = id;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.name = name;
-        this.address = address;
-        this.elevatorStatus = elevatorStatus;
-        this.entranceStructure = entranceStructure;
-        this.parkingSpace = parkingSpace;
-        this.schoolDistricts = schoolDistricts;
-        this.facilities = facilities;
-        this.transportations = transportations;
-        this.units = units;
-        this.member = member;
-    }
+    // @Builder
+    // public Building(UUID id, double latitude, double longitude, String name,
+    // String address,
+    // ElevatorStatus elevatorStatus, EntranceStructure entranceStructure,
+    // ParkingSpace parkingSpace,
+    // List<SchoolDistrict> schoolDistricts, List<Facility> facilities,
+    // List<Transportation> transportations,
+    // List<Unit> units, Member member) {
+    // this.id = id;
+    // this.latitude = latitude;
+    // this.longitude = longitude;
+    // this.name = name;
+    // this.address = address;
+    // this.elevatorStatus = elevatorStatus;
+    // this.entranceStructure = entranceStructure;
+    // this.parkingSpace = parkingSpace;
+    // this.schoolDistricts = schoolDistricts;
+    // this.facilities = facilities;
+    // this.transportations = transportations;
+    // this.units = units;
+    // this.member = member;
+    // }
 
     @Setter
     @Id

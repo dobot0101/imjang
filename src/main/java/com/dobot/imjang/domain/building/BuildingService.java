@@ -34,26 +34,18 @@ public class BuildingService {
 
     public Building createBuilding(CreateBuildingDto dto, Member member) {
         isDuplicatedLocation(dto);
-        Building building = new Building();
-        building.setId(UUID.randomUUID());
-        building.setLongitude(dto.getLongitude());
-        building.setLatitude(dto.getLatitude());
-        building.setMember(member);
 
-        setBuildingInformation(dto, building);
+        var building = Building.builder().id(UUID.randomUUID()).longitude(dto.getLongitude())
+                .latitude(dto.getLatitude()).member(member).address(dto.getAddress())
+                .name(dto.getName())
+                .entranceStructure(dto.getEntranceStructure())
+                .elevatorStatus(dto.getElevatorStatus())
+                .parkingSpace(dto.getParkingSpace()).build();
+        this.setAdditionalBuildingInformation(dto, building);
 
         return buildingRepository.save(building);
     }
-
-    private void isDuplicatedLocation(IBuildingDto dto) {
-        double latitude = dto.getLatitude();
-        double longitude = dto.getLongitude();
-
-        List<Building> existingBuildings = this.buildingRepository.findByLatitudeAndLongitude(latitude, longitude);
-        if (!existingBuildings.isEmpty()) {
-            throw new CustomException(ErrorCode.DUPLICATE_LOCATION, "좌표 중복 에러 [" + latitude + ", " + longitude + "]");
-        }
-    }
+    
 
     @Transactional
     public Building updateBuilding(UUID id, UpdateBuildingDto dto) {
@@ -62,7 +54,12 @@ public class BuildingService {
         }
         Building building = buildingRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
-        this.setBuildingInformation(dto, building);
+        building.setAddress(dto.getAddress());
+        building.setName(dto.getName());
+        building.setEntranceStructure(dto.getEntranceStructure());
+        building.setElevatorStatus(dto.getElevatorStatus());
+        building.setParkingSpace(dto.getParkingSpace());
+        this.setAdditionalBuildingInformation(dto, building);
         return buildingRepository.save(building);
     }
 
@@ -74,21 +71,22 @@ public class BuildingService {
         buildingRepository.deleteById(id);
     }
 
-    private void setBuildingInformation(IBuildingDto dto, Building building) {
-        building.setAddress(dto.getAddress());
-        building.setName(dto.getName());
-        building.setEntranceStructure(dto.getEntranceStructure());
-        building.setElevatorStatus(dto.getElevatorStatus());
-        building.setParkingSpace(dto.getParkingSpace());
+    
+
+    public List<Building> getBuildingsByMemberId(UUID memberId) {
+        return buildingRepository.findByMemberId(memberId);
+    }
+
+    public Slice<Building> getBuildingsWithPagination(GetBuildingsWithPaginationDto dto, Pageable pageable) {
+        return buildingRepository.findWithCursorPagination(dto.cursor(), dto.createdAt(), pageable);
+    }
+
+    private void setAdditionalBuildingInformation(IBuildingDto dto, Building building) {
 
         // 학군
         Optional.ofNullable(dto.getSchoolTypes()).ifPresent(schoolTypes -> {
             List<SchoolDistrict> newSchoolDistricts = schoolTypes.stream().map(schoolType -> {
-                SchoolDistrict schoolDistrict = new SchoolDistrict();
-                schoolDistrict.setId(UUID.randomUUID());
-                schoolDistrict.setSchoolType(schoolType);
-                schoolDistrict.setBuilding(building);
-                return schoolDistrict;
+                return SchoolDistrict.builder().id(UUID.randomUUID()).schoolType(schoolType).building(building).build();
             }).toList();
             building.getSchoolDistricts().clear();
             building.getSchoolDistricts().addAll(newSchoolDistricts);
@@ -97,11 +95,7 @@ public class BuildingService {
         // 편의시설
         Optional.ofNullable(dto.getFacilityTypes()).ifPresent(facilityTypes -> {
             List<Facility> newFacilities = facilityTypes.stream().map(facilityType -> {
-                Facility facility = new Facility();
-                facility.setId(UUID.randomUUID());
-                facility.setBuilding(building);
-                facility.setFacilityType(facilityType);
-                return facility;
+                return Facility.builder().id(UUID.randomUUID()).facilityType(facilityType).building(building).build();
             }).toList();
             List<Facility> facilities = building.getFacilities();
             facilities.clear();
@@ -111,11 +105,7 @@ public class BuildingService {
         // 교통수단
         Optional.ofNullable(dto.getTransportationTypes()).ifPresent(transportationTypes -> {
             List<Transportation> newTransportationList = transportationTypes.stream().map(transportationType -> {
-                Transportation transportation = new Transportation();
-                transportation.setId(UUID.randomUUID());
-                transportation.setBuilding(building);
-                transportation.setTransportationType(transportationType);
-                return transportation;
+                return Transportation.builder().id(UUID.randomUUID()).building(building).transportationType(transportationType).build();
             }).toList();
             List<Transportation> transportationList = building.getTransportations();
             transportationList.clear();
@@ -123,11 +113,13 @@ public class BuildingService {
         });
     }
 
-    public List<Building> getBuildingsByMemberId(UUID memberId) {
-        return buildingRepository.findByMemberId(memberId);
-    }
+    private void isDuplicatedLocation(IBuildingDto dto) {
+        double latitude = dto.getLatitude();
+        double longitude = dto.getLongitude();
 
-    public Slice<Building> getBuildingsWithPagination(GetBuildingsWithPaginationDto dto, Pageable pageable) {
-        return buildingRepository.findWithCursorPagination(dto.cursor(), dto.createdAt(), pageable);
+        List<Building> existingBuildings = this.buildingRepository.findByLatitudeAndLongitude(latitude, longitude);
+        if (!existingBuildings.isEmpty()) {
+            throw new CustomException(ErrorCode.DUPLICATE_LOCATION, "좌표 중복 에러 [" + latitude + ", " + longitude + "]");
+        }
     }
 }

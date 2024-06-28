@@ -8,15 +8,13 @@ import org.springframework.stereotype.Service;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
-        this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public Member signUp(SignUpRequestDto signUpRequestDto) throws Exception {
         if (memberRepository.findByEmail(signUpRequestDto.getEmail()).isPresent()) {

@@ -10,23 +10,27 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity()
 public class Member extends BaseTime {
 
-    @Builder
-    public Member(UUID id, String email, String password, String name, Role role) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.role = role;
-    }
+    // @Builder
+    // public Member(UUID id, String email, String password, String name, Role role)
+    // {
+    // this.id = id;
+    // this.email = email;
+    // this.password = password;
+    // this.name = name;
+    // this.role = role;
+    // }
 
     @Id
     private UUID id;
