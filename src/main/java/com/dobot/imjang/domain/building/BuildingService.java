@@ -33,45 +33,31 @@ public class BuildingService {
     }
 
     public Building createBuilding(CreateBuildingDto dto, Member member) {
-        isDuplicatedLocation(dto);
+        validateDuplicatedLocation(dto);
 
-        var building = Building.builder().id(UUID.randomUUID()).longitude(dto.getLongitude())
-                .latitude(dto.getLatitude()).member(member).address(dto.getAddress())
-                .name(dto.getName())
-                .entranceStructure(dto.getEntranceStructure())
-                .elevatorStatus(dto.getElevatorStatus())
-                .parkingSpace(dto.getParkingSpace()).build();
-        this.setAdditionalBuildingInformation(dto, building);
+        Building building = buildBuilding(dto, member);
+        setAdditionalBuildingInformation(dto, building);
 
         return buildingRepository.save(building);
     }
-    
 
     @Transactional
     public Building updateBuilding(UUID id, UpdateBuildingDto dto) {
-        if (Objects.isNull(id)) {
-            throw new CustomException(ErrorCode.INVALID_INPUT, BUILDING_ID_SHOULD_NOT_BE_NULL);
-        }
+        validateBuildingId(id);
+
         Building building = buildingRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
-        building.setAddress(dto.getAddress());
-        building.setName(dto.getName());
-        building.setEntranceStructure(dto.getEntranceStructure());
-        building.setElevatorStatus(dto.getElevatorStatus());
-        building.setParkingSpace(dto.getParkingSpace());
-        this.setAdditionalBuildingInformation(dto, building);
+        updateBuildingDetails(building, dto);
+        setAdditionalBuildingInformation(dto, building);
+
         return buildingRepository.save(building);
     }
 
     @Transactional
     public void deleteBuilding(UUID id) {
-        if (Objects.isNull(id)) {
-            throw new CustomException(ErrorCode.INVALID_INPUT, BUILDING_ID_SHOULD_NOT_BE_NULL);
-        }
+        validateBuildingId(id);
         buildingRepository.deleteById(id);
     }
-
-    
 
     public List<Building> getBuildingsByMemberId(UUID memberId) {
         return buildingRepository.findByMemberId(memberId);
@@ -82,44 +68,76 @@ public class BuildingService {
     }
 
     private void setAdditionalBuildingInformation(IBuildingDto dto, Building building) {
+        setSchoolDistricts(dto, building);
+        setFacilities(dto, building);
+        setTransportations(dto, building);
+    }
 
-        // 학군
+    private void setSchoolDistricts(IBuildingDto dto, Building building) {
         Optional.ofNullable(dto.getSchoolTypes()).ifPresent(schoolTypes -> {
-            List<SchoolDistrict> newSchoolDistricts = schoolTypes.stream().map(schoolType -> {
-                return SchoolDistrict.builder().id(UUID.randomUUID()).schoolType(schoolType).building(building).build();
-            }).toList();
+            List<SchoolDistrict> newSchoolDistricts = schoolTypes.stream()
+                    .map(schoolType -> SchoolDistrict.builder().id(UUID.randomUUID()).schoolType(schoolType).building(building).build())
+                    .toList();
             building.getSchoolDistricts().clear();
             building.getSchoolDistricts().addAll(newSchoolDistricts);
         });
+    }
 
-        // 편의시설
+    private void setFacilities(IBuildingDto dto, Building building) {
         Optional.ofNullable(dto.getFacilityTypes()).ifPresent(facilityTypes -> {
-            List<Facility> newFacilities = facilityTypes.stream().map(facilityType -> {
-                return Facility.builder().id(UUID.randomUUID()).facilityType(facilityType).building(building).build();
-            }).toList();
-            List<Facility> facilities = building.getFacilities();
-            facilities.clear();
-            facilities.addAll(newFacilities);
-        });
-
-        // 교통수단
-        Optional.ofNullable(dto.getTransportationTypes()).ifPresent(transportationTypes -> {
-            List<Transportation> newTransportationList = transportationTypes.stream().map(transportationType -> {
-                return Transportation.builder().id(UUID.randomUUID()).building(building).transportationType(transportationType).build();
-            }).toList();
-            List<Transportation> transportationList = building.getTransportations();
-            transportationList.clear();
-            transportationList.addAll(newTransportationList);
+            List<Facility> newFacilities = facilityTypes.stream()
+                    .map(facilityType -> Facility.builder().id(UUID.randomUUID()).facilityType(facilityType).building(building).build())
+                    .toList();
+            building.getFacilities().clear();
+            building.getFacilities().addAll(newFacilities);
         });
     }
 
-    private void isDuplicatedLocation(IBuildingDto dto) {
+    private void setTransportations(IBuildingDto dto, Building building) {
+        Optional.ofNullable(dto.getTransportationTypes()).ifPresent(transportationTypes -> {
+            List<Transportation> newTransportationList = transportationTypes.stream()
+                    .map(transportationType -> Transportation.builder().id(UUID.randomUUID()).building(building).transportationType(transportationType).build())
+                    .toList();
+            building.getTransportations().clear();
+            building.getTransportations().addAll(newTransportationList);
+        });
+    }
+
+    private void validateDuplicatedLocation(IBuildingDto dto) {
         double latitude = dto.getLatitude();
         double longitude = dto.getLongitude();
 
-        List<Building> existingBuildings = this.buildingRepository.findByLatitudeAndLongitude(latitude, longitude);
+        List<Building> existingBuildings = buildingRepository.findByLatitudeAndLongitude(latitude, longitude);
         if (!existingBuildings.isEmpty()) {
             throw new CustomException(ErrorCode.DUPLICATE_LOCATION, "좌표 중복 에러 [" + latitude + ", " + longitude + "]");
         }
+    }
+
+    private void validateBuildingId(UUID id) {
+        if (Objects.isNull(id)) {
+            throw new CustomException(ErrorCode.INVALID_INPUT, BUILDING_ID_SHOULD_NOT_BE_NULL);
+        }
+    }
+
+    private Building buildBuilding(CreateBuildingDto dto, Member member) {
+        return Building.builder()
+                .id(UUID.randomUUID())
+                .longitude(dto.getLongitude())
+                .latitude(dto.getLatitude())
+                .member(member)
+                .address(dto.getAddress())
+                .name(dto.getName())
+                .entranceStructure(dto.getEntranceStructure())
+                .elevatorStatus(dto.getElevatorStatus())
+                .parkingSpace(dto.getParkingSpace())
+                .build();
+    }
+
+    private void updateBuildingDetails(Building building, UpdateBuildingDto dto) {
+        building.setAddress(dto.getAddress());
+        building.setName(dto.getName());
+        building.setEntranceStructure(dto.getEntranceStructure());
+        building.setElevatorStatus(dto.getElevatorStatus());
+        building.setParkingSpace(dto.getParkingSpace());
     }
 }

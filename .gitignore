@@ -40,3 +40,6 @@ docker-compose.prod.yml
 env/*.env
 src/main/resources/yml
 # application.yml
+
+# query dsl
+/src/main/generated

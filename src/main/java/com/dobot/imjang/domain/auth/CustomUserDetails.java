@@ -3,29 +3,20 @@ package com.dobot.imjang.domain.auth;
 import java.util.Collection;
 import java.util.UUID;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Builder;
 
-@Builder
+@AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
+    @Getter
     private UUID id;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
-
-    public CustomUserDetails(UUID id, String username, String password,
-            Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.authorities = authorities;
-    }
-
-    public UUID getId() {
-        return id;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -61,29 +52,4 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-    // public void setId(UUID id) {
-    // this.id = id;
-    // }
-
-    // public void setUsername(String username) {
-    // this.username = username;
-    // }
-
-    // public String getEmail() {
-    // return email;
-    // }
-
-    // public void setEmail(String email) {
-    // this.email = email;
-    // }
-
-    // public void setPassword(String password) {
-    // this.password = password;
-    // }
-
-    // public void setAuthorities(Collection<? extends GrantedAuthority>
-    // authorities) {
-    // this.authorities = authorities;
-    // }
 }

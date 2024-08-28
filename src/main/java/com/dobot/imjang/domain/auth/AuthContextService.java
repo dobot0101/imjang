@@ -13,19 +13,17 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class AuthContextService {
     private final MemberRepository memberRepository;
 
-    @Override
-    public Member getMemberFromAuthenticatedInfo() {
+    public Member getAuthenticatedMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Member member = memberRepository.findById(userDetails.getId())
+        return memberRepository.findById(userDetails.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        return member;
     }
 }
