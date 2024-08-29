@@ -2,110 +2,191 @@ package com.dobot.imjang.domain.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingRepository;
 import com.dobot.imjang.domain.building.BuildingService;
-import com.dobot.imjang.domain.building.CreateBuildingDto;
 import com.dobot.imjang.domain.common.exception.CustomException;
-import com.dobot.imjang.domain.member.Member;
-import com.dobot.imjang.domain.member.MemberRepository;
-import com.dobot.imjang.domain.member.MemberService;
-import com.dobot.imjang.domain.member.SignUpRequestDto;
+import com.dobot.imjang.domain.common.exception.ErrorCode;
 
-@SpringBootTest
-@Transactional
-@TestInstance(Lifecycle.PER_CLASS)
-public class UnitServiceTest {
-    @Autowired
-    private UnitService unitService;
+class UnitServiceTest {
+    @Mock
+    private UnitRepository unitRepository;
 
-    @Autowired
-    private BuildingService buildingService;
-
-    @Autowired
-    private MemberService memberService;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
+    @Mock
     private BuildingRepository buildingRepository;
 
-    private Member member;
+    @InjectMocks
+    private UnitService unitService;
+
+    @InjectMocks
+    private BuildingService buildingService;
+
     private Building building;
+    private Unit unit;
 
-    @BeforeAll
-    void createTestData() throws Exception {
-        SignUpRequestDto dto = SignUpRequestDto.builder().confirmPassword("test").password("test")
-                .email("test@test.co.kr")
-                .name("tester").build();
-        member = memberService.signUp(dto);
-
-        CreateBuildingDto createBuildingDto = CreateBuildingDto.builder()
-                .latitude(99.999999)
-                .longitude(99.999999)
-                .name("테스트 건물명").address("테스트 건물 주소")
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        building = Building.builder()
+                .id(UUID.randomUUID())
                 .build();
-        building = buildingService.createBuilding(createBuildingDto, member);
-    }
-
-    @AfterAll
-    void deleteTestData() {
-        buildingRepository.deleteById(building.getId());
-        memberRepository.delete(member);
+        unit = Unit.builder()
+                .id(UUID.randomUUID())
+                .building(building)
+                .build();
     }
 
     @Test
-    @DisplayName("세대정보 조회")
-    public void findUnit() {
-        UnitCreateOrUpdateDto dto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
-        Unit unit = unitService.createUnit(dto, building.getId());
+    @DisplayName("모든 유닛 조회 - 모든 유닛 반환")
+    void getAllUnits_ReturnsAllUnits() {
+        List<Unit> units = List.of(new Unit(), new Unit());
+        when(unitRepository.findAll()).thenReturn(units);
 
-        Unit foundUnit = unitService.getUnitById(unit.getId());
-        assertEquals(foundUnit.getId(), unit.getId());
+        List<Unit> result = unitService.getAllUnits();
+
+        assertEquals(units, result);
     }
 
     @Test
-    @DisplayName("세대정보 생성")
-    public void createUnit() {
-        UnitCreateOrUpdateDto dto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
-        Unit unit = unitService.createUnit(dto, building.getId());
-        assertEquals(unit.getMemo(), "테스트 메모");
+    @DisplayName("유닛 생성 - 유효한 입력, 생성된 유닛 반환")
+    void createUnit_ValidInput_ReturnsCreatedUnit() {
+        UUID buildingId = UUID.randomUUID();
+        var dto = UnitCreateOrUpdateDto.builder().area("10").buildingNumber("908동").roomNumber("1111호").build();
+
+        when(buildingRepository.findById(buildingId)).thenReturn(Optional.of(building));
+        when(unitRepository.save(any(Unit.class))).thenReturn(unit);
+
+        Unit result = unitService.createUnit(dto, buildingId);
+
+        assertEquals(unit, result);
     }
 
     @Test
-    @DisplayName("세대정보 수정")
-    public void updateUnit() {
-        UnitCreateOrUpdateDto createDto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
-        Unit unit = unitService.createUnit(createDto, building.getId());
+    @DisplayName("유닛 생성 - 빌딩 ID가 null인 경우 CustomException 발생")
+    void createUnit_NullBuildingId_ThrowsCustomException() {
+        UnitCreateOrUpdateDto dto = new UnitCreateOrUpdateDto();
 
-        UnitCreateOrUpdateDto updateDto = UnitCreateOrUpdateDto.builder().memo("수정된 테스트 메모").build();
-        Unit updatedUnit = unitService.updateUnit(unit.getId(), updateDto);
-
-        assertEquals(updatedUnit.getMemo(), "수정된 테스트 메모");
-    }
-
-    @Test
-    @DisplayName("세대정보 삭제")
-    public void deleteUnit() {
-        UnitCreateOrUpdateDto createDto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
-        Unit unit = unitService.createUnit(createDto, building.getId());
-
-        unitService.deleteUnitById(unit.getId());
-
-        assertThrows(CustomException.class, () -> {
-            unitService.getUnitById(unit.getId());
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            unitService.createUnit(dto, null);
         });
+
+        assertEquals(ErrorCode.INVALID_INPUT, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("유닛 생성 - 빌딩을 찾을 수 없는 경우 CustomException 발생")
+    void createUnit_BuildingNotFound_ThrowsCustomException() {
+        UUID buildingId = UUID.randomUUID();
+        UnitCreateOrUpdateDto dto = new UnitCreateOrUpdateDto();
+
+        when(buildingRepository.findById(buildingId)).thenReturn(Optional.empty());
+
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            unitService.createUnit(dto, buildingId);
+        });
+
+        assertEquals(ErrorCode.BUILDING_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("유닛 업데이트 - 유효한 입력, 업데이트된 유닛 반환")
+    void updateUnit_ValidInput_ReturnsUpdatedUnit() {
+        UnitCreateOrUpdateDto dto = new UnitCreateOrUpdateDto();
+
+        UUID unitId = unit.getId();
+        when(unitRepository.findById(unitId)).thenReturn(Optional.of(unit));
+        when(unitRepository.save(any(Unit.class))).thenReturn(unit);
+
+        Unit result = unitService.updateUnit(unitId, dto);
+
+        assertEquals(unit, result);
+    }
+
+    @Test
+    @DisplayName("유닛 업데이트 - 유닛 ID가 null인 경우 CustomException 발생")
+    void updateUnit_NullUnitId_ThrowsCustomException() {
+        UnitCreateOrUpdateDto dto = new UnitCreateOrUpdateDto();
+
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            unitService.updateUnit(null, dto);
+        });
+
+        assertEquals(ErrorCode.INVALID_INPUT, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("유닛 업데이트 - 유닛을 찾을 수 없는 경우 CustomException 발생")
+    void updateUnit_UnitNotFound_ThrowsCustomException() {
+        UUID unitId = UUID.randomUUID();
+        UnitCreateOrUpdateDto dto = new UnitCreateOrUpdateDto();
+
+        when(unitRepository.findById(unitId)).thenReturn(Optional.empty());
+
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            unitService.updateUnit(unitId, dto);
+        });
+
+        assertEquals(ErrorCode.UNIT_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("유닛 삭제 - 유효한 ID, 유닛 삭제")
+    void deleteUnitById_ValidId_DeletesUnit() {
+        UUID unitId = UUID.randomUUID();
+
+        unitService.deleteUnitById(unitId);
+
+        verify(unitRepository, times(1)).deleteById(unitId);
+    }
+
+    @Test
+    @DisplayName("유닛 삭제 - 유닛 ID가 null인 경우 CustomException 발생")
+    void deleteUnitById_NullUnitId_ThrowsCustomException() {
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            unitService.deleteUnitById(null);
+        });
+
+        assertEquals(ErrorCode.INVALID_INPUT, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("유닛 조회 - 유효한 ID, 유닛 반환")
+    void getUnitById_ValidId_ReturnsUnit() {
+        UUID unitId = unit.getId();
+        when(unitRepository.findById(unitId)).thenReturn(Optional.of(unit));
+
+        Unit result = unitService.getUnitById(unitId);
+
+        assertEquals(unit, result);
+    }
+
+    @Test
+    @DisplayName("유닛 조회 - 유닛을 찾을 수 없는 경우 CustomException 발생")
+    void getUnitById_UnitNotFound_ThrowsCustomException() {
+        UUID unitId = UUID.randomUUID();
+
+        when(unitRepository.findById(unitId)).thenReturn(Optional.empty());
+
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            unitService.getUnitById(unitId);
+        });
+
+        assertEquals(ErrorCode.UNIT_NOT_FOUND, exception.getErrorCode());
     }
 }
