@@ -28,88 +28,91 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
 @Table(indexes = {
-    @Index(columnList = "building_id")
+        @Index(columnList = "building_id")
 })
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Unit extends BaseTime {
-  @Id
-  private UUID id;
+    @Id
+    private UUID id;
 
-  // 동
-  @Column(length = 20)
-  private String buildingNumber;
+    // 동
+    @Column(length = 20)
+    private String buildingNumber;
 
-  // 호
-  @Column(length = 20)
-  private String roomNumber;
+    // 호
+    @Column(length = 20)
+    private String roomNumber;
 
-  // 면적
-  @Column(length = 20)
-  private String area;
+    // 면적
+    @Column(length = 20)
+    private String area;
 
-  // 메모
-  @Column(columnDefinition = "TEXT")
-  private String memo;
+    // 메모
+    @Column(columnDefinition = "TEXT")
+    private String memo;
 
-  // 융자금
-  private Integer deposit;
+    // 융자금
+    private Integer deposit;
 
-  // 월세가
-  private Integer monthlyPrice;
+    // 월세가
+    private Integer monthlyPrice;
 
-  // 전세가
-  private Integer jeonsePrice;
+    // 전세가
+    private Integer jeonsePrice;
 
-  // 매매가
-  private Integer salePrice;
+    // 매매가
+    private Integer salePrice;
 
-  // 집 방향(남향, 남동향, 남서향, 동향, 서향, 북향)
-  @Column(length = 20)
-  @Enumerated(EnumType.STRING)
-  private Direction direction;
+    // 집 방향(남향, 남동향, 남서향, 동향, 서향, 북향)
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private Direction direction;
 
-  // 전망(좋음, 보통, 나쁨)
-  @Column(length = 20)
-  @Enumerated(EnumType.STRING)
-  private ViewQuality viewQuality;
+    // 전망(좋음, 보통, 나쁨)
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private ViewQuality viewQuality;
 
-  // 통풍(좋음, 나쁨)
-  @Column(length = 20)
-  @Enumerated(EnumType.STRING)
-  private Ventilation ventilation;
+    // 통풍(좋음, 나쁨)
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private Ventilation ventilation;
 
-  // 수압(좋음, 나쁨)
-  @Column(length = 20)
-  @Enumerated(EnumType.STRING)
-  private WaterPressure waterPressure;
+    // 수압(좋음, 나쁨)
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private WaterPressure waterPressure;
 
-  // 소음(없음, 보통, 심함)
-  @Column(length = 20)
-  @Enumerated(EnumType.STRING)
-  private NoiseLevel noiseLevel;
+    // 소음(없음, 보통, 심함)
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private NoiseLevel noiseLevel;
 
-  // 결로, 곰팡이(없음, 보통, 심함)
-  @Column(length = 20)
-  @Enumerated(EnumType.STRING)
-  private CondensationMoldLevel condensationMoldLevel;
+    // 결로, 곰팡이(없음, 보통, 심함)
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private CondensationMoldLevel condensationMoldLevel;
 
-  // 누수(없음, 있음)
-  @Column(length = 20)
-  @Enumerated(EnumType.STRING)
-  private LeakStatus leakStatus;
+    // 누수(없음, 있음)
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private LeakStatus leakStatus;
 
-  @JsonBackReference
-  @ManyToOne()
-  @JoinColumn(name = "building_id")
-  private Building building;
+    @JsonBackReference
+    @ManyToOne()
+    @JoinColumn(name = "building_id")
+    private Building building;
 
-  @JsonManagedReference
-  @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-  private List<UnitImage> images = new ArrayList<>();
+    @Builder.Default
+    @JsonManagedReference
+    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<UnitImage> images = new ArrayList<>();
 }
