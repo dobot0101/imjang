@@ -1,9 +1,5 @@
 package com.dobot.imjang.domain.building;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import com.dobot.imjang.domain.building.enums.ElevatorStatus;
 import com.dobot.imjang.domain.building.enums.EntranceStructure;
 import com.dobot.imjang.domain.building.enums.ParkingSpace;
@@ -11,66 +7,25 @@ import com.dobot.imjang.domain.common.entities.BaseTime;
 import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.unit.Unit;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.*;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 // 기본 생성자를 생성하지 못하도록 하여 객체 생성시 Builder 를 사용하도록 함
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+// @AllArgsConstructor 를 사용하면 멤버 필드의 순서대로 생성자의 파라미터가 결정되기 때문에 같은 타입의 필드 순서를 변경하면 예기치 않은 에러가 발생할 수 있음
+// @Builder를 사용하려면 @AllArgsConstructor가 필요한데 @AllArgsConstructor는 내부적으로 생성자를 생성하는데, 빌더 사용을 강제하기 위해 access = AccessLevel.PRIVATE 옵션으로 접근 제한자를 private으로 설정함
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Entity
 @Getter
-// 필요한 필드만 변경 가능하도록 필드에 @Setter 를 추가하는게 좋다
-// @Setter
-
-// @AllArgsConstructor 어노테이션을 사용하면 멤버 필드의 순서대로 생성자의 파라미터가 결정되기 때문에,
-// 개발 중에 타입이 같은 멤버 필드의 순서를 실수로 변경하여도 컴파일 에러가 발생하지는 않아서 이후에 치명적인 오류로 발생할 수 있음
-// @AllArgsConstructor
 @Table(indexes = {
         @Index(columnList = "latitude, longitude", unique = true)
 })
 public class Building extends BaseTime {
-
-    // @Builder
-    // public Building(UUID id, double latitude, double longitude, String name,
-    // String address,
-    // ElevatorStatus elevatorStatus, EntranceStructure entranceStructure,
-    // ParkingSpace parkingSpace,
-    // List<SchoolDistrict> schoolDistricts, List<Facility> facilities,
-    // List<Transportation> transportations,
-    // List<Unit> units, Member member) {
-    // this.id = id;
-    // this.latitude = latitude;
-    // this.longitude = longitude;
-    // this.name = name;
-    // this.address = address;
-    // this.elevatorStatus = elevatorStatus;
-    // this.entranceStructure = entranceStructure;
-    // this.parkingSpace = parkingSpace;
-    // this.schoolDistricts = schoolDistricts;
-    // this.facilities = facilities;
-    // this.transportations = transportations;
-    // this.units = units;
-    // this.member = member;
-    // }
-
     @Setter
     @Id
     private UUID id;
@@ -114,18 +69,22 @@ public class Building extends BaseTime {
     private ParkingSpace parkingSpace;
 
     // 학군
+    @Builder.Default
     @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<SchoolDistrict> schoolDistricts = new ArrayList<>();
 
     // 주변시설
+    @Builder.Default
     @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Facility> facilities = new ArrayList<>();
 
     // 교통수단
+    @Builder.Default
     @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Transportation> transportations = new ArrayList<>();
 
     @JsonManagedReference
+    @Builder.Default
     @OneToMany(mappedBy = "building", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<Unit> units = new ArrayList<>();
 

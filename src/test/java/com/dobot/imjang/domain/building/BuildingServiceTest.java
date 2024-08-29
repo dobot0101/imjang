@@ -1,105 +1,107 @@
 package com.dobot.imjang.domain.building;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import org.junit.jupiter.api.AfterEach;
+import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ErrorCode;
+import com.dobot.imjang.domain.member.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import com.dobot.imjang.domain.common.exception.CustomException;
-import com.dobot.imjang.domain.member.Member;
-import com.dobot.imjang.domain.member.MemberRepository;
-import com.dobot.imjang.domain.member.MemberService;
-import com.dobot.imjang.domain.member.SignUpRequestDto;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-@SpringBootTest
-@Transactional
-@TestInstance(Lifecycle.PER_CLASS)
-public class BuildingServiceTest {
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
-  @Autowired
-  private BuildingService buildingService;
+class BuildingServiceTest {
 
-  @Autowired
-  private MemberService memberService;
+    @Mock
+    private BuildingRepository buildingRepository;
 
-  @Autowired
-  private MemberRepository memberRepository;
+    @InjectMocks
+    private BuildingService buildingService;
 
-  @Autowired
-  private BuildingRepository buildingRepository;
+    private Member member;
+    private Building building;
 
-  private Member member;
-  private Building building;
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        member = Member.builder().id(UUID.randomUUID()).build();
+        building = Building.builder()
+                .id(UUID.randomUUID())
+                .latitude(37.7749)
+                .longitude(-122.4194)
+                .member(member)
+                .address("Test Address")
+                .name("Test Building")
+                .build();
+    }
 
-  @BeforeEach
-  void createTestData() throws Exception {
-    SignUpRequestDto dto = SignUpRequestDto.builder().confirmPassword("test").password("test").email("test@test.co.kr")
-        .name("tester").build();
-    member = memberService.signUp(dto);
+    @Test
+    @DisplayName("건물정보 조회")
+    void getBuildingById() {
+        when(buildingRepository.findById(building.getId())).thenReturn(Optional.of(building));
+        Building foundBuilding = buildingService.getBuildingById(building.getId());
+        assertNotNull(foundBuilding, "빌딩 객체가 조회되어야 합니다.");
+        assertEquals(building.getId(), foundBuilding.getId(), "빌딩 ID가 일치해야 합니다.");
+    }
 
-    CreateBuildingDto createBuildingDto = CreateBuildingDto.builder()
-        .latitude(99.999999)
-        .longitude(99.999999)
-        .name("테스트 건물명").address("테스트 건물 주소")
-        .build();
-    building = buildingService.createBuilding(createBuildingDto, member);
-  }
+    @Test
+    @DisplayName("건물정보 조회 - 존재하지 않는 ID")
+    void getBuildingById_NotFound() {
+        UUID nonExistentId = UUID.randomUUID();
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            buildingService.getBuildingById(nonExistentId);
+        });
+        assertEquals(ErrorCode.BUILDING_NOT_FOUND, exception.getErrorCode(), "에러 코드가 BUILDING_NOT_FOUND여야 합니다.");
+    }
 
-  @AfterEach
-  void deleteTestData() {
-    buildingRepository.deleteById(building.getId());
-    memberRepository.delete(member);
-  }
+    @Test
+    @DisplayName("건물정보 생성 - 중복된 위치")
+    void createBuilding_DuplicateLocation() {
+        CreateBuildingDto duplicateLocationDto = CreateBuildingDto.builder()
+                .latitude(building.getLatitude())
+                .longitude(building.getLongitude())
+                .name("중복 위치 테스트 빌딩")
+                .address("중복 위치 테스트 주소")
+                .build();
+        when(buildingRepository.findByLatitudeAndLongitude(duplicateLocationDto.getLatitude(), duplicateLocationDto.getLongitude()))
+                .thenReturn(List.of(building));
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            buildingService.createBuilding(duplicateLocationDto, member);
+        });
+        assertEquals(ErrorCode.DUPLICATE_LOCATION, exception.getErrorCode(), "에러 코드가 DUPLICATE_LOCATION이어야 합니다.");
+    }
 
-  @Test
-  @DisplayName("모든 건물 정보 조회")
-  void findAllBuildings() {
-    List<Building> allBuildings = this.buildingService.getAllBuildings();
-    boolean allElementsAreBuildings = allBuildings.stream().allMatch(Building.class::isInstance);
-    assertTrue(allElementsAreBuildings, "모든 요소가 Building 클래스의 인스턴트여야 합니다.");
-  }
+    @Test
+    @DisplayName("건물정보 수정 - 존재하지 않는 ID")
+    void updateBuilding_NotFound() {
+        UUID nonExistentId = UUID.randomUUID();
+        UpdateBuildingDto updateDto = UpdateBuildingDto.builder().name("수정된 테스트 빌딩").build();
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            buildingService.updateBuilding(nonExistentId, updateDto);
+        });
+        assertEquals(ErrorCode.BUILDING_NOT_FOUND, exception.getErrorCode(), "에러 코드가 BUILDING_NOT_FOUND여야 합니다.");
+    }
 
-  @Test
-  @DisplayName("건물정보 저장")
-  void createBuilding() {
-    CreateBuildingDto createBuildingDto = CreateBuildingDto.builder()
-        .latitude(9.9999).longitude(9.9999)
-        .address("테스트 건물 주소").name("테스트 빌딩").build();
-    Building building = buildingService.createBuilding(createBuildingDto, member);
-
-    assertNotNull(building, "빌딩 객체가 생성되어야 합니다.");
-    assertEquals(createBuildingDto.getName(), building.getName(), "빌딩 이름이 일치해야 합니다.");
-    assertEquals(createBuildingDto.getAddress(), building.getAddress(), "빌딩 주소가 일치해야 합니다.");
-  }
-
-  @Test
-  @DisplayName("건물정보 삭제")
-  void deleteBuilding() {
-    buildingService.deleteBuilding(building.getId());
-
-    assertThrows(CustomException.class, () -> {
-      buildingService.getBuildingById(building.getId());
-    });
-  }
-
-  @Test
-  @DisplayName("건물정보 수정")
-  void updateBuilding() {
-    UpdateBuildingDto updateDto = UpdateBuildingDto.builder().name("수정된 테스트 빌딩").build();
-    Building updatedBuilding = buildingService.updateBuilding(building.getId(), updateDto);
-
-    assertEquals(updatedBuilding.getName(), "수정된 테스트 빌딩");
-  }
+    @Test
+    @DisplayName("건물정보 삭제 - 존재하지 않는 ID")
+    void deleteBuilding_NotFound() {
+        UUID nonExistentId = UUID.randomUUID();
+        // 아래와 같이 mocking 하지 않으면 반환 타입의 기본 값을 반환함. 예를들어 Optional을 반환하는 buildingRepository.findById 메소드를 mocking 하지 않으면 Optional.empty()를 반환함
+        // 그래서 mocking 하지 않아도 Optional.empty()를 반환하는 경우 CustomException이 발생하는 아래의 테스트는 통과함
+        when(buildingRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            buildingService.deleteBuilding(nonExistentId);
+        });
+        assertEquals(ErrorCode.BUILDING_NOT_FOUND, exception.getErrorCode(), "에러 코드가 BUILDING_NOT_FOUND여야 합니다.");
+    }
 }
+
+
+

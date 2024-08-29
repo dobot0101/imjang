@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -16,13 +17,10 @@ import com.dobot.imjang.domain.member.Member;
 import jakarta.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class BuildingService {
     private static final String BUILDING_ID_SHOULD_NOT_BE_NULL = "Building id should not be null.";
     private final BuildingRepository buildingRepository;
-
-    public BuildingService(BuildingRepository buildingRepository) {
-        this.buildingRepository = buildingRepository;
-    }
 
     public List<Building> getAllBuildings() {
         return buildingRepository.findAll();
@@ -56,6 +54,7 @@ public class BuildingService {
     @Transactional
     public void deleteBuilding(UUID id) {
         validateBuildingId(id);
+        this.getBuildingById(id);
         buildingRepository.deleteById(id);
     }
 
