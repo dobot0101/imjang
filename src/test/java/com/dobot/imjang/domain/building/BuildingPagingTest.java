@@ -1,13 +1,7 @@
 package com.dobot.imjang.domain.building;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
-
+import com.dobot.imjang.config.CoordinateUtils;
+import com.dobot.imjang.config.CoordinateUtils.Coordinates;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,8 +13,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
-import com.dobot.imjang.config.CoordinateUtils;
-import com.dobot.imjang.config.CoordinateUtils.Coordinates;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class BuildingPagingTest {
@@ -63,8 +62,9 @@ public class BuildingPagingTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         List<Building> buildingList = buildingRepository.findAll();
-        // buildingList.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
-        buildingList.sort(Comparator.comparing(Building::getCreatedAt).reversed());
+        buildingList.sort(Comparator.comparing(Building::getCreatedAt).thenComparing(Building::getId
+        ).reversed());
+
         var building = buildingList.get(0);
         var cursor = building.getId();
         LocalDateTime createdAt = building.getCreatedAt();

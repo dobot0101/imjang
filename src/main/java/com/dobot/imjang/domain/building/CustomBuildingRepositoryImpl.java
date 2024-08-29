@@ -1,18 +1,12 @@
 package com.dobot.imjang.domain.building;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDateTime;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
-
-import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CustomBuildingRepositoryImpl implements CustomBuildingRepository {
@@ -21,9 +15,12 @@ public class CustomBuildingRepositoryImpl implements CustomBuildingRepository {
     @Override
     public Slice<Building> findWithCursorPagination(UUID cursor, LocalDateTime createdAt, Pageable pageable) {
         QBuilding qBuilding = QBuilding.building;
+//        BooleanBuilder whereClause = new BooleanBuilder();
+//        whereClause.and(qBuilding.createdAt.eq(createdAt).and(qBuilding.id.lt(cursor))).or(qBuilding.createdAt.lt(createdAt));
+
         List<Building> content = query.select(qBuilding).from(qBuilding)
-                .where(qBuilding.createdAt.eq(createdAt).and(qBuilding.id.lt(cursor))
-                        .or(qBuilding.createdAt.lt(createdAt)))
+//                .where(whereClause)
+                .where(qBuilding.createdAt.eq(createdAt).and(qBuilding.id.lt(cursor)).or(qBuilding.createdAt.lt(createdAt)))
                 .orderBy(qBuilding.createdAt.desc(), qBuilding.id.desc())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
