@@ -1,19 +1,18 @@
 package com.dobot.imjang.domain.unit;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingRepository;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.upload.UploadResultRepository;
-
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +63,7 @@ public class UnitService {
     @Transactional
     public void deleteUnitById(UUID id) {
         validateUnitId(id);
+        this.getUnitById(id);
         this.unitRepository.deleteById(id);
     }
 
@@ -99,7 +99,7 @@ public class UnitService {
 
             List<UnitImage> filteredOriginalUnitImages = unit.getImages().stream()
                     .filter(image -> dto.getUploadedFileIds().contains(image.getUploadResult().getId().toString()))
-                    .toList();
+                    .collect(Collectors.toList());
 
             filteredOriginalUnitImages.addAll(newUnitImages);
             unit.getImages().clear();

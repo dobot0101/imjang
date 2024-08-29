@@ -90,8 +90,8 @@ public class UnitServiceIntegrationTest {
         UnitCreateOrUpdateDto createDto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
         Unit unit = unitService.createUnit(createDto, building.getId());
 
-        UnitCreateOrUpdateDto updateDto = UnitCreateOrUpdateDto.builder().memo("수정된 테스트 메모").build();
-        Unit updatedUnit = unitService.updateUnit(unit.getId(), updateDto);
+        UnitCreateOrUpdateDto dto = UnitCreateOrUpdateDto.builder().memo("수정된 테스트 메모").build();
+        Unit updatedUnit = unitService.updateUnit(unit.getId(), dto);
 
         assertEquals(updatedUnit.getMemo(), "수정된 테스트 메모");
     }
@@ -99,8 +99,8 @@ public class UnitServiceIntegrationTest {
     @Test
     @DisplayName("세대정보 삭제")
     public void deleteUnit() {
-        UnitCreateOrUpdateDto createDto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
-        Unit unit = unitService.createUnit(createDto, building.getId());
+        UnitCreateOrUpdateDto dto = UnitCreateOrUpdateDto.builder().memo("테스트 메모").build();
+        Unit unit = unitService.createUnit(dto, building.getId());
 
         unitService.deleteUnitById(unit.getId());
 
