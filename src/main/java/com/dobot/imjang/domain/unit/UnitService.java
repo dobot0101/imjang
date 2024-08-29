@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.dobot.imjang.domain.building.Building;
@@ -15,19 +16,13 @@ import com.dobot.imjang.domain.upload.UploadResultRepository;
 import jakarta.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class UnitService {
     private static final String UNIT_ID_SHOULD_NOT_BE_NULL = "Unit id should not be null.";
     private static final String BUILDING_ID_SHOULD_NOT_BE_NULL = "Building id should not be null.";
     private final UnitRepository unitRepository;
     private final BuildingRepository buildingRepository;
     private final UploadResultRepository uploadResultRepository;
-
-    public UnitService(UnitRepository unitRepository, BuildingRepository buildingRepository,
-            UploadResultRepository uploadResultRepository) {
-        this.unitRepository = unitRepository;
-        this.buildingRepository = buildingRepository;
-        this.uploadResultRepository = uploadResultRepository;
-    }
 
     public List<Unit> getAllUnits() {
         return this.unitRepository.findAll();

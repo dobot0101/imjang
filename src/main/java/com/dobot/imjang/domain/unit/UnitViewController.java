@@ -3,6 +3,7 @@ package com.dobot.imjang.domain.unit;
 import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingService;
 import com.dobot.imjang.domain.permission.PermissionChecker;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,16 +14,11 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/units")
+@RequiredArgsConstructor
 public class UnitViewController {
     private final BuildingService buildingService;
     private final UnitService unitService;
     private final PermissionChecker permissionChecker;
-
-    public UnitViewController(BuildingService buildingService, UnitService unitService, PermissionChecker permissionChecker) {
-        this.buildingService = buildingService;
-        this.unitService = unitService;
-        this.permissionChecker = permissionChecker;
-    }
 
     @GetMapping("/new/{buildingId}")
     public String showUnitCreateForm(Model model, @PathVariable("buildingId") String buildingId) {

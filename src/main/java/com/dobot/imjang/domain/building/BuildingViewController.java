@@ -3,6 +3,7 @@ package com.dobot.imjang.domain.building;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,14 +14,10 @@ import com.dobot.imjang.domain.auth.CustomUserDetails;
 import com.dobot.imjang.domain.permission.PermissionChecker;
 
 @Controller
+@RequiredArgsConstructor
 public class BuildingViewController {
     private final BuildingService buildingService;
     private final PermissionChecker permissionChecker;
-
-    public BuildingViewController(BuildingService buildingService, PermissionChecker permissionChecker) {
-        this.buildingService = buildingService;
-        this.permissionChecker = permissionChecker;
-    }
 
     @GetMapping("/")
     public String showHomePage(Model model) {
