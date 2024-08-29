@@ -29,9 +29,7 @@ public class UnitService {
     }
 
     public Unit createUnit(UnitCreateOrUpdateDto dto, UUID buildingId) {
-        if (Objects.isNull(buildingId)) {
-            throw new CustomException(ErrorCode.INVALID_INPUT, BUILDING_ID_SHOULD_NOT_BE_NULL);
-        }
+        validateBuildingId(buildingId);
         Building building = this.buildingRepository.findById(buildingId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
 
@@ -43,21 +41,29 @@ public class UnitService {
         return this.unitRepository.save(unit);
     }
 
+    private void validateBuildingId(UUID buildingId) {
+        if (Objects.isNull(buildingId)) {
+            throw new CustomException(ErrorCode.INVALID_INPUT, BUILDING_ID_SHOULD_NOT_BE_NULL);
+        }
+    }
+
     @Transactional
     public Unit updateUnit(UUID id, UnitCreateOrUpdateDto dto) {
-        if (Objects.isNull(id)) {
-            throw new CustomException(ErrorCode.INVALID_INPUT, UNIT_ID_SHOULD_NOT_BE_NULL);
-        }
+        validateUnitId(id);
         Unit unit = this.unitRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.UNIT_NOT_FOUND));
         Unit updatingUnit = this.addUnitProperties(dto, unit);
         return this.unitRepository.save(updatingUnit);
     }
 
-    @Transactional
-    public void deleteUnitById(UUID id) {
+    private void validateUnitId(UUID id) {
         if (Objects.isNull(id)) {
             throw new CustomException(ErrorCode.INVALID_INPUT, UNIT_ID_SHOULD_NOT_BE_NULL);
         }
+    }
+
+    @Transactional
+    public void deleteUnitById(UUID id) {
+        validateUnitId(id);
         this.unitRepository.deleteById(id);
     }
 
