@@ -1,8 +1,6 @@
 package com.dobot.imjang.domain.building;
 
-import com.dobot.imjang.domain.building.enums.ElevatorStatus;
-import com.dobot.imjang.domain.building.enums.EntranceStructure;
-import com.dobot.imjang.domain.building.enums.ParkingSpace;
+import com.dobot.imjang.domain.building.enums.*;
 import com.dobot.imjang.domain.common.entities.BaseTime;
 import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.unit.Unit;
@@ -92,5 +90,78 @@ public class Building extends BaseTime {
     @ManyToOne()
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public static Building create(CreateBuildingDto dto, Member member) {
+        Building building = Building.builder()
+                .id(UUID.randomUUID())
+                .longitude(dto.getLongitude())
+                .latitude(dto.getLatitude())
+                .member(member)
+                .address(dto.getAddress())
+                .name(dto.getName())
+                .entranceStructure(dto.getEntranceStructure())
+                .elevatorStatus(dto.getElevatorStatus())
+                .parkingSpace(dto.getParkingSpace())
+                .build();
+        building.setAdditionalInformation(dto);
+        return building;
+    }
+
+    public void update(UpdateBuildingDto dto) {
+        setAddress(dto.getAddress());
+        setName(dto.getName());
+        setEntranceStructure(dto.getEntranceStructure());
+        setElevatorStatus(dto.getElevatorStatus());
+        setParkingSpace(dto.getParkingSpace());
+        this.setAdditionalInformation(dto);
+    }
+
+    public void setAdditionalInformation(IBuildingDto dto) {
+        setSchoolDistricts(dto.getSchoolTypes());
+        setFacilities(dto.getFacilityTypes());
+        setTransportations(dto.getTransportationTypes());
+    }
+
+    private void setSchoolDistricts(List<SchoolType> types) {
+        if (types == null) {
+            return;
+        }
+        List<SchoolDistrict> newSchoolDistricts = new ArrayList<>();
+        for (var type : types) {
+            schoolDistricts.stream().filter(schoolDistrict -> schoolDistrict.getSchoolType().equals(type)).findFirst()
+                    .ifPresentOrElse(newSchoolDistricts::add,
+                            () -> schoolDistricts.add(SchoolDistrict.builder().id(UUID.randomUUID()).schoolType(type).building(this).build()));
+        }
+        schoolDistricts.clear();
+        schoolDistricts.addAll(newSchoolDistricts);
+    }
+
+    private void setFacilities(List<FacilityType> types) {
+        if (types == null) {
+            return;
+        }
+        List<Facility> newFacilities = new ArrayList<>();
+        for (var type : types) {
+            facilities.stream().filter(facility -> facility.getFacilityType().equals(type)).findFirst()
+                    .ifPresentOrElse(newFacilities::add,
+                            () -> facilities.add(Facility.builder().id(UUID.randomUUID()).facilityType(type).building(this).build()));
+        }
+        facilities.clear();
+        facilities.addAll(newFacilities);
+    }
+
+    private void setTransportations(List<TransportationType> types) {
+        if (types == null) {
+            return;
+        }
+        List<Transportation> newTransportations = new ArrayList<>();
+        for (var type : types) {
+            transportations.stream().filter(transportation -> transportation.getTransportationType().equals(type)).findFirst()
+                    .ifPresentOrElse(newTransportations::add,
+                            () -> transportations.add(Transportation.builder().id(UUID.randomUUID()).transportationType(type).building(this).build()));
+        }
+        transportations.clear();
+        transportations.addAll(newTransportations);
+    }
 
 }
