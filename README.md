@@ -15,7 +15,7 @@
 # 사용 기술
 
 - 언어 및 프레임워크
-    - Java 17, Spring Boot 3.1.2, Spring Security, Spring Validation
+    - Java 17, Spring Boot 3.1.2
 - DB 및 ORM
     - PostgreSQL, QueryDSL, Spring Data JPA
 - 클라우드 및 인프라
