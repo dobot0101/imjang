@@ -43,3 +43,4 @@ src/main/resources/yml
 
 # query dsl
 /src/main/generated
+.java-version

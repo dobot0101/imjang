@@ -28,7 +28,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -115,4 +120,22 @@ public class Unit extends BaseTime {
     @JsonManagedReference
     @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<UnitImage> images = new ArrayList<>();
+
+    public void setProperties(UnitCreateOrUpdateDto dto) {
+        this.setArea(dto.getArea());
+        this.setBuildingNumber(dto.getBuildingNumber());
+        this.setCondensationMoldLevel(dto.getCondensationMoldLevel());
+        this.setDirection(dto.getDirection());
+        this.setLeakStatus(dto.getLeakStatus());
+        this.setMemo(dto.getMemo());
+        this.setNoiseLevel(dto.getNoiseLevel());
+        this.setRoomNumber(dto.getRoomNumber());
+        this.setVentilation(dto.getVentilation());
+        this.setViewQuality(dto.getViewQuality());
+        this.setWaterPressure(dto.getWaterPressure());
+        this.setMonthlyPrice(dto.getMonthlyPrice());
+        this.setJeonsePrice(dto.getJeonsePrice());
+        this.setSalePrice(dto.getSalePrice());
+        this.setDeposit(dto.getDeposit());
+    }
 }

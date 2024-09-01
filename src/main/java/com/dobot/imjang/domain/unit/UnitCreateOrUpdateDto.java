@@ -2,6 +2,7 @@ package com.dobot.imjang.domain.unit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.dobot.imjang.domain.unit.enums.CondensationMoldLevel;
 import com.dobot.imjang.domain.unit.enums.Direction;
@@ -89,5 +90,5 @@ public class UnitCreateOrUpdateDto {
 
     // 첨부 이미지 url
     // @Builder 어노테이션은 초기화를 무시하기 때문에 초기화하려면 아래와 같이 필드에 final을 붙이면 된다.
-    private final List<String> uploadedFileIds = new ArrayList<>();
+    private final List<UUID> uploadedFileIds = new ArrayList<>();
 }

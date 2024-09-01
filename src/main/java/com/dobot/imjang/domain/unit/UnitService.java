@@ -4,11 +4,13 @@ import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingRepository;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
+import com.dobot.imjang.domain.upload.UploadResult;
 import com.dobot.imjang.domain.upload.UploadResultRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -35,7 +37,8 @@ public class UnitService {
         Unit unit = new Unit();
         unit.setId(UUID.randomUUID());
         unit.setBuilding(building);
-        addUnitProperties(dto, unit);
+        unit.setProperties(dto);
+        addUnitImages(dto, unit);
 
         return this.unitRepository.save(unit);
     }
@@ -50,8 +53,9 @@ public class UnitService {
     public Unit updateUnit(UUID id, UnitCreateOrUpdateDto dto) {
         validateUnitId(id);
         Unit unit = this.unitRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.UNIT_NOT_FOUND));
-        Unit updatingUnit = this.addUnitProperties(dto, unit);
-        return this.unitRepository.save(updatingUnit);
+        unit.setProperties(dto);
+        addUnitImages(dto, unit);
+        return this.unitRepository.save(unit);
     }
 
     private void validateUnitId(UUID id) {
@@ -71,43 +75,22 @@ public class UnitService {
         return unitRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.UNIT_NOT_FOUND));
     }
 
-    private Unit addUnitProperties(UnitCreateOrUpdateDto dto, Unit unit) {
-        unit.setArea(dto.getArea());
-        unit.setBuildingNumber(dto.getBuildingNumber());
-        unit.setCondensationMoldLevel(dto.getCondensationMoldLevel());
-        unit.setDirection(dto.getDirection());
-        unit.setLeakStatus(dto.getLeakStatus());
-        unit.setMemo(dto.getMemo());
-        unit.setNoiseLevel(dto.getNoiseLevel());
-        unit.setRoomNumber(dto.getRoomNumber());
-        unit.setVentilation(dto.getVentilation());
-        unit.setViewQuality(dto.getViewQuality());
-        unit.setWaterPressure(dto.getWaterPressure());
-        unit.setMonthlyPrice(dto.getMonthlyPrice());
-        unit.setJeonsePrice(dto.getJeonsePrice());
-        unit.setSalePrice(dto.getSalePrice());
-        unit.setDeposit(dto.getDeposit());
-
+    private void addUnitImages(UnitCreateOrUpdateDto dto, Unit unit) {
         if (!dto.getUploadedFileIds().isEmpty()) {
-            var uploadedFileIds = dto.getUploadedFileIds().stream().map(UUID::fromString).toList();
-            var uploadResults = uploadResultRepository.findAllById(uploadedFileIds);
-            List<UnitImage> newUnitImages = uploadResults.stream()
-                    .map(uploadedFile -> UnitImage.builder().id(UUID.randomUUID()).unit(unit)
-                            .uploadResult(uploadedFile)
-                            .build())
-                    .toList();
+            List<UnitImage> newUnitImages = new ArrayList<>();
+            for (var fileId : dto.getUploadedFileIds()) {
+                unit.getImages().stream().filter(image -> image.getUploadResult().getId().equals(fileId)).findFirst()
+                        .ifPresentOrElse(newUnitImages::add, () -> {
+                            UploadResult uploadResult = uploadResultRepository.findById(fileId)
+                                    .orElseThrow(() -> new CustomException(ErrorCode.UPLOAD_RESULT_NOT_FOUND));
+                            UnitImage unitImage = UnitImage.builder().id(UUID.randomUUID()).unit(unit)
+                                    .uploadResult(uploadResult).build();
+                            newUnitImages.add(unitImage);
+                        });
+            }
 
-            List<UnitImage> filteredOriginalUnitImages = unit.getImages().stream()
-                    .filter(image -> dto.getUploadedFileIds().contains(image.getUploadResult().getId().toString()))
-                    .collect(Collectors.toList());
-
-            filteredOriginalUnitImages.addAll(newUnitImages);
             unit.getImages().clear();
-            unit.getImages().addAll(filteredOriginalUnitImages);
-        } else {
-            unit.getImages().clear();
+            unit.getImages().addAll(newUnitImages);
         }
-
-        return unit;
     }
 }
