@@ -3,11 +3,11 @@ package com.dobot.imjang.domain.building;
 import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.Member;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,14 +19,17 @@ public class BuildingService {
     private static final String BUILDING_ID_SHOULD_NOT_BE_NULL = "Building id should not be null.";
     private final BuildingRepository buildingRepository;
 
+    @Transactional(readOnly = true)
     public List<Building> getAllBuildings() {
         return buildingRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Building getBuildingById(UUID id) {
         return buildingRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
     }
 
+    @Transactional
     public Building createBuilding(CreateBuildingDto dto, Member member) {
         validateDuplicatedLocation(dto);
         Building building = Building.create(dto, member);
@@ -49,10 +52,12 @@ public class BuildingService {
         buildingRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<Building> getBuildingsByMemberId(UUID memberId) {
         return buildingRepository.findByMemberId(memberId);
     }
 
+    @Transactional(readOnly = true)
     public Slice<Building> getBuildingsWithPagination(GetBuildingsWithPaginationDto dto, Pageable pageable) {
         return buildingRepository.findWithCursorPagination(dto.cursor(), dto.createdAt(), pageable);
     }

@@ -6,15 +6,14 @@ import com.dobot.imjang.domain.common.exception.CustomException;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.upload.UploadResult;
 import com.dobot.imjang.domain.upload.UploadResultRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +24,12 @@ public class UnitService {
     private final BuildingRepository buildingRepository;
     private final UploadResultRepository uploadResultRepository;
 
+    @Transactional(readOnly = true)
     public List<Unit> getAllUnits() {
         return this.unitRepository.findAll();
     }
 
+    @Transactional
     public Unit createUnit(UnitCreateOrUpdateDto dto, UUID buildingId) {
         validateBuildingId(buildingId);
         Building building = this.buildingRepository.findById(buildingId)
@@ -71,6 +72,7 @@ public class UnitService {
         this.unitRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Unit getUnitById(UUID id) {
         return unitRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.UNIT_NOT_FOUND));
     }
