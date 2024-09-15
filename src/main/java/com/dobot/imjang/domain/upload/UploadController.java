@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,32 +16,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @RequestMapping("/api/upload")
+@RequiredArgsConstructor
 class UploadController {
-  private final UploadService uploadService;
+    private final UploadService uploadService;
+    private final ObjectMapper objectMapper;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+    @PostMapping
+    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        Map<String, String> map = new HashMap<>();
+        if (file.isEmpty()) {
+            map.put("error", "Please select a file to upload");
+            return ResponseEntity.badRequest().body(map);
+        }
 
-  public UploadController(UploadService uploadService) {
-    this.uploadService = uploadService;
-  }
-
-  @PostMapping
-  public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-    Map<String, String> map = new HashMap<>();
-    if (file.isEmpty()) {
-      map.put("error", "Please select a file to upload");
-      return ResponseEntity.badRequest().body(map);
+        try {
+            UploadResult result = this.uploadService.uploadFile(file);
+            map.put("result", objectMapper.writeValueAsString(result));
+            return ResponseEntity.ok(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("error", "File upload failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(map);
+        }
     }
-
-    try {
-      UploadResult result = this.uploadService.uploadFile(file);
-      map.put("result", objectMapper.writeValueAsString(result));
-      return ResponseEntity.ok(map);
-    } catch (Exception e) {
-      e.printStackTrace();
-      map.put("error", "File upload failed");
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(map);
-    }
-  }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.dobot.imjang.config.CoordinateUtils.Coordinates;
@@ -11,12 +12,9 @@ import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingRepository;
 
 @Service
+@RequiredArgsConstructor
 public class BuildingTestDataInitService {
     private final BuildingRepository buildingRepository;
-
-    public BuildingTestDataInitService(BuildingRepository buildingRepository) {
-        this.buildingRepository = buildingRepository;
-    }
 
     public void initBuildingData(int num) {
         List<Building> allBuildingList = buildingRepository.findAll();

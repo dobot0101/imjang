@@ -1,5 +1,6 @@
 package com.dobot.imjang;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -7,12 +8,9 @@ import com.dobot.imjang.domain.member.MemberService;
 import com.dobot.imjang.domain.member.SignUpRequestDto;
 
 @Component
+@RequiredArgsConstructor
 public class SystemInitializer implements CommandLineRunner {
     private final MemberService memberService;
-
-    public SystemInitializer(MemberService memberService) {
-        this.memberService = memberService;
-    }
 
     @Override
     public void run(String... args) throws Exception {
