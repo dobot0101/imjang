@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,7 +34,8 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<ExceptionDto> handleValidationException(BadCredentialsException e) {
-    ExceptionDto exceptionDto = ExceptionDto.builder().message("인증에 실패했습니다.")
+    log.error(e.getMessage(), e);
+    ExceptionDto exceptionDto = ExceptionDto.builder().message("아이디 또는 비밀번호가 잘못되었습니다.")
         .timestamp(LocalDateTime.now()).build();
 
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionDto);

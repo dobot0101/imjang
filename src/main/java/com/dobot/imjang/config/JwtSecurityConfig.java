@@ -29,17 +29,17 @@ public class JwtSecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    AntPathRequestMatcher[] matchers = {
-        new AntPathRequestMatcher("/api/auth"), new AntPathRequestMatcher("/login"),
-        new AntPathRequestMatcher("/signup"),
+    AntPathRequestMatcher[] matchers = {new AntPathRequestMatcher("/api/auth"),
+        new AntPathRequestMatcher("/login"), new AntPathRequestMatcher("/signup"),
         new AntPathRequestMatcher("/css/**"), new AntPathRequestMatcher("/js/**"),
         new AntPathRequestMatcher("/img/**"), new AntPathRequestMatcher("/favicon.ico")};
-    http.csrf(AbstractHttpConfigurer::disable)
-        .formLogin(AbstractHttpConfigurer::disable)
-        .httpBasic(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(
-            c -> c.requestMatchers(matchers).permitAll().anyRequest().authenticated())
+    http.csrf(AbstractHttpConfigurer::disable).formLogin(AbstractHttpConfigurer::disable)
+        .httpBasic(AbstractHttpConfigurer::disable).authorizeHttpRequests(
+            c -> c.requestMatchers(matchers).permitAll().anyRequest().authenticated()).formLogin(c -> {
+          c.loginPage("/login");
+        })
         .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        
 //        .formLogin(c -> {
 //          c.loginProcessingUrl("/api/auth");
 //          c.loginPage("/login");

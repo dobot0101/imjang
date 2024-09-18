@@ -1,5 +1,6 @@
 package com.dobot.imjang.domain.auth;
 
+import com.dobot.imjang.common.JwtCookieService;
 import com.dobot.imjang.config.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,11 +29,6 @@ public class AuthenticationController {
   @PostMapping
   public ResponseEntity<?> login(
       LoginRequestDto loginRequestDto, HttpServletResponse response) {
-    Cookie cookie = new Cookie("jwt", null);
-    cookie.setHttpOnly(true);
-    cookie.setPath("/");
-    cookie.setMaxAge(0);
-    response.addCookie(cookie);
 
     // 인증
     Authentication authentication = this.authenticationManager.authenticate(
@@ -41,11 +37,7 @@ public class AuthenticationController {
 
     // jwt 토큰 생성 및 쿠키에 저장
     final String jwt = jwtUtil.generateToken(authentication.getName());
-    Cookie newCookie = new Cookie("jwt", jwt);
-    newCookie.setHttpOnly(true);
-    newCookie.setPath("/");
-    newCookie.setMaxAge(60 * 60); // 1시간 후 만료
-    response.addCookie(newCookie);
+    JwtCookieService.createJwtCookie(response, jwt);
 
     return ResponseEntity.ok(new AuthenticationResponseDto(jwt));
   }
@@ -61,12 +53,7 @@ public class AuthenticationController {
 
           try {
             if (jwtUtil.validateToken(jwt)) {
-              var newCookie = new Cookie("jwt", jwt);
-              newCookie.setPath("/");
-              newCookie.setHttpOnly(true);
-              newCookie.setMaxAge(0);
-              response.addCookie(newCookie);
-
+              JwtCookieService.deleteJwtCookie(response);
               return ResponseEntity.ok("Logout success");
             }
           } catch (Exception e) {

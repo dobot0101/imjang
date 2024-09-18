@@ -1,9 +1,12 @@
 package com.dobot.imjang.config;
 
-import com.dobot.imjang.domain.common.exception.ValidationError;
+import com.dobot.imjang.common.JwtCookieService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,11 +18,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 이 필터는 모든 http 요청마다 한번씩 실행됨. 토큰을 검증하고 SecurityContext에 인증 정보를 저장함.
@@ -40,8 +38,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain)
-      throws ServletException, IOException {
+      FilterChain filterChain) throws ServletException, IOException {
 
     String jwt = null;
     String email = null;
@@ -56,14 +53,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
           // 쿠키가 아직 유효하면 만료 시간을 1시간 후로 업데이트 함
           if (jwtUtil.validateToken(jwt)) {
-            var newCookie = new Cookie("jwt", jwt);
-            newCookie.setValue(jwt);
-            newCookie.setHttpOnly(true);
-            newCookie.setPath("/");
-            newCookie.setMaxAge(60 * 60);
-            response.addCookie(newCookie);
+            JwtCookieService.createJwtCookie(response, jwt);
 
             email = jwtUtil.extractEmailFromToken(jwt);
+          } else {
+            // jwt 토큰이 유효하지 않으면 쿠키를 삭제하고 401 에러를 반환함
+            JwtCookieService.deleteJwtCookie(response);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
+            return;
           }
         }
       }
@@ -71,21 +68,31 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     // jwt 토큰의 이메일 값은 있지만 SecurityContext에 인증 정보가 없으면 인증 정보를 저장함
     if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-      UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 
-      if (jwtUtil.validateToken(jwt)) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-            userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        logger.debug("SecurityContext에  '{}' 인증 정보를 저장했습니다. uri: {}", authentication.getName(),
-            request.getRequestURI());
-      } else {
-        logger.debug("Token is not valid");
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
+      try {
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+
+        if (jwtUtil.validateToken(jwt)) {
+          Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+              userDetails.getAuthorities());
+          SecurityContextHolder.getContext().setAuthentication(authentication);
+          logger.debug("SecurityContext에  '{}' 인증 정보를 저장했습니다. uri: {}", authentication.getName(),
+              request.getRequestURI());
+        } else {
+          logger.debug("Token is not valid");
+          response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
+          return;
+        }
+      } catch (UsernameNotFoundException e) {
+        logger.error("User not found: {}", email);
+        // 유효하지 않은 토큰일 경우 쿠키 삭제
+        JwtCookieService.deleteJwtCookie(response);
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
         return;
       }
     }
     filterChain.doFilter(request, response);
   }
+
 
 }

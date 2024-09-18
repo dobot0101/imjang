@@ -23,7 +23,7 @@ public class MyUserDetailsService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String email) {
     Member member = this.memberRepository.findByEmail(email).orElseThrow(() ->
-        new RuntimeException("유저를 찾을 수 없습니다."));
+        new UsernameNotFoundException("유저를 찾을 수 없습니다."));
     return new CustomUserDetails(member.getId(), member.getEmail(), member.getPassword(), null);
   }
 }
