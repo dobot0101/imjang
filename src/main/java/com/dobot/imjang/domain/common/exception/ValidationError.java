@@ -1,6 +1,7 @@
 package com.dobot.imjang.domain.common.exception;
 
-public class CustomException extends RuntimeException {
+public class ValidationError extends RuntimeException {
+
   private ErrorCode errorCode;
 
   public ErrorCode getErrorCode() {
@@ -13,12 +14,17 @@ public class CustomException extends RuntimeException {
     return message;
   }
 
-  public CustomException(ErrorCode errorCode) {
+  public ValidationError(String message) {
+    this.errorCode = ErrorCode.BAD_REQUEST;
+    this.message = message;
+  }
+
+  public ValidationError(ErrorCode errorCode) {
     this.errorCode = errorCode;
     this.message = errorCode.getMessage();
   }
 
-  public CustomException(ErrorCode errorCode, String message) {
+  public ValidationError(ErrorCode errorCode, String message) {
     this.errorCode = errorCode;
     this.message = message;
   }

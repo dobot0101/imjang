@@ -1,36 +1,34 @@
-// package com.dobot.imjang.config;
+package com.dobot.imjang.config;
 
-// import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 
-// import org.springframework.security.core.Authentication;
-// import org.springframework.security.core.context.SecurityContextHolder;
-// import org.springframework.stereotype.Component;
-// import org.springframework.util.StringUtils;
-// import org.springframework.web.filter.OncePerRequestFilter;
+@Component
+public class JwtAuthenticationFilter implements AuthenticationSuccessHandler {
 
-// import com.dobot.imjang.util.JwtProvider;
+  private final JwtUtil jwtUtil;
 
-// import jakarta.servlet.FilterChain;
-// import jakarta.servlet.ServletException;
-// import jakarta.servlet.http.HttpServletRequest;
-// import jakarta.servlet.http.HttpServletResponse;
-// import lombok.RequiredArgsConstructor;
+  public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    this.jwtUtil = jwtUtil;
+  }
 
-// @Component
-// @RequiredArgsConstructor
-// public class JwtAuthenticationFilter extends OncePerRequestFilter {
-// private final JwtProvider jwtProvider;
-
-// @Override
-// protected void doFilterInternal(HttpServletRequest request,
-// HttpServletResponse response, FilterChain filterChain)
-// throws ServletException, IOException {
-// String token = jwtProvider.resolveToken(request);
-// if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
-// Authentication authentication = jwtProvider.getAuthentication(token);
-// SecurityContextHolder.getContext().setAuthentication(authentication);
-// }
-
-// filterChain.doFilter(request, response);
-// }
-// }
+  @Override
+  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+      Authentication authentication) throws IOException, ServletException {
+    String jwt = jwtUtil.generateToken(authentication.getName());
+    response.setHeader("Authorization", "Bearer " + jwt);
+    response.sendRedirect("/home");
+//    response.setContentType("application/json");
+//    Map<String, String> tokenMap = new HashMap<>();
+//    tokenMap.put("token", jwt);
+//    new ObjectMapper().writeValue(response.getWriter(), tokenMap);
+  }
+}

@@ -17,7 +17,7 @@ import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingRepository;
 import com.dobot.imjang.domain.building.BuildingService;
 import com.dobot.imjang.domain.building.CreateBuildingDto;
-import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ValidationError;
 import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.member.MemberRepository;
 import com.dobot.imjang.domain.member.MemberService;
@@ -104,7 +104,7 @@ public class UnitServiceIntegrationTest {
 
         unitService.deleteUnitById(unit.getId());
 
-        assertThrows(CustomException.class, () -> {
+        assertThrows(ValidationError.class, () -> {
             unitService.getUnitById(unit.getId());
         });
     }

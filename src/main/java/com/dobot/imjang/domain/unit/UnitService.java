@@ -2,7 +2,7 @@ package com.dobot.imjang.domain.unit;
 
 import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingRepository;
-import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ValidationError;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.upload.UploadResult;
 import com.dobot.imjang.domain.upload.UploadResultRepository;
@@ -33,7 +33,7 @@ public class UnitService {
     public Unit createUnit(UnitCreateOrUpdateDto dto, UUID buildingId) {
         validateBuildingId(buildingId);
         Building building = this.buildingRepository.findById(buildingId)
-                .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
+                .orElseThrow(() -> new ValidationError(ErrorCode.BUILDING_NOT_FOUND));
 
         Unit unit = new Unit();
         unit.setId(UUID.randomUUID());
@@ -46,14 +46,14 @@ public class UnitService {
 
     private void validateBuildingId(UUID buildingId) {
         if (Objects.isNull(buildingId)) {
-            throw new CustomException(ErrorCode.INVALID_INPUT, BUILDING_ID_SHOULD_NOT_BE_NULL);
+            throw new ValidationError(ErrorCode.BAD_REQUEST, BUILDING_ID_SHOULD_NOT_BE_NULL);
         }
     }
 
     @Transactional
     public Unit updateUnit(UUID id, UnitCreateOrUpdateDto dto) {
         validateUnitId(id);
-        Unit unit = this.unitRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.UNIT_NOT_FOUND));
+        Unit unit = this.unitRepository.findById(id).orElseThrow(() -> new ValidationError(ErrorCode.UNIT_NOT_FOUND));
         unit.setProperties(dto);
         addUnitImages(dto, unit);
         return this.unitRepository.save(unit);
@@ -61,7 +61,7 @@ public class UnitService {
 
     private void validateUnitId(UUID id) {
         if (Objects.isNull(id)) {
-            throw new CustomException(ErrorCode.INVALID_INPUT, UNIT_ID_SHOULD_NOT_BE_NULL);
+            throw new ValidationError(ErrorCode.BAD_REQUEST, UNIT_ID_SHOULD_NOT_BE_NULL);
         }
     }
 
@@ -74,7 +74,7 @@ public class UnitService {
 
     @Transactional(readOnly = true)
     public Unit getUnitById(UUID id) {
-        return unitRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.UNIT_NOT_FOUND));
+        return unitRepository.findById(id).orElseThrow(() -> new ValidationError(ErrorCode.UNIT_NOT_FOUND));
     }
 
     private void addUnitImages(UnitCreateOrUpdateDto dto, Unit unit) {
@@ -84,7 +84,7 @@ public class UnitService {
                 unit.getImages().stream().filter(image -> image.getUploadResult().getId().equals(fileId)).findFirst()
                         .ifPresentOrElse(newUnitImages::add, () -> {
                             UploadResult uploadResult = uploadResultRepository.findById(fileId)
-                                    .orElseThrow(() -> new CustomException(ErrorCode.UPLOAD_RESULT_NOT_FOUND));
+                                    .orElseThrow(() -> new ValidationError(ErrorCode.UPLOAD_RESULT_NOT_FOUND));
                             UnitImage unitImage = UnitImage.builder().id(UUID.randomUUID()).unit(unit)
                                     .uploadResult(uploadResult).build();
                             newUnitImages.add(unitImage);

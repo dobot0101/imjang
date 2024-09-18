@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ValidationError;
 import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.member.MemberRepository;
 import com.dobot.imjang.domain.member.MemberService;
@@ -89,7 +89,7 @@ public class BuildingServiceIntegrationTest {
     void deleteBuilding() {
         buildingService.deleteBuilding(building.getId());
 
-        assertThrows(CustomException.class, () -> {
+        assertThrows(ValidationError.class, () -> {
             buildingService.getBuildingById(building.getId());
         });
     }

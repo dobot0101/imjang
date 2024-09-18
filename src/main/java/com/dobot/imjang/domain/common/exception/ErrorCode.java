@@ -12,13 +12,14 @@ public enum ErrorCode {
   UPLOAD_RESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "첨부 파일을 찾을 수 없습니다."),
   BUILDING_NOT_FOUND(HttpStatus.NOT_FOUND, "빌딩 정보를 찾을 수 없습니다."),
   UNIT_NOT_FOUND(HttpStatus.NOT_FOUND, "유닛 정보를 찾을 수 없습니다."),
-  USER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 정보를 찾을 수 없습니다."),
-  INVALID_INPUT(HttpStatus.BAD_REQUEST, "잘못된 입력입니다.");
+  USER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원 정보를 찾을 수 없습니다.");
 
   private ErrorCode(HttpStatus status, String message) {
     this.status = status;
     this.message = message;
-  };
+  }
+
+  ;
 
   private HttpStatus status;
 

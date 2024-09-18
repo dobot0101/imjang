@@ -1,17 +1,33 @@
 <!DOCTYPE html>
 <html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout/default_layout}"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/default_layout}"
 >
-  <th:block layout:fragment="content">
-    <div class="container">
-      <h1 class="mt-4" th:text="${username}"></h1>
-      <span>님 안녕하세요!</span>
-      <a th:href="@{/auth/logout}" class="btn btn-danger">로그아웃</a>
-    </div>
-  </th:block>
-  <th:block layout:fragment="bottom">
-    <th:block th:replace="~{fragments/nav :: navFragment}"></th:block>
-  </th:block>
+<th:block layout:fragment="content">
+  <div class="container">
+    <h1 class="mt-4" th:text="${username}"></h1>
+    <span>님 안녕하세요!</span>
+    <a id="logoutBtn" class="btn btn-danger">로그아웃</a>
+  </div>
+</th:block>
+<th:block layout:fragment="bottom">
+  <th:block th:replace="~{fragments/nav :: navFragment}"></th:block>
+</th:block>
 </html>
+<script>
+  $(document).ready(function () {
+    $('#logoutBtn').click(function () {
+      $.ajax({
+        url: '/api/auth/logout',
+        type: 'POST',
+        success: function (data) {
+          location.href = '/login';
+        },
+        error: function (error) {
+          console.log(`로그아웃 중 에러 발생: ${error}`);
+        },
+      });
+    });
+  })
+</script>
