@@ -1,5 +1,7 @@
 package com.dobot.imjang.config;
 
+import com.dobot.imjang.domain.common.exception.ValidationError;
+import jakarta.servlet.http.Cookie;
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -40,12 +43,30 @@ public class JwtRequestFilter extends OncePerRequestFilter {
       FilterChain filterChain)
       throws ServletException, IOException {
 
-    final String authorizationHeader = request.getHeader("Authorization");
-    String email = null;
     String jwt = null;
-    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-      jwt = authorizationHeader.substring(7);
-      email = jwtUtil.extractEmailFromToken(jwt);
+    String email = null;
+
+    // 쿠키 방식
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if (cookie.getName().equals("jwt")) {
+          logger.debug("jwt cookie: {}", cookie.getValue());
+          jwt = cookie.getValue();
+
+          // 쿠키가 아직 유효하면 만료 시간을 1시간 후로 업데이트 함
+          if (jwtUtil.validateToken(jwt)) {
+            var newCookie = new Cookie("jwt", jwt);
+            newCookie.setValue(jwt);
+            newCookie.setHttpOnly(true);
+            newCookie.setPath("/");
+            newCookie.setMaxAge(60 * 60);
+            response.addCookie(newCookie);
+
+            email = jwtUtil.extractEmailFromToken(jwt);
+          }
+        }
+      }
     }
 
     // jwt 토큰의 이메일 값은 있지만 SecurityContext에 인증 정보가 없으면 인증 정보를 저장함

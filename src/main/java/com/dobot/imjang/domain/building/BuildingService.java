@@ -1,6 +1,6 @@
 package com.dobot.imjang.domain.building;
 
-import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ValidationError;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.Member;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class BuildingService {
 
     @Transactional(readOnly = true)
     public Building getBuildingById(UUID id) {
-        return buildingRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
+        return buildingRepository.findById(id).orElseThrow(() -> new ValidationError(ErrorCode.BUILDING_NOT_FOUND));
     }
 
     @Transactional
@@ -40,7 +40,7 @@ public class BuildingService {
     public Building updateBuilding(UUID id, UpdateBuildingDto dto) {
         validateBuildingId(id);
         Building building = buildingRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.BUILDING_NOT_FOUND));
+                .orElseThrow(() -> new ValidationError(ErrorCode.BUILDING_NOT_FOUND));
         building.update(dto);
         return buildingRepository.save(building);
     }
@@ -64,7 +64,7 @@ public class BuildingService {
 
     private void validateBuildingId(UUID id) {
         if (Objects.isNull(id)) {
-            throw new CustomException(ErrorCode.INVALID_INPUT, BUILDING_ID_SHOULD_NOT_BE_NULL);
+            throw new ValidationError(ErrorCode.BAD_REQUEST, BUILDING_ID_SHOULD_NOT_BE_NULL);
         }
     }
 
@@ -74,7 +74,7 @@ public class BuildingService {
 
         List<Building> existingBuildings = buildingRepository.findByLatitudeAndLongitude(latitude, longitude);
         if (!existingBuildings.isEmpty()) {
-            throw new CustomException(ErrorCode.DUPLICATE_LOCATION, "좌표 중복 에러 [" + latitude + ", " + longitude + "]");
+            throw new ValidationError(ErrorCode.DUPLICATE_LOCATION, "좌표 중복 에러 [" + latitude + ", " + longitude + "]");
         }
     }
 }

@@ -24,12 +24,14 @@ public class JwtSecurityConfig {
 
   private final JwtRequestFilter jwtRequestFilter;
   private final MyUserDetailsService myUserDetailsService;
-  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  // login form 사용 시 사용
+//  private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     AntPathRequestMatcher[] matchers = {
         new AntPathRequestMatcher("/api/auth"), new AntPathRequestMatcher("/login"),
+        new AntPathRequestMatcher("/signup"),
         new AntPathRequestMatcher("/css/**"), new AntPathRequestMatcher("/js/**"),
         new AntPathRequestMatcher("/img/**"), new AntPathRequestMatcher("/favicon.ico")};
     http.csrf(AbstractHttpConfigurer::disable)

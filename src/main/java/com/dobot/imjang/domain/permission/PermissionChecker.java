@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.dobot.imjang.domain.auth.CustomUserDetails;
-import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ValidationError;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.Member;
 import com.dobot.imjang.domain.member.MemberRepository;
@@ -24,15 +24,15 @@ public class PermissionChecker {
     CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
         .getPrincipal();
     if (!memberId.equals(customUserDetails.getId())) {
-      throw new CustomException(ErrorCode.PERMISSION_DENIED);
+      throw new ValidationError(ErrorCode.PERMISSION_DENIED);
     }
   }
 
   public void checkAdminPermission(UUID memberId) {
     Member member = memberRepository.findById(memberId)
-        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        .orElseThrow(() -> new ValidationError(ErrorCode.USER_NOT_FOUND));
     if (!member.getRole().equals(Role.ADMIN)) {
-      throw new CustomException(ErrorCode.PERMISSION_DENIED);
+      throw new ValidationError(ErrorCode.PERMISSION_DENIED);
     }
   }
 }

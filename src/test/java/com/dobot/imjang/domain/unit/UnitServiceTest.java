@@ -2,7 +2,7 @@ package com.dobot.imjang.domain.unit;
 
 import com.dobot.imjang.domain.building.Building;
 import com.dobot.imjang.domain.building.BuildingRepository;
-import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ValidationError;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -75,9 +75,10 @@ class UnitServiceTest {
     void createUnit_NullBuildingId_ThrowsCustomException() {
         UnitCreateOrUpdateDto dto = UnitCreateOrUpdateDto.builder().build();
 
-        CustomException exception = assertThrows(CustomException.class, () -> unitService.createUnit(dto, null));
+        ValidationError exception = assertThrows(
+            ValidationError.class, () -> unitService.createUnit(dto, null));
 
-        assertEquals(ErrorCode.INVALID_INPUT, exception.getErrorCode());
+        assertEquals(ErrorCode.BAD_REQUEST, exception.getErrorCode());
     }
 
     @Test
@@ -88,7 +89,8 @@ class UnitServiceTest {
 
         when(buildingRepository.findById(buildingId)).thenReturn(Optional.empty());
 
-        CustomException exception = assertThrows(CustomException.class, () -> unitService.createUnit(dto, buildingId));
+        ValidationError exception = assertThrows(
+            ValidationError.class, () -> unitService.createUnit(dto, buildingId));
 
         assertEquals(ErrorCode.BUILDING_NOT_FOUND, exception.getErrorCode());
     }
@@ -112,9 +114,10 @@ class UnitServiceTest {
     void updateUnit_NullUnitId_ThrowsCustomException() {
         UnitCreateOrUpdateDto dto = UnitCreateOrUpdateDto.builder().build();
 
-        CustomException exception = assertThrows(CustomException.class, () -> unitService.updateUnit(null, dto));
+        ValidationError exception = assertThrows(
+            ValidationError.class, () -> unitService.updateUnit(null, dto));
 
-        assertEquals(ErrorCode.INVALID_INPUT, exception.getErrorCode());
+        assertEquals(ErrorCode.BAD_REQUEST, exception.getErrorCode());
     }
 
     @Test
@@ -125,7 +128,8 @@ class UnitServiceTest {
 
         when(unitRepository.findById(unitId)).thenReturn(Optional.empty());
 
-        CustomException exception = assertThrows(CustomException.class, () -> unitService.updateUnit(unitId, dto));
+        ValidationError exception = assertThrows(
+            ValidationError.class, () -> unitService.updateUnit(unitId, dto));
 
         assertEquals(ErrorCode.UNIT_NOT_FOUND, exception.getErrorCode());
     }
@@ -143,9 +147,9 @@ class UnitServiceTest {
     @Test
     @DisplayName("유닛 삭제 - 유닛 ID가 null인 경우 CustomException 발생")
     void deleteUnitById_NullUnitId_ThrowsCustomException() {
-        CustomException exception = assertThrows(CustomException.class, () -> unitService.deleteUnitById(null));
+        ValidationError exception = assertThrows(ValidationError.class, () -> unitService.deleteUnitById(null));
 
-        assertEquals(ErrorCode.INVALID_INPUT, exception.getErrorCode());
+        assertEquals(ErrorCode.BAD_REQUEST, exception.getErrorCode());
     }
 
     @Test
@@ -166,7 +170,7 @@ class UnitServiceTest {
 
         when(unitRepository.findById(unitId)).thenReturn(Optional.empty());
 
-        CustomException exception = assertThrows(CustomException.class, () -> unitService.getUnitById(unitId));
+        ValidationError exception = assertThrows(ValidationError.class, () -> unitService.getUnitById(unitId));
 
         assertEquals(ErrorCode.UNIT_NOT_FOUND, exception.getErrorCode());
     }

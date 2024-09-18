@@ -1,6 +1,6 @@
 package com.dobot.imjang.domain.building;
 
-import com.dobot.imjang.domain.common.exception.CustomException;
+import com.dobot.imjang.domain.common.exception.ValidationError;
 import com.dobot.imjang.domain.common.exception.ErrorCode;
 import com.dobot.imjang.domain.member.Member;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +55,7 @@ class BuildingServiceTest {
     @DisplayName("건물정보 조회 - 존재하지 않는 ID")
     void getBuildingById_NotFound() {
         UUID nonExistentId = UUID.randomUUID();
-        CustomException exception = assertThrows(CustomException.class, () -> {
+        ValidationError exception = assertThrows(ValidationError.class, () -> {
             buildingService.getBuildingById(nonExistentId);
         });
         assertEquals(ErrorCode.BUILDING_NOT_FOUND, exception.getErrorCode(), "에러 코드가 BUILDING_NOT_FOUND여야 합니다.");
@@ -72,7 +72,7 @@ class BuildingServiceTest {
                 .build();
         when(buildingRepository.findByLatitudeAndLongitude(duplicateLocationDto.getLatitude(), duplicateLocationDto.getLongitude()))
                 .thenReturn(List.of(building));
-        CustomException exception = assertThrows(CustomException.class, () -> {
+        ValidationError exception = assertThrows(ValidationError.class, () -> {
             buildingService.createBuilding(duplicateLocationDto, member);
         });
         assertEquals(ErrorCode.DUPLICATE_LOCATION, exception.getErrorCode(), "에러 코드가 DUPLICATE_LOCATION이어야 합니다.");
@@ -83,7 +83,7 @@ class BuildingServiceTest {
     void updateBuilding_NotFound() {
         UUID nonExistentId = UUID.randomUUID();
         UpdateBuildingDto updateDto = UpdateBuildingDto.builder().name("수정된 테스트 빌딩").build();
-        CustomException exception = assertThrows(CustomException.class, () -> {
+        ValidationError exception = assertThrows(ValidationError.class, () -> {
             buildingService.updateBuilding(nonExistentId, updateDto);
         });
         assertEquals(ErrorCode.BUILDING_NOT_FOUND, exception.getErrorCode(), "에러 코드가 BUILDING_NOT_FOUND여야 합니다.");
@@ -96,7 +96,7 @@ class BuildingServiceTest {
         // 아래와 같이 mocking 하지 않으면 반환 타입의 기본 값을 반환함. 예를들어 Optional을 반환하는 buildingRepository.findById 메소드를 mocking 하지 않으면 Optional.empty()를 반환함
         // 그래서 mocking 하지 않아도 Optional.empty()를 반환하는 경우 CustomException이 발생하는 아래의 테스트는 통과함
         when(buildingRepository.findById(nonExistentId)).thenReturn(Optional.empty());
-        CustomException exception = assertThrows(CustomException.class, () -> {
+        ValidationError exception = assertThrows(ValidationError.class, () -> {
             buildingService.deleteBuilding(nonExistentId);
         });
         assertEquals(ErrorCode.BUILDING_NOT_FOUND, exception.getErrorCode(), "에러 코드가 BUILDING_NOT_FOUND여야 합니다.");
